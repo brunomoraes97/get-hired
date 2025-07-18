@@ -1,0 +1,189 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=2 cm,
+    bottom=2 cm,
+    left=2 cm,
+    right=2 cm,
+    footskip=1.0 cm
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={CV de Maria das Graças Silva},
+    pdfauthor={Maria das Graças Silva},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+% Some settings:
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.15cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{
+    -1pt
+}{
+    0.3 cm
+}{
+    0.2 cm
+}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0 cm + 10pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0 cm + 0.00001 cm
+    }{
+        0 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+}
+
+\let\hrefWithoutArrow\href
+\begin{document}
+
+\begin{header}
+    {\fontsize{25pt}{25pt}\selectfont Maria das Graças Silva}
+
+    \vspace{0pt}
+
+    \normalsize
+    \mbox{São Paulo, SP} \enskip|\enskip \mbox{\href{mailto:maria.silva@gmail.com}{maria.silva@gmail.com}} \enskip|\enskip \mbox{\href{tel:11999999999}{11 99999-9999}} \\
+    \mbox{\href{https://www.linkedin.com/in/maria-silva}{LinkedIn}} \enskip|\enskip \mbox{\href{https://github.com/mariasilva}{Github}}
+\end{header}
+
+\vspace{5pt - 0.1cm}
+
+\section{Resumo Profissional}
+\begin{onecolentry}{Desenvolvedora com mais de 5 anos de experiência em Java e Spring Boot, com habilidades em análise de requisitos, desenvolvimento ágil e testes automatizados. Possui formação em Ciência da Computação e MBA em Gestão de Projetos. Proficiente em inglês e espanhol, com experiência internacional em projetos.}\end{onecolentry}
+\section{Experiência Profissional}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Desenvolvedora Java Sênior} \\ Tech Solutions Ltda, São Paulo, SP
+        \switchcolumn
+        \raggedleft 2018 - Atual
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Desenvolvimento de sistemas corporativos utilizando Java e Spring Boot
+                \item Implementação de testes automatizados e melhoria de processos de CI/CD
+                \item Liderança de equipe de desenvolvimento em projetos ágeis
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Desenvolvedora Java Pleno} \\ Innovatech Inc., Campinas, SP
+        \switchcolumn
+        \raggedleft 2015 - 2018
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Participação em projetos de grande escala, com foco em otimização de desempenho
+                \item Análise de requisitos e desenvolvimento de novas funcionalidades
+                \item Colaboração com a equipe de QA para garantir a qualidade do software
+    \end{highlights}
+\end{onecolentry}
+
+\section{Tecnologias}
+\begin{onecolentry}{\textbf{Linguagens de Programação:} Java, JavaScript, Python}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{Ferramentas e Frameworks:} Spring Boot, Docker, Jenkins}\end{onecolentry}
+\section{Formação Acadêmica}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Ciência da Computação} \\ Universidade de São Paulo
+        \switchcolumn
+        \raggedleft 2010 - 2014
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Participação em projetos de pesquisa em inteligência artificial
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{MBA em Gestão de Projetos} \\ Fundação Getúlio Vargas
+        \switchcolumn
+        \raggedleft 2016 - 2017
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Aplicação de metodologias ágeis em gestão de projetos
+    \end{highlights}
+\end{onecolentry}
+
+\end{document}

@@ -1,0 +1,94 @@
+# =============================================================
+#      ARQUIVO DE DADOS PARA O GERADOR DE CV
+#      Modelo completo para um Cientista de Dados.
+# =============================================================
+
+# Suas informações de contato para o cabeçalho.
+# A ordem na lista de contatos define a ordem no PDF.
+pessoais:
+  nome: "Leonardo Schmidt"
+  contatos:
+    - tipo: "localizacao"
+      valor: "Brasil / SC"
+    - tipo: "email"
+      valor: "leo.schmidt@email.com"
+    - tipo: "telefone"
+      valor: "(48) 99876-5432"
+    - tipo: "site"
+      valor: "leoschmidt.ai"
+    - tipo: "linkedin"
+      valor: "leonardo-schmidt-ds" # Apenas o username
+    - tipo: "github"
+      valor: "leoschmidt" # Apenas o username
+
+# Ordem e conteúdo de cada seção do currículo.
+secoes:
+  experiencia:
+    titulo: "Experiência Profissional"
+    entradas:
+      - data: "Fev 2022 – Presente"
+        cargo: "Cientista de Dados Sênior"
+        empresa: "Nexus Data Analytics"
+        local: "Florianópolis, SC"
+        destaques:
+          - "Desenvolvi e implementei modelos de previsão de demanda que reduziram os custos de estoque em 18%."
+          - "Liderei a arquitetura de um pipeline de MLOps na AWS (S3, SageMaker, Lambda), automatizando o re-treinamento e deploy de modelos."
+          - "Criei dashboards interativos em Power BI para apresentar resultados e KPIs dos modelos para stakeholders, melhorando a tomada de decisão."
+
+      - data: "Jul 2019 – Jan 2022"
+        cargo: "Cientista de Dados"
+        empresa: "VarejoConect"
+        local: "Remoto"
+        destaques:
+          - "Construí um sistema de recomendação de produtos (filtragem colaborativa) que aumentou o cross-selling em 12%."
+          - "Realizei análises de clusterização (K-Means) para segmentação de clientes, direcionando campanhas de marketing personalizadas."
+          - "Automatizei a coleta e limpeza de dados de múltiplas fontes usando Python (Pandas) e SQL, reduzindo o tempo de preparação de dados em 75%."
+
+  educacao:
+    titulo: "Formação Acadêmica"
+    entradas:
+      - data: "2017 – 2019"
+        curso: "Mestrado em Ciência da Computação"
+        instituicao: "Universidade Federal de Santa Catarina (UFSC)"
+        destaques:
+          - "Foco em Inteligência Artificial e Aprendizado de Máquina."
+          - "Dissertação: \"Detecção de Anomalias em Séries Temporais Financeiras com Redes Neurais Recorrentes (LSTM)\"."
+      
+      - data: "2013 – 2016"
+        curso: "Bacharelado em Sistemas de Informação"
+        instituicao: "Universidade do Estado de Santa Catarina (UDESC)"
+        destaques:
+          - "Iniciação Científica na área de otimização de consultas em bancos de dados."
+
+  projetos:
+    titulo: "Projetos de Destaque"
+    entradas:
+      - titulo: "API de Classificação de Sentimentos"
+        link: "https://github.com/leoschmidt/sentiment-api"
+        destaques:
+          - "Criei uma API RESTful com FastAPI para classificar textos em tempo real (positivo, negativo, neutro) usando um modelo treinado com Scikit-learn."
+          - "Empacotei a aplicação com Docker para facilitar o deploy em qualquer ambiente de nuvem."
+          - "Ferramentas: FastAPI, Docker, Scikit-learn, NLTK"
+      
+      - titulo: "Análise de Corrupção no Brasil (Dados Abertos)"
+        link: "https://github.com/leoschmidt/analise-corrupcao-br"
+        destaques:
+          - "Notebook de análise exploratória de dados públicos sobre gastos governamentais, utilizando Pandas, Matplotlib e Seaborn para gerar visualizações."
+          - "Identifiquei padrões e outliers em licitações e contratos públicos."
+
+  publicacoes:
+    titulo: "Publicações"
+    entradas:
+      - data: "Maio 2019"
+        titulo: "A Robust Framework for Anomaly Detection in Financial Time Series"
+        autores: ["Dr. Helena Borges", "Leonardo Schmidt"]
+        doi: "10.1109/ICDM.2019.00123"
+        doi_url: "https://doi.org/10.1109/ICDM.2019.00123"
+
+tecnologias:
+    titulo: "Competências Técnicas"
+    itens:
+      # A CORREÇÃO ESTÁ NA LINHA ABAIXO: & foi trocado por \&
+      - "\\textbf{Linguagens \\& Bancos de Dados:} Python (Expert), SQL (Expert), R (Intermediário), PostgreSQL, MongoDB."
+      - "\\textbf{ML & Engenharia de Dados:} Scikit-learn, TensorFlow, PyTorch, Pandas, NumPy, Apache Spark, Airflow."
+      - "\\textbf{Cloud & Ferramentas:} AWS (SageMaker, S3, EC2), Docker, Git, Power BI, Jira."

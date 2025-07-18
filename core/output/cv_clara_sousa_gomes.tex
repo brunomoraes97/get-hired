@@ -1,0 +1,205 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=2 cm,
+    bottom=2 cm,
+    left=2 cm,
+    right=2 cm,
+    footskip=1.0 cm
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={CV de Clara Sousa Gomes},
+    pdfauthor={Clara Sousa Gomes},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+% Some settings:
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.15cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{
+    -1pt
+}{
+    0.3 cm
+}{
+    0.2 cm
+}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0 cm + 10pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0 cm + 0.00001 cm
+    }{
+        0 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+}
+
+\let\hrefWithoutArrow\href
+\begin{document}
+
+\begin{header}
+    {\fontsize{25pt}{25pt}\selectfont Clara Sousa Gomes}
+
+    \vspace{0pt}
+
+    \normalsize
+    \mbox{Brasil} \enskip|\enskip \mbox{\href{mailto:clara.sousa.dev@gmail.com}{clara.sousa.dev@gmail.com}} \enskip|\enskip \mbox{\href{tel:+5521988443311}{+55 21 98844-3311}} \\
+    \mbox{\href{https://www.linkedin.com/in/clarasousa/}{LinkedIn}} \enskip|\enskip \mbox{\href{https://github.com/clarasg}{Github}}
+\end{header}
+
+\vspace{5pt - 0.1cm}
+
+\section{Professional Summary}
+\begin{onecolentry}{Detail-oriented Backend Engineer with experience in Java (Spring Boot), Golang, and Google Cloud Platform (GCP). Proven track record in building scalable APIs and backend services for high traffic environments. Strong background in DevOps, automation, and cloud technologies.}\end{onecolentry}
+\section{Professional Experience}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Customer Success \& Implementation Specialist} \\ Adfinity, São Paulo, Brazil (Remote)
+        \switchcolumn
+        \raggedleft 2024 – Presente
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Led onboarding of enterprise clients with technical alignment and integration planning.
+                \item Managed implementation projects involving webhooks, APIs, and CRM configurations.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{DevOps Support Engineer} \\ Omnisuite, Remote
+        \switchcolumn
+        \raggedleft 2022 – 2024
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Provided L2 support for microservices platform running in Dockerized environments.
+                \item Maintained and improved CI/CD workflows using GitHub Actions.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Product Support Analyst} \\ WebFlex, Rio de Janeiro, Brazil (Hybrid)
+        \switchcolumn
+        \raggedleft 2020 – 2022
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Resolved complex support cases involving third-party APIs.
+                \item Wrote internal support runbooks and tutorials for new hires.
+    \end{highlights}
+\end{onecolentry}
+
+\section{Skills}
+\begin{onecolentry}{\textbf{Backend \& Cloud:} Java (Spring Boot), Golang, GCP, Docker, Kubernetes}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{DevOps \& Automation:} CI/CD pipelines, Monitoring with Prometheus and Grafana, Scripting with Python, Bash}\end{onecolentry}
+\section{Education}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Bachelor's in Computer Science} \\ Universidade Federal do Rio de Janeiro (UFRJ)
+        \switchcolumn
+        \raggedleft 2021
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Research in distributed systems and container orchestration.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Certificate in Cloud Engineering} \\ Alura Cloud Bootcamp
+        \switchcolumn
+        \raggedleft 2022
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item AWS basics, CI/CD, Docker, Kubernetes.
+    \end{highlights}
+\end{onecolentry}
+
+\end{document}

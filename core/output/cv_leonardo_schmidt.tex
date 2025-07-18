@@ -1,0 +1,227 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=2 cm,
+    bottom=2 cm,
+    left=2 cm,
+    right=2 cm,
+    footskip=1.0 cm
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={CV de Leonardo Schmidt},
+    pdfauthor={Leonardo Schmidt},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+% Some settings:
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.15cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{
+    -1pt
+}{
+    0.3 cm
+}{
+    0.2 cm
+}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0 cm + 10pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0 cm + 0.00001 cm
+    }{
+        0 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+}
+
+\let\hrefWithoutArrow\href
+\begin{document}
+
+    \begin{header}
+        {\fontsize{25pt}{25pt}\selectfont Leonardo Schmidt}
+
+        \vspace{5pt}
+
+        \normalsize
+        \mbox{Brasil / SC} \textbar{} \mbox{\href{mailto:leo.schmidt@email.com}{leo.schmidt@email.com}} \textbar{} \mbox{\href{tel:(48)998765432}{(48) 99876-5432}} \textbar{} \mbox{\href{https://leoschmidt.ai}{leoschmidt.ai}} \textbar{} \mbox{\href{https://linkedin.com/in/leonardo-schmidt-ds}{linkedin.com/in/leonardo-schmidt-ds}} \textbar{} \mbox{\href{https://github.com/leoschmidt}{github.com/leoschmidt}}
+    \end{header}
+
+    \vspace{5pt - 0.3cm}
+    
+\section{Experiência Profissional}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{Cientista de Dados Sênior}, Nexus Data Analytics -- Florianópolis, SC
+            \switchcolumn
+            \raggedleft Fev 2022 – Presente
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Desenvolvi e implementei modelos de previsão de demanda que reduziram os custos de estoque em 18%.
+                \item Liderei a arquitetura de um pipeline de MLOps na AWS (S3, SageMaker, Lambda), automatizando o re-treinamento e deploy de modelos.
+                \item Criei dashboards interativos em Power BI para apresentar resultados e KPIs dos modelos para stakeholders, melhorando a tomada de decisão.
+        \end{highlights}
+    \end{onecolentry}
+    
+\vspace{0.2cm}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{Cientista de Dados}, VarejoConect -- Remoto
+            \switchcolumn
+            \raggedleft Jul 2019 – Jan 2022
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Construí um sistema de recomendação de produtos (filtragem colaborativa) que aumentou o cross-selling em 12%.
+                \item Realizei análises de clusterização (K-Means) para segmentação de clientes, direcionando campanhas de marketing personalizadas.
+                \item Automatizei a coleta e limpeza de dados de múltiplas fontes usando Python (Pandas) e SQL, reduzindo o tempo de preparação de dados em 75%.
+        \end{highlights}
+    \end{onecolentry}
+    
+\section{Formação Acadêmica}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{Universidade Federal de Santa Catarina (UFSC)}, Mestrado em Ciência da Computação
+            \switchcolumn
+            \raggedleft 2017 – 2019
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Foco em Inteligência Artificial e Aprendizado de Máquina.
+                \item Dissertação: "Detecção de Anomalias em Séries Temporais Financeiras com Redes Neurais Recorrentes (LSTM)".
+        \end{highlights}
+    \end{onecolentry}
+    
+\vspace{0.2cm}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{Universidade do Estado de Santa Catarina (UDESC)}, Bacharelado em Sistemas de Informação
+            \switchcolumn
+            \raggedleft 2013 – 2016
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Iniciação Científica na área de otimização de consultas em bancos de dados.
+        \end{highlights}
+    \end{onecolentry}
+    
+\section{Projetos de Destaque}
+
+    \begin{onecolentry}
+        \textbf{API de Classificação de Sentimentos}\href{https://github.com/leoschmidt/sentiment-api}{\, \faGithub}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Criei uma API RESTful com FastAPI para classificar textos em tempo real (positivo, negativo, neutro) usando um modelo treinado com Scikit-learn.
+                \item Empacotei a aplicação com Docker para facilitar o deploy em qualquer ambiente de nuvem.
+                \item Ferramentas: FastAPI, Docker, Scikit-learn, NLTK
+        \end{highlights}
+    \end{onecolentry}
+    
+\vspace{0.2cm}
+
+    \begin{onecolentry}
+        \textbf{Análise de Corrupção no Brasil (Dados Abertos)}\href{https://github.com/leoschmidt/analise-corrupcao-br}{\, \faGithub}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Notebook de análise exploratória de dados públicos sobre gastos governamentais, utilizando Pandas, Matplotlib e Seaborn para gerar visualizações.
+                \item Identifiquei padrões e outliers em licitações e contratos públicos.
+        \end{highlights}
+    \end{onecolentry}
+    
+\section{Publicações}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{A Robust Framework for Anomaly Detection in Financial Time Series}
+            \switchcolumn
+            \raggedleft Maio 2019
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \mbox{Dr. Helena Borges}, \mbox{\textbf{\textit{Leonardo Schmidt}}}
+        \vspace{0.10cm}
+        \href{https://doi.org/10.1109/ICDM.2019.00123}{10.1109/ICDM.2019.00123}
+    \end{onecolentry}
+    
+\end{document}

@@ -1,0 +1,251 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=2 cm,
+    bottom=2 cm,
+    left=2 cm,
+    right=2 cm,
+    footskip=1.0 cm
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={CV de MATHEUS BRUNO DE MORAES},
+    pdfauthor={MATHEUS BRUNO DE MORAES},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+% Some settings:
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.15cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{
+    -1pt
+}{
+    0.3 cm
+}{
+    0.2 cm
+}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0 cm + 10pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0 cm + 0.00001 cm
+    }{
+        0 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+}
+
+\let\hrefWithoutArrow\href
+\begin{document}
+
+\begin{header}
+    {\fontsize{25pt}{25pt}\selectfont MATHEUS BRUNO DE MORAES}
+
+    \vspace{0pt}
+
+    \normalsize
+    \mbox{Brazilian, 28 years old} \enskip|\enskip \mbox{\href{mailto:mbrunomoraes97@gmail.com}{mbrunomoraes97@gmail.com}} \enskip|\enskip \mbox{\href{tel:+55(41)995757856}{+55 (41) 9 9575-7856}} \\
+    \mbox{\href{https://www.linkedin.com/in/brunomoraes97/}{LinkedIn}} \enskip|\enskip \mbox{\href{https://github.com/brunomoraes97}{Github}}
+\end{header}
+
+\vspace{5pt - 0.1cm}
+
+\section{SUMMARY}
+\begin{onecolentry}{Experienced Support and DevOps Engineer with a passion for managing the entire customer case lifecycle, from triage and reproduction to complex problem resolution. Proficient in Linux systems administration, scripting (Bash, Python), Git, and CI/CD, with a hands-on approach to solving technical challenges and optimizing workflows. Proven ability to act as a key liaison between Product and Engineering teams, ensuring smooth implementations, fast communication, and high customer satisfaction. Committed to creating and improving support content, with extensive experience in technical documentation and tutorials.}\end{onecolentry}
+\section{PROFESSIONAL EXPERIENCE}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Technical Onboarding Manager} \\ IREV, Limassol, Cyprus (Remote, full-time)
+        \switchcolumn
+        \raggedleft 2024-Current
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Served as the primary coordinator for onboarding new clients, managing technical setup, timelines, and stakeholder alignment.
+                \item Participated in scoping calls to assess customer infrastructure and ensure accurate implementation planning.
+                \item Troubleshot API, S2S, and platform integration issues with product and engineering teams.
+                \item Standardized documentation and refined internal processes for greater onboarding efficiency, contributing to support content.
+                \item Proven experience with on-call coverage, weekend coverage, and night shifts.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{L2 Technical Support Engineer \& Automation Specialist} \\ Multilogin, Tallinn, Estonia (Remote)
+        \switchcolumn
+        \raggedleft 2023-2024
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Investigated and resolved complex technical issues, employing a combination of analytical skills and creative problem-solving techniques.
+                \item Developed and implemented automation scripts using Selenium, Playwright, and Puppeteer to address customer needs.
+                \item Worked with databases (MySQL), conducting necessary queries and performing data processing tasks as required.
+                \item Created technical documentation and demonstration videos to empower users and facilitate self-service, demonstrating expertise in writing support content.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Software Engineer} \\ SaasPro, Curitiba, Brazil (In-person)
+        \switchcolumn
+        \raggedleft 2022-2023
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Responsible for professional services outside of the product's scope.
+                \item Developed and maintained integrations between various platforms for business process optimization.
+                \item Implemented chatbot and AI-based solutions for customer engagement.
+                \item Worked with web frameworks such as Flask, FastAPI and Django.
+                \item Technical advisor in sales calls and in development strategy.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Technical Support Engineer} \\ SaasPro, Curitiba, Brazil (In-person)
+        \switchcolumn
+        \raggedleft 2019-2023
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Provided exceptional technical support to clients through email, chat, and calls, resolving issues efficiently and ensuring customer satisfaction.
+                \item Guided clients on email compliance best practices and regulations.
+                \item Integrated different tools via API, using code (Python) and tools such as Zapier and Make.
+                \item Collaborated with various teams to address customer needs and feedback, fostering a culture of customer-centricity.
+    \end{highlights}
+\end{onecolentry}
+
+\section{SKILLS}
+\begin{onecolentry}{\textbf{Linux Systems Administration:} Extensive experience with Linux servers, performance troubleshooting, diagnostic tools, and Docker containers.}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{DevOps \& CI/CD:} Implementation of CI/CD pipelines with GitHub Actions, management of staging and production environments, Git, and GitHub. Knowledge of Openshift and Kubernetes.}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{Programming Languages:} Bash, Python, Java, C, Javascript, Ruby}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{Automation \& Scripting:} Development of automation scripts (Selenium, Playwright, Puppeteer), process optimization, and API integrations.}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{Technical Support \& Customer Experience:} Customer case lifecycle management, complex technical communication, troubleshooting (API, S2S, platform), complex problem resolution, Localization.}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{Content Creation:} Extensive experience in writing support content, technical documentation, Knowledge Base articles, video tutorials, and troubleshooting guides.}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{Databases:} MySQL (queries, data processing).}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{Security \& Compliance:} Understanding of common information security and compliance concepts (OffSec).}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{Tools:} Git, GitHub, Postman, Zendesk, Jira, Zapier, N8N, CRMs similar to HubSpot}\end{onecolentry}
+\section{EDUCATION}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Bachelor’s in Information and Communication Technologies (ICT)} \\ Universidade Federal de Santa Catarina (UFSC), Brazil
+        \switchcolumn
+        \raggedleft Currently Enrolled
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Teaching assistant for the Algorithms and Programming course (focus on Python), assisting students with programming logic.
+                \item Member of the Artificial Intelligence League (LIA).
+                \item Focus on OOP, Java, and Python.
+                \item Participated in the OffSec extension group, deepening knowledge in information security and compliance.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Bachelor’s in Psychology} \\ Universidade Federal do Paraná (UFPR), Brazil
+        \switchcolumn
+        \raggedleft Graduated in 2023
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Founded and led the Neuropsychology Academic League, developing research and problem-solving skills.
+                \item Participated in community outreach projects in cognitive rehabilitation.
+    \end{highlights}
+\end{onecolentry}
+
+\end{document}

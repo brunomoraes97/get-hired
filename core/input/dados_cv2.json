@@ -1,0 +1,161 @@
+ {
+  "pessoais": {
+    "nome": "MATHEUS BRUNO DE MORAES",
+    "contatos": [
+      {
+        "tipo": "localizacao",
+        "valor": "Brazil"
+      },
+      {
+        "tipo": "email",
+        "valor": "mbrunomoraes97@gmail.com"
+      },
+      {
+        "tipo": "telefone",
+        "valor": "+55 (41) 9 9575-7856"
+      },
+      {
+        "tipo": "linkedin",
+        "valor": "https://www.linkedin.com/in/brunomoraes97/"
+      },
+      {
+        "tipo": "github",
+        "valor": "https://github.com/brunomoraes97"
+      }
+    ]
+  },
+  "secoes": {
+    "resumo": {
+      "titulo": "Resumo Profissional",
+      "tipo": "lista_simples",
+      "itens": [
+        "Experienced Support and DevOps Engineer with a solid background in Linux systems administration, scripting, and CI/CD. Possesses strong Java programming skills and is actively seeking to deepen expertise in Spring Boot and Golang. Proven track record in developing scalable APIs and backend services, with a keen interest in GCP technologies."
+      ]
+    },
+    "experiencia": {
+      "titulo": "Experiência Profissional",
+      "tipo": "entradas_com_destaques",
+      "entradas": [
+        {
+          "data": "2019-2023",
+          "titulo": "Technical Support Engineer",
+          "subtitulo": "SaasPro",
+          "local": "Curitiba, Brazil",
+          "destaques": [
+            "Provided high-quality technical support, focusing on API and platform integration issues.",
+            "Developed integrations via API using Python and tools like Zapier, enhancing system functionality."
+          ]
+        },
+        {
+          "data": "2022-2023",
+          "titulo": "Software Engineer",
+          "subtitulo": "SaasPro",
+          "local": "Curitiba, Brazil",
+          "destaques": [
+            "Implemented and maintained platform integrations for business process optimization.",
+            "Worked with web frameworks like Flask and FastAPI, contributing to backend service improvements."
+          ]
+        },
+        {
+          "data": "2023-2024",
+          "titulo": "L2 Technical Support Engineer & Automation Specialist",
+          "subtitulo": "Multilogin",
+          "local": "Remote",
+          "destaques": [
+            "Resolved complex technical issues by employing analytical and problem-solving skills.",
+            "Developed automation scripts using Selenium, Playwright, and Puppeteer to enhance customer support."
+          ]
+        },
+        {
+          "data": "2024-Present",
+          "titulo": "Technical Onboarding Manager",
+          "subtitulo": "IREV",
+          "local": "Limassol, Cyprus (Remote)",
+          "destaques": [
+            "Coordinates onboarding of new clients, ensuring technical setup and alignment with stakeholder expectations.",
+            "Troubleshoots API and platform integration issues, contributing to system reliability."
+          ]
+        },
+        {
+          "data": "2025-Present",
+          "titulo": "DevOps Engineer",
+          "subtitulo": "FlirT",
+          "local": "Remote",
+          "destaques": [
+            "Manages and optimizes Linux server-based application infrastructure.",
+            "Implements CI/CD pipelines using GitHub Actions for efficient deployment."
+          ]
+        }
+      ]
+    },
+    "tecnologias": {
+      "titulo": "Competências Técnicas",
+      "tipo": "lista_categorizada",
+      "categorias": [
+        {
+          "nome": "Linguagens de Programação",
+          "itens": [
+            "Java",
+            "Python",
+            "Golang"
+          ]
+        },
+        {
+          "nome": "Frameworks & Tecnologias",
+          "itens": [
+            "Spring Boot",
+            "Docker",
+            "Kubernetes"
+          ]
+        },
+        {
+          "nome": "Infraestrutura & DevOps",
+          "itens": [
+            "GCP (Pub/Sub, GKE)",
+            "CI/CD (GitHub Actions)",
+            "Microservices"
+          ]
+        },
+        {
+          "nome": "Bancos de Dados",
+          "itens": [
+            "MySQL"
+          ]
+        },
+        {
+          "nome": "Automação & Scripting",
+          "itens": [
+            "Bash",
+            "Python",
+            "Selenium",
+            "Playwright",
+            "Puppeteer"
+          ]
+        }
+      ]
+    },
+    "educacao": {
+      "titulo": "Formação Acadêmica",
+      "tipo": "entradas_com_destaques",
+      "entradas": [
+        {
+          "data": "Currently Enrolled",
+          "titulo": "Bachelor's in Information and Communication Technologies (ICT)",
+          "subtitulo": "Universidade Federal de Santa Catarina (UFSC)",
+          "destaques": [
+            "Teaching assistant for Algorithms and Programming with a focus on Python.",
+            "Member of the Artificial Intelligence League (LIA)."
+          ]
+        },
+        {
+          "data": "2023",
+          "titulo": "Bachelor's in Psychology",
+          "subtitulo": "Universidade Federal do Paraná (UFPR)",
+          "destaques": [
+            "Led the Neuropsychology Academic League, enhancing research capabilities."
+          ]
+        }
+      ]
+    }
+  }
+}

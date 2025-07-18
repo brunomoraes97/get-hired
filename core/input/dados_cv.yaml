@@ -1,0 +1,119 @@
+pessoais:
+  nome: "Matheus Bruno de Moraes"
+  contatos:
+    - tipo: "localizacao"
+      valor: "Brazil"
+    - tipo: "email"
+      valor: "mbrunomoraes97@gmail.com"
+    - tipo: "telefone"
+      valor: "+55 (41) 9 9575-7856"
+    - tipo: "linkedin"
+      valor: "LinkedIn"
+    - tipo: "github"
+      valor: "Github"
+    - tipo: "site"
+      valor: ""
+
+secoes:
+  resumo:
+    titulo: "Resumo Profissional"
+    itens:
+      - "Engenheiro de Suporte e DevOps com experiência em infraestrutura Linux, CI/CD, APIs e automações. Participou ativamente da implementação de pipelines com GitHub Actions, conteinerização com Docker, orquestração com Kubernetes e resolução de problemas técnicos complexos. Forte habilidade em comunicação com times globais, documentação técnica e atendimento técnico ao cliente."
+
+  experiencia:
+    titulo: "Experiência Profissional"
+    entradas:
+      - data: "2025-Atual"
+        cargo: "DevOps Engineer"
+        empresa: "FlirT (Early Stage Startup)"
+        local: "Remoto"
+        destaques:
+          - "Gerenciou infraestrutura de aplicações em servidores Linux com automações baseadas em GitHub Actions."
+          - "Implantou pipelines CI/CD e ambientes segregados de staging e produção utilizando Docker e Git."
+      - data: "2024-Atual"
+        cargo: "Technical Onboarding Manager"
+        empresa: "IREV"
+        local: "Remoto – Limassol, Chipre"
+        destaques:
+          - "Coordenou a integração técnica de clientes e investigou falhas em APIs e S2S com times de engenharia."
+          - "Padronizou processos internos e contribuiu para conteúdo técnico de onboarding."
+      - data: "2023-2024"
+        cargo: "L2 Technical Support Engineer & Automation Specialist"
+        empresa: "Multilogin"
+        local: "Remoto – Tallinn, Estônia"
+        destaques:
+          - "Desenvolveu scripts de automação com Selenium, Playwright e Puppeteer para clientes corporativos."
+          - "Documentou soluções técnicas e produziu vídeos para base de conhecimento."
+      - data: "2022-2023"
+        cargo: "Software Engineer"
+        empresa: "SaasPro"
+        local: "Curitiba, Brasil"
+        destaques:
+          - "Desenvolveu integrações backend utilizando Flask, FastAPI e Django."
+          - "Implementou soluções com IA para engajamento e atendimento ao cliente."
+      - data: "2019-2023"
+        cargo: "Technical Support Engineer"
+        empresa: "SaasPro"
+        local: "Curitiba, Brasil"
+        destaques:
+          - "Atendeu clientes via múltiplos canais e integrou ferramentas via API com Python e Zapier."
+          - "Aconselhou clientes sobre conformidade de e-mail e melhores práticas técnicas."
+
+  projetos:
+    titulo: "Projetos"
+    entradas:
+      - titulo: "Infraestrutura CI/CD Automatizada"
+        link: ""
+        destaques:
+          - "Implementação de pipelines CI/CD com GitHub Actions, ambientes segregados e rollback seguro."
+          - "Docker, GitHub Actions, Linux, Monitoramento."
+      - titulo: "Automação com IA para Atendimento ao Cliente"
+        link: ""
+        destaques:
+          - "Criação de chatbots e fluxos automatizados usando IA para melhorar o engajamento."
+          - "Python, Flask, FastAPI, Integrações com APIs, NLP."
+
+  tecnologias:
+    titulo: "Competências Técnicas"
+    itens:
+      - "Java"
+      - "Python"
+      - "Flask"
+      - "FastAPI"
+      - "Django"
+      - "Docker"
+      - "Kubernetes"
+      - "Git"
+      - "GitHub Actions"
+      - "Microservices"
+      - "MySQL"
+      - "APIs REST"
+      - "Bash"
+      - "Linux"
+      - "Selenium"
+      - "Playwright"
+      - "Puppeteer"
+      - "CI/CD"
+      - "OpenShift"
+      - "GCP (conhecimento)"
+      - "Spring Boot (exposição)"
+
+  educacao:
+    titulo: "Formação Acadêmica"
+    entradas:
+      - data: "Em andamento"
+        curso: "Bacharelado em Tecnologias da Informação e Comunicação"
+        instituicao: "Universidade Federal de Santa Catarina (UFSC)"
+        destaques:
+          - "Monitor em Algoritmos e Programação com foco em Python; membro da Liga de IA e grupo de OffSec."
+      - data: "Concluído em 2023"
+        curso: "Bacharelado em Psicologia"
+        instituicao: "Universidade Federal do Paraná (UFPR)"
+        destaques:
+          - "Fundador da Liga Acadêmica de Neuropsicologia e participação em reabilitação cognitiva comunitária."
+
+  idiomas:
+    titulo: "Idiomas"
+    itens:
+      - "Português: Nativo"
+      - "Inglês: Fluente"

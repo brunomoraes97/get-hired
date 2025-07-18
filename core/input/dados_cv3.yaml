@@ -1,0 +1,104 @@
+pessoais:
+  nome: "Matheus Bruno de Moraes"
+  contatos:
+    - tipo: "localizacao"
+      valor: "Brazil"
+    - tipo: "email"
+      valor: "mbrunomoraes97@gmail.com"
+    - tipo: "telefone"
+      valor: "+55 (41) 9 9575-7856"
+    - tipo: "linkedin"
+      valor: "LinkedIn"
+    - tipo: "github"
+      valor: "Github"
+
+secoes:
+  resumo:
+    titulo: "Resumo Profissional"
+    tipo: "lista_simples"
+    itens:
+      - "Engenheiro de Suporte e DevOps com experiência em infraestrutura Linux, CI/CD, APIs e automações. Participou ativamente da implementação de pipelines com GitHub Actions, conteinerização com Docker, orquestração com Kubernetes e resolução de problemas técnicos complexos. Forte habilidade em comunicação com times globais, documentação técnica e atendimento técnico ao cliente."
+
+  experiencia:
+    titulo: "Experiência Profissional"
+    tipo: "entradas_com_destaques"
+    entradas:
+      - data: "2025-Atual"
+        titulo: "DevOps Engineer"
+        subtitulo: "FlirT (Early Stage Startup)"
+        local: "Remoto"
+        destaques:
+          - "Gerenciou infraestrutura de aplicações em servidores Linux com automações baseadas em GitHub Actions."
+          - "Implantou pipelines CI/CD e ambientes segregados de staging e produção utilizando Docker e Git."
+
+  tecnologias:
+    titulo: "Competências Técnicas"
+    tipo: "lista_categorizada"
+    categorias:
+      - nome: "Linguagens"
+        itens: ["Python", "Java", "Bash"]
+      - nome: "Frameworks"
+        itens: ["Flask", "FastAPI", "Django", "Spring Boot (exposição)"]
+      - nome: "DevOps & Cloud"
+        itens: ["Docker", "Kubernetes", "Git", "GitHub Actions", "CI/CD", "OpenShift", "GCP (conhecimento)"]
+      - nome: "Bancos de Dados"
+        itens: ["MySQL"]
+      - nome: "Outras Ferramentas"
+        itens: ["Selenium", "Playwright", "Puppeteer", "APIs REST", "Microservices"]
+
+  soft_skills:
+    titulo: "Competências Interpessoais"
+    tipo: "lista_categorizada"
+    categorias:
+      - nome: "Comunicação & Colaboração"
+        itens: ["Técnica", "Documentação", "Trabalho em Equipe", "Mentoria"]
+      - nome: "Resolução de Problemas"
+        itens: ["Análise Crítica", "Pensamento Lógico", "Depuração de Código"]
+      - nome: "Autonomia"
+        itens: ["Proatividade", "Gerenciamento de Tempo"]
+
+  certificacoes:
+    titulo: "Certificações e Cursos"
+    tipo: "entradas_com_destaques"
+    entradas:
+      - data: "2024"
+        titulo: "Certified Kubernetes Administrator (CKA)"
+        subtitulo: "The Linux Foundation"
+        destaques:
+          - "Administração, configuração e gerenciamento de clusters Kubernetes."
+      - data: "2023"
+        titulo: "AWS Certified Solutions Architect – Associate"
+        subtitulo: "Amazon Web Services"
+        destaques:
+          - "Projeto e implantação de sistemas distribuídos na AWS."
+
+  educacao:
+    titulo: "Formação Acadêmica"
+    tipo: "entradas_com_destaques"
+    entradas:
+      - data: "Em andamento"
+        titulo: "Bacharelado em Tecnologias da Informação e Comunicação"
+        subtitulo: "Universidade Federal de Santa Catarina (UFSC)"
+        destaques:
+          - "Monitor em Algoritmos e Programação com foco em Python; membro da Liga de IA e grupo de OffSec."
+      - data: "Concluído em 2023"
+        titulo: "Bacharelado em Psicologia"
+        subtitulo: "Universidade Federal do Paraná (UFPR)"
+        destaques:
+          - "Fundador da Liga Acadêmica de Neuropsicologia."
+
+  interesses:
+    titulo: "Interesses"
+    tipo: "lista_simples"
+    itens:
+      - "Música (Guitarra e Produção)"
+      - "Fotografia Analógica"
+      - "Ciclismo"
+      - "Projetos de Código Aberto"
+
+  idiomas:
+    titulo: "Idiomas"
+    tipo: "lista_simples"
+    itens:
+      - "Português: Nativo"
+      - "Inglês: Fluente"

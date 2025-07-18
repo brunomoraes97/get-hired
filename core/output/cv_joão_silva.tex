@@ -1,0 +1,177 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=2 cm,
+    bottom=2 cm,
+    left=2 cm,
+    right=2 cm,
+    footskip=1.0 cm
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={CV de João Silva},
+    pdfauthor={João Silva},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+% Some settings:
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.15cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{
+    -1pt
+}{
+    0.3 cm
+}{
+    0.2 cm
+}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0 cm + 10pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0 cm + 0.00001 cm
+    }{
+        0 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+}
+
+\let\hrefWithoutArrow\href
+\begin{document}
+
+\begin{header}
+    {\fontsize{25pt}{25pt}\selectfont João Silva}
+
+    \vspace{0pt}
+
+    \normalsize
+    \mbox{Rua Alegre, 123 - São Paulo, SP} \enskip|\enskip \mbox{\href{mailto:joaosilva@example.com}{joaosilva@example.com}} \enskip|\enskip \mbox{\href{tel:(11)12345678}{(11) 1234-5678}} \\
+    
+\end{header}
+
+\vspace{5pt - 0.1cm}
+
+\section{Resumo Profissional}
+\begin{onecolentry}{Desenvolvedor com 5 anos de experiência em Java e Spring Boot.}\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}{Habilidade em liderar projetos de software de ponta a ponta.}\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}{Experiência com bancos de dados SQL e NoSQL.}\end{onecolentry}
+\section{Experiência Profissional}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Desenvolvedor Sênior} \\ Tech Solutions, São Paulo, SP
+        \switchcolumn
+        \raggedleft 2018 - Presente
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Liderança em projetos de backend usando Spring Boot.
+                \item Implementação de soluções de microserviços.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Desenvolvedor Java} \\ Inovatech, Campinas, SP
+        \switchcolumn
+        \raggedleft 2015 - 2018
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Desenvolvimento de aplicações web usando Java e Hibernate.
+                \item Otimização de consultas SQL para melhor desempenho.
+    \end{highlights}
+\end{onecolentry}
+
+\section{Tecnologias}
+\begin{onecolentry}{\textbf{Linguagens de Programação:} Java, JavaScript, Python}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{Frameworks:} Spring Boot, Node.js, Django}\end{onecolentry}
+\vspace{0.1cm}
+\begin{onecolentry}{\textbf{Bancos de Dados:} MySQL, MongoDB}\end{onecolentry}
+\section{Formação Acadêmica}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Bacharelado em Ciência da Computação} \\ Universidade Estadual de Campinas
+        \switchcolumn
+        \raggedleft 2010 - 2014
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item TCC sobre algoritmos de otimização.
+                \item Participação em projetos de pesquisa.
+    \end{highlights}
+\end{onecolentry}
+
+\end{document}

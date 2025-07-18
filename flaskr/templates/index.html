@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate CV</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        textarea { width: 80%; height: 200px; margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #message { margin-top: 20px; color: green; }
+        #error { margin-top: 20px; color: red; }
+    </style>
+</head>
+<body>
+    <h1>Generate Personalized CV</h1>
+
+    <label for="cvText">Your CV Text (can be very long):</label><br>
+    <textarea id="cvText" placeholder="Paste your full CV text here..."></textarea><br>
+
+    <label for="jobDescriptionText">Job Description Text (can be very long):</label><br>
+    <textarea id="jobDescriptionText" placeholder="Paste the job description text here..."></textarea><br>
+
+    <button onclick="generateCv()">Generate CV</button>
+
+    <div id="message"></div>
+    <div id="error"></div>
+
+    <script>
+        async function generateCv() {
+            const cvText = document.getElementById('cvText').value;
+            const jobDescriptionText = document.getElementById('jobDescriptionText').value;
+            const messageDiv = document.getElementById('message');
+            const errorDiv = document.getElementById('error');
+
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+
+            if (!cvText || !jobDescriptionText) {
+                errorDiv.textContent = 'Please provide both CV text and Job Description text.';
+                return;
+            }
+
+            messageDiv.textContent = 'Generating CV... Please wait.';
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cv: cvText,
+                        job_description: jobDescriptionText
+                    })
+                });
+
+                if (response.ok) {
+                    // If the response is a PDF, trigger download
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    // The backend sets the download_name, so we can try to get it from headers
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    let filename = 'generated_cv.pdf';
+                    if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+                        filename = contentDisposition.split('filename=')[1].replace(/"/g, '');
+                    }
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    messageDiv.textContent = 'CV generated and downloaded successfully!';
+                } else {
+                    // If there's an error, read the JSON response for details
+                    const errorData = await response.json();
+                    errorDiv.textContent = `Error: ${errorData.erro || 'Unknown error'}`;
+                    if (errorData.log) {
+                        errorDiv.textContent += `\nLog: ${errorData.log}`;
+                    }
+                }
+            } catch (error) {
+                errorDiv.textContent = `Network error or server not reachable: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

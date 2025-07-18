@@ -1,0 +1,117 @@
+{
+"pessoais": {
+"nome": "MATHEUS BRUNO DE MORAES",
+"contatos": [
+{ "tipo": "localizacao", "valor": "Brazil" },
+{ "tipo": "email", "valor": "mbrunomoraes97@gmail.com" },
+{ "tipo": "telefone", "valor": "+5541995757856" },
+{ "tipo": "linkedin", "valor": "https://www.linkedin.com/in/brunomoraes97/" },
+{ "tipo": "github", "valor": "https://github.com/brunomoraes97" }
+]
+},
+"secoes": {
+"resumo": {
+"titulo": "Summary",
+"tipo": "lista_simples",
+"itens": [
+"Experienced Support and DevOps Engineer with a passion for managing the entire customer case lifecycle, from triage and reproduction to complex problem resolution. Proficient in Linux systems administration, scripting (Bash, Python), Git, and CI/CD, with a hands-on approach to solving technical challenges and optimizing workflows. Proven ability to act as a key liaison between Product and Engineering teams, ensuring smooth implementations, fast communication, and high customer satisfaction. Committed to creating and improving support content, with extensive experience in technical documentation and tutorials."
+]
+},
+"experiencia": {
+"titulo": "Professional Experience",
+"tipo": "entradas_com_destaques",
+"entradas": [
+{
+"data": "2024 – Present",
+"titulo": "Technical Onboarding Manager",
+"subtitulo": "IREV",
+"local": "Limassol, Cyprus (Remote, full-time)",
+"destaques": [
+"Served as the primary coordinator for onboarding new clients, managing technical setup, timelines, and stakeholder alignment.",
+"Standardized documentation and refined internal processes for greater onboarding efficiency, contributing to support content."
+]
+},
+{
+"data": "2023 – 2024",
+"titulo": "L2 Technical Support Engineer & Automation Specialist",
+"subtitulo": "Multilogin",
+"local": "Tallinn, Estonia (Remote)",
+"destaques": [
+"Investigated and resolved complex technical issues, employing a combination of analytical skills and creative problem-solving techniques.",
+"Developed and implemented automation scripts using Selenium, Playwright, and Puppeteer."
+]
+},
+{
+"data": "2022 – 2023",
+"titulo": "Software Engineer",
+"subtitulo": "SaasPro",
+"local": "Curitiba, Brazil (In-person)",
+"destaques": [
+"Developed and maintained integrations between various platforms for business process optimization.",
+"Worked with web frameworks such as Flask, FastAPI, and Django."
+]
+},
+{
+"data": "2019 – 2023",
+"titulo": "Technical Support Engineer",
+"subtitulo": "SaasPro",
+"local": "Curitiba, Brazil (In-person)",
+"destaques": [
+"Provided exceptional technical support to clients through email, chat, and calls, resolving issues efficiently.",
+"Collaborated with various teams to address customer needs and feedback, fostering a culture of customer-centricity."
+]
+}
+]
+},
+"tecnologias": {
+"titulo": "Technologies",
+"tipo": "lista_categorizada",
+"categorias": [
+{
+"nome": "Programming Languages",
+"itens": [ "Java", "Python", "Golang" ]
+},
+{
+"nome": "Cloud & DevOps",
+"itens": [ "GCP", "AWS", "Kubernetes", "Docker" ]
+},
+{
+"nome": "Frameworks & Tools",
+"itens": [ "Spring Boot", "Flask", "FastAPI", "Django" ]
+},
+{
+"nome": "Databases",
+"itens": [ "MySQL", "Spanner", "Aurora/RDS" ]
+},
+{
+"nome": "Automation",
+"itens": [ "Selenium", "Playwright", "Puppeteer" ]
+}
+]
+},
+"educacao": {
+"titulo": "Education",
+"tipo": "entradas_com_destaques",
+"entradas": [
+{
+"data": "Currently Enrolled",
+"titulo": "Bachelor's in Information and Communication Technologies (ICT)",
+"subtitulo": "Universidade Federal de Santa Catarina (UFSC)",
+"destaques": [
+"Teaching assistant for the Algorithms and Programming course (focus on Python)",
+"Member of the Artificial Intelligence League (LIA)"
+]
+},
+{
+"data": "Graduated in 2023",
+"titulo": "Bachelor's in Psychology",
+"subtitulo": "Universidade Federal do Paraná (UFPR)",
+"destaques": [
+"Founded and led the Neuropsychology Academic League",
+"Participated in community outreach projects in cognitive rehabilitation"
+]
+}
+]
+}
+}
+}

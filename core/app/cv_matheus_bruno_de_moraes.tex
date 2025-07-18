@@ -1,0 +1,308 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=2 cm,
+    bottom=2 cm,
+    left=2 cm,
+    right=2 cm,
+    footskip=1.0 cm
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={CV de Matheus Bruno de Moraes},
+    pdfauthor={Matheus Bruno de Moraes},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+% Some settings:
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.15cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{
+    -1pt
+}{
+    0.3 cm
+}{
+    0.2 cm
+}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0 cm + 10pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0 cm + 0.00001 cm
+    }{
+        0 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+}
+
+\let\hrefWithoutArrow\href
+\begin{document}
+
+    \begin{header}
+        {\fontsize{25pt}{25pt}\selectfont Matheus Bruno de Moraes}
+
+        \vspace{5pt}
+
+        \normalsize
+        \mbox{Brazil} \textbar{} \mbox{\href{mailto:mbrunomoraes97@gmail.com}{mbrunomoraes97@gmail.com}} \textbar{} \mbox{\href{tel:+55(41)995757856}{+55 (41) 9 9575-7856}} \textbar{} \mbox{\href{https://linkedin.com/in/LinkedIn}{linkedin.com/in/LinkedIn}} \textbar{} \mbox{\href{https://github.com/Github}{github.com/Github}} \textbar{} \mbox{\href{https://}{}}
+    \end{header}
+
+    \vspace{5pt - 0.3cm}
+    
+\section{Resumo Profissional}
+\begin{onecolentry}Engenheiro de Suporte e DevOps com experiência em infraestrutura Linux, CI/CD, APIs e automações. Participou ativamente da implementação de pipelines com GitHub Actions, conteinerização com Docker, orquestração com Kubernetes e resolução de problemas técnicos complexos. Forte habilidade em comunicação com times globais, documentação técnica e atendimento técnico ao cliente.\end{onecolentry}
+\section{Experiência Profissional}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{DevOps Engineer}, FlirT (Early Stage Startup) -- Remoto
+            \switchcolumn
+            \raggedleft 2025-Atual
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Gerenciou infraestrutura de aplicações em servidores Linux com automações baseadas em GitHub Actions.
+                \item Implantou pipelines CI/CD e ambientes segregados de staging e produção utilizando Docker e Git.
+        \end{highlights}
+    \end{onecolentry}
+    
+\vspace{0.2cm}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{Technical Onboarding Manager}, IREV -- Remoto – Limassol, Chipre
+            \switchcolumn
+            \raggedleft 2024-Atual
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Coordenou a integração técnica de clientes e investigou falhas em APIs e S2S com times de engenharia.
+                \item Padronizou processos internos e contribuiu para conteúdo técnico de onboarding.
+        \end{highlights}
+    \end{onecolentry}
+    
+\vspace{0.2cm}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{L2 Technical Support Engineer & Automation Specialist}, Multilogin -- Remoto – Tallinn, Estônia
+            \switchcolumn
+            \raggedleft 2023-2024
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Desenvolveu scripts de automação com Selenium, Playwright e Puppeteer para clientes corporativos.
+                \item Documentou soluções técnicas e produziu vídeos para base de conhecimento.
+        \end{highlights}
+    \end{onecolentry}
+    
+\vspace{0.2cm}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{Software Engineer}, SaasPro -- Curitiba, Brasil
+            \switchcolumn
+            \raggedleft 2022-2023
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Desenvolveu integrações backend utilizando Flask, FastAPI e Django.
+                \item Implementou soluções com IA para engajamento e atendimento ao cliente.
+        \end{highlights}
+    \end{onecolentry}
+    
+\vspace{0.2cm}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{Technical Support Engineer}, SaasPro -- Curitiba, Brasil
+            \switchcolumn
+            \raggedleft 2019-2023
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Atendeu clientes via múltiplos canais e integrou ferramentas via API com Python e Zapier.
+                \item Aconselhou clientes sobre conformidade de e-mail e melhores práticas técnicas.
+        \end{highlights}
+    \end{onecolentry}
+    
+\section{Projetos}
+
+    \begin{onecolentry}
+        \textbf{Infraestrutura CI/CD Automatizada}\href{}{\, \faGithub}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Implementação de pipelines CI/CD com GitHub Actions, ambientes segregados e rollback seguro.
+                \item Docker, GitHub Actions, Linux, Monitoramento.
+        \end{highlights}
+    \end{onecolentry}
+    
+\vspace{0.2cm}
+
+    \begin{onecolentry}
+        \textbf{Automação com IA para Atendimento ao Cliente}\href{}{\, \faGithub}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Criação de chatbots e fluxos automatizados usando IA para melhorar o engajamento.
+                \item Python, Flask, FastAPI, Integrações com APIs, NLP.
+        \end{highlights}
+    \end{onecolentry}
+    
+\section{Competências Técnicas}
+\begin{onecolentry}Java\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Python\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Flask\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}FastAPI\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Django\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Docker\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Kubernetes\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Git\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}GitHub Actions\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Microservices\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}MySQL\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}APIs REST\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Bash\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Linux\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Selenium\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Playwright\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Puppeteer\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}CI/CD\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}OpenShift\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}GCP (conhecimento)\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Spring Boot (exposição)\end{onecolentry}
+\section{Formação Acadêmica}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{Universidade Federal de Santa Catarina (UFSC)}, Bacharelado em Tecnologias da Informação e Comunicação
+            \switchcolumn
+            \raggedleft Em andamento
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Monitor em Algoritmos e Programação com foco em Python; membro da Liga de IA e grupo de OffSec.
+        \end{highlights}
+    \end{onecolentry}
+    
+\vspace{0.2cm}
+
+    \begin{onecolentry}
+        \setcolumnwidth{\fill, 4.5cm}
+        \begin{paracol}{2}
+            \textbf{Universidade Federal do Paraná (UFPR)}, Bacharelado em Psicologia
+            \switchcolumn
+            \raggedleft Concluído em 2023
+        \end{paracol}
+    \end{onecolentry}
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+                    \item Fundador da Liga Acadêmica de Neuropsicologia e participação em reabilitação cognitiva comunitária.
+        \end{highlights}
+    \end{onecolentry}
+    
+\section{Idiomas}
+\begin{onecolentry}Português: Nativo\end{onecolentry}
+\vspace{0.2cm}
+\begin{onecolentry}Inglês: Fluente\end{onecolentry}
+\end{document}
