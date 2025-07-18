@@ -43,6 +43,14 @@
             color: #991b1b; /* red-800 */
             border: 1px solid #ef4444; /* red-400 */
         }
+        .lang-select {
+            background-color: #374151; /* gray-700 */
+            color: white;
+            border: 1px solid #4b5563; /* gray-600 */
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50 flex flex-col">
@@ -53,9 +61,15 @@
                     <span class="text-primary">Get</span> Hired!
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
-                    <a href="https://github.com/brunomoraes97/get-hired" target="_blank" class="text-gray-300 hover:text-primary transition-colors flex items-center">
+                    <a href="https://github.com/brunomoraes97/resume" target="_blank" class="text-gray-300 hover:text-primary transition-colors flex items-center">
                         <i class="fab fa-github mr-2"></i> View on GitHub
                     </a>
+                    <select id="language-selector" class="lang-select" onchange="changeLanguage(this.value)">
+                        <option value="en" selected>English</option>
+                        <option value="pt">Português</option>
+                        <option value="es">Español</option>
+                        <option value="ru">Русский</option>
+                    </select>
                 </div>
                 <button class="md:hidden text-gray-300">
                     <i class="fas fa-bars text-xl"></i>
@@ -124,12 +138,16 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
-                <p>© 2025 Get Hired!. All rights reserved. | Feito com ❤️ por Matheus Bruno</p>
+                <p>© 2025 Get Hired!. All rights reserved. | Made with ❤️ by Matheus Bruno</p>
             </div>
         </div>
     </footer>
     
     <script>
+        function changeLanguage(lang) {
+            window.location.href = '/' + lang;
+        }
+
         document.getElementById('cvForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             

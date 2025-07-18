@@ -13,9 +13,20 @@ from ai.llm_io import LLM
 
 routes = Blueprint("routes", __name__)
 
+from flask import Blueprint, request, send_file, jsonify, render_template, redirect, url_for
+
+routes = Blueprint("routes", __name__)
+
 @routes.route("/")
-def index():
-    return render_template("index.html")
+def index_redirect():
+    return redirect(url_for('routes.index', lang_code='en'))
+
+@routes.route('/<lang_code>')
+def index(lang_code):
+    supported_languages = ['en', 'pt', 'es', 'ru']
+    if lang_code not in supported_languages:
+        return redirect(url_for('routes.index', lang_code='en')) # Default to English if unsupported
+    return render_template(f'index_{lang_code}.html')
 
 @routes.route('/generate', methods=["POST"])
 def transform_json():

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <base target="_self">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Hired! | Optimize Your CV</title>
-    <meta name="description" content="Upload your CV and job description to get a tailored CV for your perfect career match">
+    <title>Get Hired! | Оптимизируйте свое резюме</title>
+    <meta name="description" content="Загрузите свое резюме и описание вакансии, чтобы получить индивидуальное резюме для идеальной работы">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
@@ -43,6 +43,14 @@
             color: #991b1b; /* red-800 */
             border: 1px solid #ef4444; /* red-400 */
         }
+        .lang-select {
+            background-color: #374151; /* gray-700 */
+            color: white;
+            border: 1px solid #4b5563; /* gray-600 */
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50 flex flex-col">
@@ -53,9 +61,15 @@
                     <span class="text-primary">Get</span> Hired!
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
-                    <a href="https://github.com/brunomoraes97/get-hired" target="_blank" class="text-gray-300 hover:text-primary transition-colors flex items-center">
-                        <i class="fab fa-github mr-2"></i> View on GitHub
+                    <a href="https://github.com/brunomoraes97/resume" target="_blank" class="text-gray-300 hover:text-primary transition-colors flex items-center">
+                        <i class="fab fa-github mr-2"></i> Посмотреть на GitHub
                     </a>
+                    <select id="language-selector" class="lang-select" onchange="changeLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="pt">Português</option>
+                        <option value="es">Español</option>
+                        <option value="ru" selected>Русский</option>
+                    </select>
                 </div>
                 <button class="md:hidden text-gray-300">
                     <i class="fas fa-bars text-xl"></i>
@@ -66,28 +80,28 @@
 
     <main class="container mx-auto px-6 py-12 flex-grow">
         <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">Optimize Your CV for Any Job</h1>
-            <p class="text-gray-600 mb-8">Upload your CV and the job description to get a tailored CV that highlights your best fit.</p>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Оптимизируйте свое резюме для любой вакансии</h1>
+            <p class="text-gray-600 mb-8">Загрузите свое резюме и описание вакансии, чтобы получить индивидуальное резюме, которое подчеркнет ваше лучшее соответствие.</p>
             
             <form id="cvForm" class="space-y-6">
                 <div>
-                    <label for="cvText" class="block text-sm font-medium text-gray-700 mb-2">Your CV (Paste Text)</label>
+                    <label for="cvText" class="block text-sm font-medium text-gray-700 mb-2">Ваше резюме (вставьте текст)</label>
                     <textarea 
                         id="cvText" 
                         rows="10" 
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                        placeholder="Paste your CV content here..."
+                        placeholder="Вставьте содержание вашего резюме здесь..."
                         required
                     ></textarea>
                 </div>
                 
                 <div>
-                    <label for="jobDescription" class="block text-sm font-medium text-gray-700 mb-2">Job Description (Paste Text)</label>
+                    <label for="jobDescription" class="block text-sm font-medium text-gray-700 mb-2">Описание вакансии (вставьте текст)</label>
                     <textarea 
                         id="jobDescription" 
                         rows="10" 
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                        placeholder="Paste the job description here..."
+                        placeholder="Вставьте описание вакансии здесь..."
                         required
                     ></textarea>
                 </div>
@@ -97,7 +111,7 @@
                         type="submit" 
                         class="w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                     >
-                        <span class="text-lg">Generate Optimized CV</span>
+                        <span class="text-lg">Сгенерировать оптимизированное резюме</span>
                         <i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
@@ -115,7 +129,7 @@
                     <div class="text-2xl font-bold">
                         <span class="text-primary">Get</span><span class="text-white"> Hired!</span>
                     </div>
-                    <p class="text-gray-400 mt-2">Connecting talent with opportunity</p>
+                    <p class="text-gray-400 mt-2">Соединяем таланты с возможностями</p>
                 </div>
                 <div class="flex space-x-6">
                     <a href="https://www.linkedin.com/in/brunomoraes97/" class="text-gray-400 hover:text-white transition-colors">
@@ -124,12 +138,16 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
-                <p>© 2025 Get Hired!. All rights reserved. | Feito com ❤️ por Matheus Bruno</p>
+                <p>© 2025 Get Hired!. Все права защищены. | Сделано с ❤️ Matheus Bruno</p>
             </div>
         </div>
     </footer>
     
     <script>
+        function changeLanguage(lang) {
+            window.location.href = '/' + lang;
+        }
+
         document.getElementById('cvForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -145,12 +163,12 @@
             errorDiv.style.display = 'none';
 
             if (!cvText || !jobDescription) {
-                errorDiv.textContent = 'Please provide both CV text and Job Description text.';
+                errorDiv.textContent = 'Пожалуйста, предоставьте текст резюме и описание вакансии.';
                 errorDiv.style.display = 'block';
                 return;
             }
 
-            messageDiv.textContent = 'Generating CV... Please wait.';
+            messageDiv.textContent = 'Генерация резюме... Пожалуйста, подождите.';
             messageDiv.style.display = 'block';
 
             try {
@@ -181,11 +199,11 @@
                     a.click();
                     a.remove();
                     window.URL.revokeObjectURL(url);
-                    messageDiv.textContent = 'Optimized CV generated and downloaded successfully!';
+                    messageDiv.textContent = 'Оптимизированное резюме успешно сгенерировано и загружено!';
                     messageDiv.style.display = 'block';
                 } else {
                     const errorData = await response.json();
-                    errorDiv.textContent = `Error: ${errorData.erro || 'Unknown error'}`;
+                    errorDiv.textContent = `Ошибка: ${errorData.erro || 'Неизвестная ошибка'}`;
                     if (errorData.log) {
                         errorDiv.textContent += `\nLog: ${errorData.log}`;
                     }
@@ -193,7 +211,7 @@
                     messageDiv.style.display = 'none'; // Hide message if error occurs
                 }
             } catch (error) {
-                errorDiv.textContent = `Network error or server not reachable: ${error.message}`;
+                errorDiv.textContent = `Ошибка сети или недоступность сервера: ${error.message}`;
                 errorDiv.style.display = 'block';
                 messageDiv.style.display = 'none'; // Hide message if error occurs
             }
