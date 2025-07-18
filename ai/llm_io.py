@@ -16,11 +16,15 @@ class LLM:
         self.model=os.getenv("MARITACA_MODEL")
 
     def prompt(self, question: str):
+
+        print("PASSOU AQUI 2 -> VAI INSTANCIAR O CLIENT DO MARITACA")
        
         client = openai.OpenAI(
             api_key=self.api_key,
             base_url=self.base_url
         )
+
+        print("PASSOU AQUI 3 -> PROMPT")
 
         response = client.chat.completions.create(
         model=self.model,
@@ -67,7 +71,10 @@ class LLM:
         print(question)
         print("---------------------------------------")
         answer = self.prompt(question)
+        print("PASSOU AQUI 4")
+        print(f"ANSWER É: {answer}")
         output = self.gera_json(answer)
+        print("PASSOU AQUI 5 -> gerou output. OUTPUT É ANSWER EM JSON")
         print(output)
         return output
 

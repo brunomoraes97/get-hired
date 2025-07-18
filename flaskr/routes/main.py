@@ -38,6 +38,7 @@ def transform_json():
     
     cv_text = dados_entrada.get("cv").replace("&", "and")
     vaga_text = dados_entrada.get("job_description").replace("&", "and")
+    print("PASSOU AQUI 1")
     print(f"LOG: transform_json - CV text length: {len(cv_text) if cv_text else 0}, Vaga text length: {len(vaga_text) if vaga_text else 0}")
 
     if not cv_text or not vaga_text:
