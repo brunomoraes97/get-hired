@@ -30,58 +30,37 @@ def index(lang_code):
 
 @routes.route('/generate', methods=["POST"])
 def transform_json():
+    print("LOG: transform_json - Iniciando requisição.")
     dados_entrada = request.get_json()
     if not dados_entrada:
+        print("LOG: transform_json - Erro: JSON ausente ou malformado.")
         return jsonify({"erro": "Corpo da requisição JSON ausente ou malformado."}), 400
     
-    cv = dados_entrada.get("cv")
-    vaga = dados_entrada.get("job_description")
+    cv_text = dados_entrada.get("cv").replace("&", "and")
+    vaga_text = dados_entrada.get("job_description").replace("&", "and")
+    print(f"LOG: transform_json - CV text length: {len(cv_text) if cv_text else 0}, Vaga text length: {len(vaga_text) if vaga_text else 0}")
 
-    if not cv or not vaga:
-        return jsonify({"erro": "As chaves 'texto_cv' e 'texto_vaga' são obrigatórias."}), 400
+    if not cv_text or not vaga_text:
+        return jsonify({"erro": "As chaves 'cv' e 'job_description' são obrigatórias."}), 400
 
     llm = LLM()
+    print("LOG: transform_json - Chamando LLM.run()...")
+    dados_brutos = llm.run(cv_text, vaga_text)
+    print(f"LOG: transform_json - LLM.run() retornou dados brutos (tipo: {type(dados_brutos)}).")
 
-    dados_brutos = llm.run(cv,vaga)
-    pdf = GeradorCV().download(dados_brutos)
+    # A função download() em GeradorCV já lida com a sanitização e a geração do PDF
+    print("LOG: transform_json - Chamando GeradorCV().download()...")
+    pdf_content = GeradorCV().download(dados_brutos)
+    print(f"LOG: transform_json - GeradorCV().download() retornou PDF (tamanho: {len(pdf_content) if pdf_content else 0}).")
 
+    if not pdf_content:
+        print("LOG: transform_json - Erro: PDF não gerado.")
+        return jsonify({"erro": "Erro ao gerar PDF"}), 500
+
+    print("LOG: transform_json - Enviando PDF como resposta.")
     return send_file(
-        BytesIO(pdf),
+        BytesIO(pdf_content),
         mimetype="application/pdf",
         as_attachment=True,
-        download_name=f"cv_{"resume".lower().replace(' ', '_')}.pdf"
+        download_name=f"cv_otimizado.pdf"
     )
-
-"""
-    if not dados_brutos:
-        return jsonify({"erro": "JSON ausente ou malformado na requisição"}), 400
-
-    # MUDANÇA 2: Sanitizar tudo para maior segurança
-    dados = sanitizar_dados_para_latex(dados_brutos, chaves_para_ignorar={'itens'})
-    
-    dados_pessoais = dados.get('pessoais', {})
-    cv = GeradorCV(
-        nome=dados_pessoais.get('nome', 'Nome não encontrado'),
-        contatos=dados_pessoais.get('contatos', [])
-    )
-
-    print("Processando seções do currículo...")
-
-    for nome_secao, dados_secao in dados_brutos.get('secoes', {}).items():
-        if not isinstance(dados_secao, dict):
-            print(f"  - Aviso: Seção '{nome_secao}' está mal formatada. Pulando.")
-            continue
-
-        tipo_secao = dados_secao.get('tipo')
-        titulo_sanitizado = dados.get('secoes', {}).get(nome_secao, {}).get('titulo', f"secao_{nome_secao}")
-
-        if tipo_secao == 'lista_simples':
-            cv.adicionar_secao_lista_simples(titulo_sanitizado, dados_secao.get('itens', []))
-        elif tipo_secao == 'lista_categorizada':
-            cv.adicionar_secao_lista_categorizada(titulo_sanitizado, dados.get('secoes', {}).get(nome_secao, {}).get('categorias', []))
-        elif tipo_secao == 'entradas_com_destaques':
-            cv.adicionar_secao_entradas_com_destaques(titulo_sanitizado, dados.get('secoes', {}).get(nome_secao, {}).get('entradas', []))
-        else:
-            print(f"  - Aviso: Seção '{nome_secao}' com tipo '{tipo_secao}' não reconhecida. Pulando.")
-
-    pdf = cv.gerar_pdf()"""

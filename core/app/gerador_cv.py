@@ -104,16 +104,21 @@ class GeradorCV:
 """
 
     def adicionar_secao_lista_simples(self, titulo, itens):
+        print(f"LOG: GeradorCV.adicionar_secao_lista_simples - Adicionando seção '{titulo}' com {len(itens)} itens.")
         """Adiciona uma seção de lista simples."""
-        if not isinstance(itens, list): return
+        if not isinstance(itens, list): 
+            print(f"LOG: GeradorCV.adicionar_secao_lista_simples - Itens não é uma lista para '{titulo}'.")
+            return
         conteudo = ""
         for i, item in enumerate(itens):
             conteudo += fr"\begin{{onecolentry}}{{{item}}}\end{{onecolentry}}"
             if i < len(itens) - 1:
                 conteudo += "\n\\vspace{0.2cm}\n"
         self.secoes.append((titulo, conteudo))
+        print(f"LOG: GeradorCV.adicionar_secao_lista_simples - Seção '{titulo}' adicionada.")
 
     def adicionar_secao_lista_categorizada(self, titulo, categorias):
+        print(f"LOG: GeradorCV.adicionar_secao_lista_categorizada - Adicionando seção '{titulo}' com {len(categorias)} categorias.")
         """Adiciona uma seção de categorias, formatando cada uma como um item separado."""
         conteudo = ""
         for i, categoria in enumerate(categorias):
@@ -126,13 +131,20 @@ class GeradorCV:
                 if i < len(categorias) - 1:
                     conteudo += "\n\\vspace{0.1cm}\n"
         self.secoes.append((titulo, conteudo))
+        print(f"LOG: GeradorCV.adicionar_secao_lista_categorizada - Seção '{titulo}' adicionada.")
 
     def adicionar_secao_entradas_com_destaques(self, titulo, entradas):
+        print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Adicionando seção '{titulo}' com {len(entradas)} entradas.")
         """Adiciona uma seção de entradas com destaques (layout da coluna esquerda aprimorado)."""
-        if not isinstance(entradas, list): return
+        if not isinstance(entradas, list): 
+            print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Entradas não é uma lista para '{titulo}'.")
+            return
         conteudo = ""
         for i, entrada in enumerate(entradas):
-            if not isinstance(entrada, dict): continue
+            print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Processando entrada {i+1}.")
+            if not isinstance(entrada, dict): 
+                print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Entrada {i+1} não é um dicionário. Pulando.")
+                continue
 
             # Constrói a coluna da esquerda com quebra de linha para clareza
             titulo_principal = entrada.get("titulo", "")
@@ -170,111 +182,143 @@ class GeradorCV:
             if i < len(entradas) - 1:
                 conteudo += "\n\\vspace{0.2cm}\n"
         self.secoes.append((titulo, conteudo))
+        print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Seção '{titulo}' adicionada.")
 
     def gerar_latex(self):
-            """Monta e retorna a string completa do documento LaTeX."""
-            preambulo = self._gerar_preambulo()
-            if preambulo is None:
-                return None
-            
-            cabecalho = self._gerar_cabecalho()
-            partes = [preambulo, r"\begin{document}", cabecalho]
-            
-            # CORREÇÃO: A função agora simplesmente percorre as seções
-            # que já foram formatadas e salvas em self.secoes.
-            for titulo, conteudo in self.secoes:
-                partes.append(fr"\section{{{titulo}}}")
-                partes.append(conteudo)
+        print("LOG: GeradorCV.gerar_latex - Iniciando geração de LaTeX.")
+        """Monta e retorna a string completa do documento LaTeX."""
+        preambulo = self._gerar_preambulo()
+        if preambulo is None:
+            print("LOG: GeradorCV.gerar_latex - ERRO: Preâmbulo não gerado.")
+            return None
+        
+        cabecalho = self._gerar_cabecalho()
+        partes = [preambulo, r"\begin{document}", cabecalho]
+        
+        print(f"LOG: GeradorCV.gerar_latex - Processando {len(self.secoes)} seções.")
+        for titulo, conteudo in self.secoes:
+            print(f"LOG: GeradorCV.gerar_latex - Adicionando seção LaTeX: {titulo}.")
+            partes.append(fr"\section{{{titulo}}}")
+            partes.append(conteudo)
 
-            partes.append(r"\end{document}")
-            return "\n".join(partes)
+        partes.append(r"\end{document}")
+        latex_final = "\n".join(partes)
+        print(f"LOG: GeradorCV.gerar_latex - LaTeX final gerado (tamanho: {len(latex_final)}).")
+        return latex_final
 
     def salvar_tex(self, nome_arquivo="cv_gerado.tex"):
+        print(f"LOG: GeradorCV.salvar_tex - Tentando salvar {nome_arquivo}.")
         codigo_latex = self.gerar_latex()
         if codigo_latex is None:
-            print("❌ Falha ao gerar código LaTeX. Arquivo .tex não será salvo.")
+            print("LOG: GeradorCV.salvar_tex - Falha ao gerar código LaTeX. Arquivo .tex não será salvo.")
             return
-        with open(nome_arquivo, 'w', encoding='utf-8') as f:
-            f.write(codigo_latex)
-        print(f"✅ Arquivo '{nome_arquivo}' salvo com sucesso!")
+        try:
+            with open(nome_arquivo, 'w', encoding='utf-8') as f:
+                f.write(codigo_latex)
+            print(f"LOG: GeradorCV.salvar_tex - Arquivo '{nome_arquivo}' salvo com sucesso!")
+        except Exception as e:
+            print(f"LOG: GeradorCV.salvar_tex - ERRO ao salvar '{nome_arquivo}': {e}")
 
     def gerar_pdf(self, nome_arquivo_saida="cv_gerado.pdf"):
-        print(f"\n⚙️  Gerando PDF como '{nome_arquivo_saida}'...")
+        print(f"LOG: GeradorCV.gerar_pdf - Iniciando geração de PDF para '{nome_arquivo_saida}'...")
         codigo_latex = self.gerar_latex()
         if codigo_latex is None:
-            print("❌ Falha ao gerar código LaTeX. Geração de PDF cancelada.")
-            return
+            print("LOG: GeradorCV.gerar_pdf - Falha ao gerar código LaTeX. Geração de PDF cancelada.")
+            return None
         files_payload = {'filecontents[]': (None, codigo_latex),'filename[]': (None, 'document.tex'),'engine': (None, 'pdflatex'),'return': (None, 'pdf')}
         try:
-            print("📡 Conectando à API e compilando...")
+            print("LOG: GeradorCV.gerar_pdf - Conectando à API de compilação LaTeX...")
             response = requests.post("https://texlive.net/cgi-bin/latexcgi", files=files_payload, timeout=90)
             response.raise_for_status()
+            print(f"LOG: GeradorCV.gerar_pdf - Resposta da API recebida (Status: {response.status_code}, Content-Type: {response.headers.get('Content-Type')}).")
             if 'application/pdf' in response.headers.get('Content-Type', ''):
-                with open(nome_arquivo_saida, 'wb') as f:
-                    f.write(response.content)
-                print(f"🎉 PDF '{nome_arquivo_saida}' gerado com sucesso!")
+                print(f"LOG: GeradorCV.gerar_pdf - PDF gerado com sucesso pela API.")
                 return response.content
             else:
-                print("❌ Erro na compilação LaTeX. Log da API:")
+                print("LOG: GeradorCV.gerar_pdf - Erro na compilação LaTeX. Log da API:")
                 print(response.content.decode('utf-8', errors='ignore'))
+                return None
         except requests.exceptions.RequestException as e:
-            print(f"❌ Erro de conexão: {e}")
+            print(f"LOG: GeradorCV.gerar_pdf - ERRO de conexão ou API: {e}")
+            return None
 
-    def download(self,dados=None):
+    def download(self, dados=None):
         """Função principal que orquestra a geração do CV."""
-        global dados_brutos
-        print("Iniciando gerador de CV a partir de 'dados_cv.json'...")
-        path = os.path.join(project_root, 'input', 'dados_cv.json')
-
-        if dados == None:
+        print("LOG: GeradorCV.download - Iniciando...")
+        if dados is None:
+            # Esta parte é para testes locais, não deve ocorrer em produção.
+            print("LOG: GeradorCV.download - Dados não fornecidos, usando arquivo local.")
+            path = os.path.join(project_root, 'input', 'dados_cv.json')
             try:
                 with open(path, 'r', encoding='utf-8') as f:
                     dados_brutos = json.load(f)
-            except FileNotFoundError:
-                print(f"\nERRO: Arquivo '{path}' não encontrado.")
-                return
-            except json.JSONDecodeError as e:
-                print(f"\nERRO ao ler o arquivo JSON: {e}")
-                return
+            except (FileNotFoundError, json.JSONDecodeError) as e:
+                print(f"LOG: GeradorCV.download - ERRO ao carregar dados locais: {e}")
+                return None
         else:
             dados_brutos = dados
-
-        print("Sanitizando dados para o LaTeX...")
-        dados = sanitizar_dados_para_latex(dados_brutos, chaves_para_ignorar={'itens'})
         
-        dados_pessoais = dados.get('pessoais', {})
-        self.nome=dados_pessoais.get('nome', 'Nome não encontrado')
-        self.contatos=dados_pessoais.get('contatos', [])
+        print(f"LOG: GeradorCV.download - Dados brutos recebidos (tipo: {type(dados_brutos)}).")
 
-        print("Processando seções do currículo...")
-        for nome_secao, dados_secao in dados_brutos.get('secoes', {}).items():
-            if not isinstance(dados_secao, dict):
-                print(f"  - Aviso: Seção '{nome_secao}' está mal formatada. Pulando.")
+        # 1. Sanitiza uma cópia dos dados para o conteúdo do LaTeX.
+        print("LOG: GeradorCV.download - Sanitizando dados para o LaTeX...")
+        chaves_a_ignorar = {'tipo', 'itens'}
+        dados_sanitizados = sanitizar_dados_para_latex(dados_brutos, chaves_para_ignorar=chaves_a_ignorar)
+        print(f"LOG: GeradorCV.download - Dados sanitizados com sucesso.")
+        
+        # 2. Configura informações pessoais a partir dos dados sanitizados.
+        dados_pessoais_sanitizados = dados_sanitizados.get('pessoais', {})
+        self.nome = dados_pessoais_sanitizados.get('nome', 'Nome não encontrado')
+        self.contatos = dados_pessoais_sanitizados.get('contatos', [])
+        print(f"LOG: GeradorCV.download - Nome: {self.nome}, Contatos: {len(self.contatos)}.")
+
+        # 3. Processa as seções com a LÓGICA CORRIGIDA.
+        print("LOG: GeradorCV.download - Processando seções do currículo...")
+        
+        # USA DADOS BRUTOS PARA O CONTROLE DO LOOP
+        for nome_secao, dados_secao_brutos in dados_brutos.get('secoes', {}).items():
+            
+            # Pega o tipo da seção dos dados BRUTOS, que não foi alterado.
+            tipo_secao = dados_secao_brutos.get('tipo')
+            print(f"LOG: GeradorCV.download - Processando seção: '{nome_secao}' (tipo lido: '{tipo_secao}').")
+
+            # Pega a seção correspondente dos dados SANITIZADOS para obter o conteúdo seguro.
+            dados_secao_sanitizados = dados_sanitizados.get('secoes', {}).get(nome_secao, {})
+            if not dados_secao_sanitizados:
+                print(f"LOG: GeradorCV.download - Aviso: Seção '{nome_secao}' não encontrada nos dados sanitizados. Pulando.")
                 continue
 
-            tipo_secao = dados_secao.get('tipo')
-            titulo_sanitizado = dados.get('secoes', {}).get(nome_secao, {}).get('titulo', f"secao_{nome_secao}")
+            titulo_sanitizado = dados_secao_sanitizados.get('titulo', nome_secao)
 
+            # O 'if/elif' agora funcionará perfeitamente.
             if tipo_secao == 'lista_simples':
-                self.adicionar_secao_lista_simples(titulo_sanitizado, dados_secao.get('itens', []))
-            elif tipo_secao == 'lista_categorizada':
-                self.adicionar_secao_lista_categorizada(titulo_sanitizado, dados.get('secoes', {}).get(nome_secao, {}).get('categorias', []))
-            elif tipo_secao == 'entradas_com_destaques':
-                self.adicionar_secao_entradas_com_destaques(titulo_sanitizado, dados.get('secoes', {}).get(nome_secao, {}).get('entradas', []))
-            else:
-                print(f"  - Aviso: Seção '{nome_secao}' com tipo '{tipo_secao}' não reconhecida. Pulando.")
+                # 'itens' não são sanitizados por regra, então pegamos da fonte original.
+                self.adicionar_secao_lista_simples(titulo_sanitizado, dados_secao_brutos.get('itens', []))
 
+            elif tipo_secao == 'lista_categorizada':
+                # Conteúdo vem dos dados sanitizados.
+                self.adicionar_secao_lista_categorizada(titulo_sanitizado, dados_secao_sanitizados.get('categorias', []))
+                
+            elif tipo_secao == 'entradas_com_destaques':
+                # Conteúdo vem dos dados sanitizados.
+                self.adicionar_secao_entradas_com_destaques(titulo_sanitizado, dados_secao_sanitizados.get('entradas', []))
+                
+            else:
+                print(f"LOG: GeradorCV.download - Aviso: Seção '{nome_secao}' com tipo '{tipo_secao}' não reconhecida. Pulando.")
+
+        # 4. Geração dos arquivos (sem alteração).
         output_dir = os.path.join(project_root, 'output')
         os.makedirs(output_dir, exist_ok=True)
-        nome_base_arquivo = f"cv_{dados_pessoais.get('nome', 'sem_nome').lower().replace(' ', '_')}"
+        nome_base_arquivo = f"cv_{self.nome.lower().replace(' ', '_')}"
         caminho_final = os.path.join(output_dir, nome_base_arquivo)
         
+        print(f"LOG: GeradorCV.download - Salvando .tex em {caminho_final}.tex")
         self.salvar_tex(f"{caminho_final}.tex")
+        print(f"LOG: GeradorCV.download - Gerando PDF em {caminho_final}.pdf")
         pdf = self.gerar_pdf(f"{caminho_final}.pdf")
         
+        print("LOG: GeradorCV.download - Retornando PDF.")
         return pdf
-
-        #print("\nProcesso finalizado!")
 
 if __name__ == "__main__":
     GeradorCV().main()
