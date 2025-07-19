@@ -35,6 +35,8 @@
                     <a href="https://github.com/brunomoraes97/get-hired" target="_blank" class="text-gray-300 hover:text-primary transition-colors flex items-center">
                         <i class="fab fa-github mr-2"></i> Ver en GitHub
                     </a>
+                    <a href="/resume-builder/es" class="text-gray-300 hover:text-primary">Generador de CV</a>
+                    <a href="/es" class="text-gray-300 hover:text-primary">Optimizador de CV</a>
                     <select id="language-selector" class="bg-gray-700 text-white border border-gray-600 p-2 rounded" onchange="changeLanguage(this.value)">
                         <option value="en">English</option>
                         <option value="pt">Português</option>
@@ -56,11 +58,11 @@
 
             <form id="builderForm" class="space-y-6">
                 <div id="stepNavigation" class="flex justify-center space-x-2 mb-6">
-                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="0">1</button>
-                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="1">2</button>
-                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="2">3</button>
-                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="3">4</button>
-                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="4">5</button>
+                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="0">1. Datos personales</button>
+                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="1">2. Habilidades</button>
+                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="2">3. Experiencia Profesional</button>
+                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="3">4. Educación</button>
+                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="4">5. Idiomas</button>
                 </div>
                 <div class="form-step grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="col-span-1">
@@ -135,6 +137,10 @@
                     <div id="languageContainer" class="space-y-4">
                         <h2 class="text-xl font-semibold">Idiomas</h2>
                         <button type="button" id="addLanguage" class="bg-primary text-white px-4 py-2 rounded">Agregar idioma</button>
+                        <label class="flex items-center space-x-2 mt-2">
+                            <input type="checkbox" id="includeLanguages" checked>
+                            <span>Incluir sección de idiomas en el CV final</span>
+                        </label>
                     </div>
                     <div class="flex justify-between">
                         <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Atrás</button>

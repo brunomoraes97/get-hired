@@ -59,6 +59,29 @@ class LLM:
         response = chat_session.send_message(instructions)
         return response.text.strip()
 
+    def generate_cover_letter(self, cv: str, job_description: str) -> str:
+        """Generate a cover letter based on the resume and job description."""
+        genai.configure(api_key=self.api_key)
+        generation_config = {
+            "temperature": 1,
+            "top_p": 0.95,
+            "top_k": 40,
+            "max_output_tokens": 8192,
+        }
+        system_prompt = (
+            "You are an expert career coach. Write a concise cover letter "
+            "for the provided job description using information from the resume."
+        )
+        model = genai.GenerativeModel(
+            model_name=self.model,
+            system_instruction=system_prompt,
+            generation_config=generation_config,
+        )
+        chat_session = model.start_chat(history=[])
+        prompt = f"RESUME:\n{cv}\nJOB DESCRIPTION:\n{job_description}"
+        response = chat_session.send_message(prompt)
+        return response.text.strip()
+
     """def prompt(self, question: str):
         print(self.model)
         self.model=os.getenv("OLLAMA_MODEL")
