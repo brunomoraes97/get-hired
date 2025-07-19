@@ -64,6 +64,8 @@
                     <a href="https://github.com/brunomoraes97/get-hired" target="_blank" class="text-gray-300 hover:text-primary transition-colors flex items-center">
                         <i class="fab fa-github mr-2"></i> Посмотреть на GitHub
                     </a>
+                    <a href="/resume-builder/ru" class="text-gray-300 hover:text-primary">Генератор резюме</a>
+                    <a href="/ru" class="text-gray-300 hover:text-primary">Оптимизатор резюме</a>
                     <select id="language-selector" class="lang-select" onchange="changeLanguage(this.value)">
                         <option value="en">English</option>
                         <option value="pt">Português</option>
@@ -97,18 +99,22 @@
                 
                 <div>
                     <label for="jobDescription" class="block text-sm font-medium text-gray-700 mb-2">Описание вакансии (вставьте текст)</label>
-                    <textarea 
-                        id="jobDescription" 
-                        rows="10" 
+                    <textarea
+                        id="jobDescription"
+                        rows="10"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                         placeholder="Вставьте описание вакансии здесь..."
                         required
                     ></textarea>
                 </div>
-                
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="generateCoverLetter">
+                    <label for="generateCoverLetter" class="text-sm">Создать сопроводительное письмо</label>
+                </div>
+
                 <div class="pt-4">
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         class="w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                     >
                         <span class="text-lg">Сгенерировать оптимизированное резюме</span>
@@ -173,6 +179,7 @@
 
             try {
                 // Use the relative path /generate since Flask is serving this page
+                const includeCover = document.getElementById('generateCoverLetter').checked;
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: {
@@ -180,7 +187,8 @@
                     },
                     body: JSON.stringify({
                         cv: cvText,
-                        job_description: jobDescription
+                        job_description: jobDescription,
+                        cover_letter: includeCover
                     })
                 });
 
@@ -193,6 +201,9 @@
                     let filename = 'optimized_cv.pdf';
                     if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
                         filename = contentDisposition.split('filename=')[1].replace(/"/g, '');
+                    }
+                    if (response.headers.get('Content-Type').includes('zip')) {
+                        filename = 'documents.zip';
                     }
                     a.download = filename;
                     document.body.appendChild(a);

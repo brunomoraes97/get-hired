@@ -154,6 +154,10 @@ function gatherData() {
         const level = item.querySelector('.level').value;
         if (lang) languages.push(`${lang} (${level})`);
     });
+    const includeLanguages = document.getElementById('includeLanguages');
+    if (includeLanguages && !includeLanguages.checked) {
+        languages.length = 0;
+    }
 
     return {
         name: document.getElementById('name').value,

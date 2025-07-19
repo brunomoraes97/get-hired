@@ -8,6 +8,7 @@ from io import BytesIO
 import requests
 import os # Adicionado para criar o caminho do output
 import json
+import zipfile
 from ai.llm_io import LLM
 
 
@@ -35,9 +36,11 @@ def transform_json():
     if not dados_entrada:
         print("LOG: transform_json - Erro: JSON ausente ou malformado.")
         return jsonify({"erro": "Corpo da requisição JSON ausente ou malformado."}), 400
-    
-    cv_text = dados_entrada.get("cv").replace("&", "and")
-    vaga_text = dados_entrada.get("job_description").replace("&", "and")
+
+    cv_text = dados_entrada.get("cv", "").replace("&", "and")
+    vaga_text = dados_entrada.get("job_description", "").replace("&", "and")
+    cover_letter_flag = dados_entrada.get("cover_letter", False)
+    llm = LLM()
     print("PASSOU AQUI 1")
     print(f"LOG: transform_json - CV text length: {len(cv_text) if cv_text else 0}, Vaga text length: {len(vaga_text) if vaga_text else 0}")
 
@@ -57,12 +60,27 @@ def transform_json():
         print("LOG: transform_json - Erro: PDF não gerado.")
         return jsonify({"erro": "Erro ao gerar PDF"}), 500
 
+    if cover_letter_flag:
+        print("LOG: transform_json - Gerando cover letter...")
+        cover_letter_text = llm.generate_cover_letter(cv_text, vaga_text)
+        buffer = BytesIO()
+        with zipfile.ZipFile(buffer, 'w') as zf:
+            zf.writestr('cv_otimizado.pdf', pdf_content)
+            zf.writestr('cover_letter.txt', cover_letter_text)
+        buffer.seek(0)
+        return send_file(
+            buffer,
+            mimetype='application/zip',
+            as_attachment=True,
+            download_name='cv_e_carta.zip'
+        )
+
     print("LOG: transform_json - Enviando PDF como resposta.")
     return send_file(
         BytesIO(pdf_content),
         mimetype="application/pdf",
         as_attachment=True,
-        download_name=f"cv_otimizado.pdf"
+        download_name="cv_otimizado.pdf"
     )
 
 
