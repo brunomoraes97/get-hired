@@ -246,7 +246,7 @@ class GeradorCV:
         """Função principal que orquestra a geração do CV."""
         print("LOG: GeradorCV.download - Iniciando...")
         if dados is None:
-            # Esta parte é para testes locais, não deve ocorrer em produção.
+            # Testes locais
             print("LOG: GeradorCV.download - Dados não fornecidos, usando arquivo local.")
             path = os.path.join(project_root, 'input', 'dados_cv.json')
             try:
@@ -257,8 +257,17 @@ class GeradorCV:
                 return None
         else:
             dados_brutos = dados
-        
-        print(f"LOG: GeradorCV.download - Dados brutos recebidos (tipo: {type(dados_brutos)}).")
+
+        # Garante que os dados brutos sejam um dicionário, não uma string JSON.
+        if isinstance(dados_brutos, str):
+            print("LOG: GeradorCV.download - Dados brutos são uma string. Decodificando JSON...")
+            try:
+                dados_brutos = json.loads(dados_brutos)
+            except json.JSONDecodeError as e:
+                print(f"LOG: GeradorCV.download - ERRO FATAL: Falha ao decodificar o JSON. {e}")
+                return None
+
+        print(f"LOG: GeradorCV.download - Dados brutos processados (tipo: {type(dados_brutos)}).")
 
         # 1. Sanitiza uma cópia dos dados para o conteúdo do LaTeX.
         print("LOG: GeradorCV.download - Sanitizando dados para o LaTeX...")
@@ -267,46 +276,45 @@ class GeradorCV:
         print(f"LOG: GeradorCV.download - Dados sanitizados com sucesso.")
         
         # 2. Configura informações pessoais a partir dos dados sanitizados.
+        # Esta parte já é segura e lida com a ausência da chave 'pessoais'.
         dados_pessoais_sanitizados = dados_sanitizados.get('pessoais', {})
         self.nome = dados_pessoais_sanitizados.get('nome', 'Nome não encontrado')
         self.contatos = dados_pessoais_sanitizados.get('contatos', [])
         print(f"LOG: GeradorCV.download - Nome: {self.nome}, Contatos: {len(self.contatos)}.")
 
-        # 3. Processa as seções com a LÓGICA CORRIGIDA.
+        # [REMOVIDO] - Bloco de código duplicado foi retirado daqui.
+        
+        # 3. Processa as seções do currículo.
         print("LOG: GeradorCV.download - Processando seções do currículo...")
         
-        # USA DADOS BRUTOS PARA O CONTROLE DO LOOP
-        for nome_secao, dados_secao_brutos in dados_brutos.get('secoes', {}).items():
+        # [CORRIGIDO] - Processa 'secoes' como uma LISTA, que é o formato correto.
+        # Itera sobre cada dicionário de seção na lista 'secoes'.
+        secoes_brutas = dados_brutos.get('secoes', [])
+        secoes_sanitizadas = dados_sanitizados.get('secoes', [])
+
+        for i, secao_bruta in enumerate(secoes_brutas):
+            tipo_secao = secao_bruta.get('type')
             
-            # Pega o tipo da seção dos dados BRUTOS, que não foi alterado.
-            tipo_secao = dados_secao_brutos.get('tipo')
-            print(f"LOG: GeradorCV.download - Processando seção: '{nome_secao}' (tipo lido: '{tipo_secao}').")
-
-            # Pega a seção correspondente dos dados SANITIZADOS para obter o conteúdo seguro.
-            dados_secao_sanitizados = dados_sanitizados.get('secoes', {}).get(nome_secao, {})
-            if not dados_secao_sanitizados:
-                print(f"LOG: GeradorCV.download - Aviso: Seção '{nome_secao}' não encontrada nos dados sanitizados. Pulando.")
+            # Garante que a seção correspondente exista nos dados sanitizados
+            if i >= len(secoes_sanitizadas):
+                print(f"LOG: GeradorCV.download - Aviso: Seção de índice {i} não encontrada nos dados sanitizados. Pulando.")
                 continue
+                
+            secao_sanitizada = secoes_sanitizadas[i]
+            titulo_sanitizado = secao_sanitizada.get('titulo', f'Seção {i+1}')
 
-            titulo_sanitizado = dados_secao_sanitizados.get('titulo', nome_secao)
+            print(f"LOG: GeradorCV.download - Processando seção: '{titulo_sanitizado}' (tipo: '{tipo_secao}').")
 
-            # O 'if/elif' agora funcionará perfeitamente.
             if tipo_secao == 'lista_simples':
-                # 'itens' não são sanitizados por regra, então pegamos da fonte original.
-                self.adicionar_secao_lista_simples(titulo_sanitizado, dados_secao_brutos.get('itens', []))
-
+                self.adicionar_secao_lista_simples(titulo_sanitizado, secao_bruta.get('itens', []))
             elif tipo_secao == 'lista_categorizada':
-                # Conteúdo vem dos dados sanitizados.
-                self.adicionar_secao_lista_categorizada(titulo_sanitizado, dados_secao_sanitizados.get('categorias', []))
-                
+                self.adicionar_secao_lista_categorizada(titulo_sanitizado, secao_sanitizada.get('categorias', []))
             elif tipo_secao == 'entradas_com_destaques':
-                # Conteúdo vem dos dados sanitizados.
-                self.adicionar_secao_entradas_com_destaques(titulo_sanitizado, dados_secao_sanitizados.get('entradas', []))
-                
+                self.adicionar_secao_entradas_com_destaques(titulo_sanitizado, secao_sanitizada.get('entradas', []))
             else:
-                print(f"LOG: GeradorCV.download - Aviso: Seção '{nome_secao}' com tipo '{tipo_secao}' não reconhecida. Pulando.")
+                print(f"LOG: GeradorCV.download - Aviso: Seção '{titulo_sanitizado}' com tipo '{tipo_secao}' não reconhecida. Pulando.")
 
-        # 4. Geração dos arquivos (sem alteração).
+        # 4. Geração dos arquivos.
         output_dir = os.path.join(project_root, 'output')
         os.makedirs(output_dir, exist_ok=True)
         nome_base_arquivo = f"cv_{self.nome.lower().replace(' ', '_')}"
@@ -314,11 +322,13 @@ class GeradorCV:
         
         print(f"LOG: GeradorCV.download - Salvando .tex em {caminho_final}.tex")
         self.salvar_tex(f"{caminho_final}.tex")
-        print(f"LOG: GeradorCV.download - Gerando PDF em {caminho_final}.pdf")
-        pdf = self.gerar_pdf(f"{caminho_final}.pdf")
         
-        print("LOG: GeradorCV.download - Retornando PDF.")
+        print(f"LOG: GeradorCV.download - Gerando PDF...")
+        pdf = self.gerar_pdf() # gerar_pdf já usa o latex gerado, não precisa de argumento
+        
+        print("LOG: GeradorCV.download - Finalizado.")
         return pdf
+
 
 if __name__ == "__main__":
     GeradorCV().main()

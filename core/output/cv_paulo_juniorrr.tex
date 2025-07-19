@@ -1,0 +1,213 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=2 cm,
+    bottom=2 cm,
+    left=2 cm,
+    right=2 cm,
+    footskip=1.0 cm
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={CV de PAULO JUNIORRR},
+    pdfauthor={PAULO JUNIORRR},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+% Some settings:
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.15cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{
+    -1pt
+}{
+    0.3 cm
+}{
+    0.2 cm
+}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0 cm + 10pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0 cm + 0.00001 cm
+    }{
+        0 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+}
+
+\let\hrefWithoutArrow\href
+\begin{document}
+
+\begin{header}
+    {\fontsize{25pt}{25pt}\selectfont PAULO JUNIORRR}
+
+    \vspace{0pt}
+
+    \normalsize
+    \mbox{Brazil} \enskip|\enskip \mbox{\href{mailto:pjuniormoraes@gmail.com}{pjuniormoraes@gmail.com}} \enskip|\enskip \mbox{\href{tel:+5541995756617}{+55 41 995756617}} \\
+    
+\end{header}
+
+\vspace{5pt - 0.1cm}
+
+\section{Summary}
+\begin{onecolentry}{I have proven skills in CS leadership and SaaS technologies, enabling teams to deliver high-performance solutions that not only meet but exceed customer expectations. My approach is focused on tangible results, increasing customer satisfaction, and driving sustainable business growth.}\end{onecolentry}
+\section{Professional Experience}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Corporate Communication Analyst} \\ DENSO do Brasil
+        \switchcolumn
+        \raggedleft March 2015 - December 2016
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Responsible for the creation and delivery of content for various internal and external communication channels.
+                \item Led the production of articles for the intranet, press releases, corporate website content, social media campaigns, and contributed to visual communication on corporate TV and events.
+                \item Managed the editorial calendar, establishing rigorous schedules and meeting deadlines for the creation of editorial content.
+                \item Implemented global communication guidelines adapted to the local context.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Media Specialist} \\ WPP
+        \switchcolumn
+        \raggedleft January 2017 - December 2017
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Monitored and analyzed conversion metrics to improve social media strategies and paid media campaigns.
+                \item Supervised the social media strategy for multiple brands, ensuring a consistent and impactful digital presence.
+                \item Planned and controlled the budget for digital/social marketing activities.
+                \item Negotiated sponsorship agreements with major PPC platforms.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Support Team Leader} \\ SharpSpring
+        \switchcolumn
+        \raggedleft November 2017 - April 2023
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Founded and led the support team, improving customer service efficiency.
+                \item Developed and implemented operational knowledge bases.
+                \item Mapped the partner journey, identifying friction points and implementing significant improvements.
+                \item Updated internal policies and procedures, including email compliance and data privacy issues.
+    \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Support Team Leader} \\ TEST
+        \switchcolumn
+        \raggedleft April 2023 - Present
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.10cm}
+\begin{onecolentry}
+    \begin{highlights}
+                \item Leadership of the customer service team, focusing on process optimization and improving ticket resolution.
+                \item Implemented operational knowledge bases for quick reference.
+                \item Conducted mapping and analysis of the partner journey, proposing and executing strategic improvements.
+                \item Differentiated support experiences and expectations for SMBs and enterprise clients.
+    \end{highlights}
+\end{onecolentry}
+
+\section{Education}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Economics} \\ Universidade Positivo
+        \switchcolumn
+        \raggedleft 2017 - 2021
+    \end{paracol}
+\end{onecolentry}
+\vspace{0.2cm}
+
+\begin{onecolentry}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+        \textbf{Marketing} \\ Universidade Positivo
+        \switchcolumn
+        \raggedleft 2012 - 2016
+    \end{paracol}
+\end{onecolentry}
+\end{document}
