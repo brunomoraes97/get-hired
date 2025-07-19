@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='resume_builder.css') }}">
+</head>
+<body>
+    <h1>Create Your Resume</h1>
+    <form id="builderForm">
+        <div>
+            <label>Name</label>
+            <input type="text" id="name" required>
+        </div>
+        <div>
+            <label>Location</label>
+            <input type="text" id="location">
+        </div>
+        <div>
+            <label>Email</label>
+            <input type="email" id="email">
+        </div>
+        <div>
+            <label>Phone</label>
+            <input type="text" id="phone">
+        </div>
+        <div>
+            <label>Summary</label>
+            <textarea id="summary" rows="4"></textarea>
+        </div>
+        <div>
+            <label>Skills (comma separated)</label>
+            <input type="text" id="skills">
+        </div>
+        <div id="experienceContainer">
+            <h2>Experience</h2>
+            <button type="button" id="addExperience">Add experience</button>
+        </div>
+        <div id="educationContainer">
+            <h2>Education</h2>
+            <button type="button" id="addEducation">Add education</button>
+        </div>
+        <div id="languageContainer">
+            <h2>Languages</h2>
+            <button type="button" id="addLanguage">Add language</button>
+        </div>
+        <div>
+            <button type="submit">Generate PDF</button>
+        </div>
+    </form>
+<script src="{{ url_for('static', filename='resume_builder.js') }}"></script>
+</body>
+</html>

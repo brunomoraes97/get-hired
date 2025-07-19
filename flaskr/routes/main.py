@@ -65,3 +65,97 @@ def transform_json():
         as_attachment=True,
         download_name=f"cv_otimizado.pdf"
     )
+
+
+@routes.route('/resume-builder')
+def resume_builder():
+    """Display resume builder page."""
+    return render_template('resume_builder.html')
+
+
+@routes.route('/create-resume', methods=['POST'])
+def create_resume():
+    """Generate a resume PDF from form data."""
+    data = request.get_json()
+    if not data:
+        return jsonify({'erro': 'Invalid data'}), 400
+
+    cv_data = {
+        'pessoais': {
+            'nome': data.get('name', ''),
+            'contatos': [
+                {'tipo': 'localizacao', 'valor': data.get('location', '')},
+                {'tipo': 'email', 'valor': data.get('email', '')},
+                {'tipo': 'telefone', 'valor': data.get('phone', '')},
+            ]
+        },
+        'secoes': []
+    }
+
+    if data.get('summary'):
+        cv_data['secoes'].append({
+            'titulo': 'Summary',
+            'type': 'lista_simples',
+            'itens': [data['summary']]
+        })
+
+    skills = data.get('skills', [])
+    if skills:
+        cv_data['secoes'].append({
+            'titulo': 'Skills',
+            'type': 'lista_simples',
+            'itens': skills
+        })
+
+    experiences = data.get('experiences', [])
+    if experiences:
+        entries = []
+        for exp in experiences:
+            entries.append({
+                'data': exp.get('period', ''),
+                'titulo': exp.get('title', ''),
+                'subtitulo': exp.get('company', ''),
+                'local': exp.get('location', ''),
+                'destaques': [exp.get('description', '')] if exp.get('description') else []
+            })
+        cv_data['secoes'].append({
+            'titulo': 'Experience',
+            'type': 'entradas_com_destaques',
+            'entradas': entries
+        })
+
+    education = data.get('education', [])
+    if education:
+        entries = []
+        for ed in education:
+            entries.append({
+                'data': ed.get('period', ''),
+                'titulo': ed.get('degree', ''),
+                'subtitulo': ed.get('institution', ''),
+                'local': ed.get('field_of_study', ''),
+                'destaques': [ed.get('description', '')] if ed.get('description') else []
+            })
+        cv_data['secoes'].append({
+            'titulo': 'Education',
+            'type': 'entradas_com_destaques',
+            'entradas': entries
+        })
+
+    languages = data.get('languages', [])
+    if languages:
+        cv_data['secoes'].append({
+            'titulo': 'Languages',
+            'type': 'lista_simples',
+            'itens': languages
+        })
+
+    pdf_content = GeradorCV().download(cv_data)
+    if not pdf_content:
+        return jsonify({'erro': 'Erro ao gerar PDF'}), 500
+
+    return send_file(
+        BytesIO(pdf_content),
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name='resume.pdf'
+    )
