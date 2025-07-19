@@ -15,6 +15,7 @@ from ai.llm_io import LLM
 routes = Blueprint("routes", __name__)
 
 from flask import Blueprint, request, send_file, jsonify, render_template, redirect, url_for
+from flaskr.auth_utils import token_required
 
 routes = Blueprint("routes", __name__)
 
@@ -30,6 +31,7 @@ def index(lang_code):
     return render_template(f'index_{lang_code}.html')
 
 @routes.route('/generate', methods=["POST"])
+@token_required
 def transform_json():
     print("LOG: transform_json - Iniciando requisição.")
     dados_entrada = request.get_json()
@@ -100,6 +102,7 @@ def resume_builder(lang_code):
 
 
 @routes.route('/create-resume', methods=['POST'])
+@token_required
 def create_resume():
     """Generate a resume PDF from form data."""
     data = request.get_json()
@@ -201,6 +204,7 @@ def create_resume():
 
 
 @routes.route('/generate-field', methods=['POST'])
+@token_required
 def generate_field_route():
     """Generate text for a single resume field using LLM."""
     data = request.get_json()
