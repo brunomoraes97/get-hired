@@ -55,46 +55,84 @@
             <p class="text-gray-600 mb-8">Заполните форму ниже и создайте профессиональное резюме.</p>
 
             <form id="builderForm" class="space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Имя</label>
-                    <input type="text" id="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                <div class="form-step space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Имя</label>
+                        <input type="text" id="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Местоположение</label>
+                        <input type="text" id="location" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
+                        <input type="text" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+                        <input type="text" id="linkedin" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">GitHub</label>
+                        <input type="text" id="github" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Сайт/Портфолио</label>
+                        <input type="text" id="website" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Резюме</label>
+                        <textarea id="summary" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"></textarea>
+                        <button type="button" class="ai-generate bg-primary text-white px-4 py-2 rounded mt-2" data-field="professional summary" data-target="summary" data-remaining="3">Сгенерировать ИИ (<span class="counter">3</span>)</button>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Далее</button>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Местоположение</label>
-                    <input type="text" id="location" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                <div class="form-step space-y-6 hidden">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Навыки (через запятую или заметки для ИИ)</label>
+                        <input type="text" id="skills" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        <button type="button" class="ai-generate bg-primary text-white px-4 py-2 rounded mt-2" data-field="skills list" data-target="skills" data-remaining="3">Сгенерировать ИИ (<span class="counter">3</span>)</button>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Назад</button>
+                        <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Далее</button>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                <div class="form-step space-y-6 hidden">
+                    <div id="experienceContainer" class="space-y-4">
+                        <h2 class="text-xl font-semibold">Опыт работы</h2>
+                        <button type="button" id="addExperience" class="bg-primary text-white px-4 py-2 rounded">Добавить опыт</button>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Назад</button>
+                        <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Далее</button>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
-                    <input type="text" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                <div class="form-step space-y-6 hidden">
+                    <div id="educationContainer" class="space-y-4">
+                        <h2 class="text-xl font-semibold">Образование</h2>
+                        <button type="button" id="addEducation" class="bg-primary text-white px-4 py-2 rounded">Добавить образование</button>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Назад</button>
+                        <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Далее</button>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Резюме</label>
-                    <textarea id="summary" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"></textarea>
-                    <label class="inline-flex items-center mt-2"><input type="checkbox" id="summary_ai" class="mr-2"> Использовать ИИ</label>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Навыки (через запятую или заметки для ИИ)</label>
-                    <input type="text" id="skills" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
-                    <label class="inline-flex items-center mt-2"><input type="checkbox" id="skills_ai" class="mr-2"> Использовать ИИ</label>
-                </div>
-                <div id="experienceContainer" class="space-y-4">
-                    <h2 class="text-xl font-semibold">Опыт работы</h2>
-                    <button type="button" id="addExperience" class="bg-primary text-white px-4 py-2 rounded">Добавить опыт</button>
-                </div>
-                <div id="educationContainer" class="space-y-4">
-                    <h2 class="text-xl font-semibold">Образование</h2>
-                    <button type="button" id="addEducation" class="bg-primary text-white px-4 py-2 rounded">Добавить образование</button>
-                </div>
-                <div id="languageContainer" class="space-y-4">
-                    <h2 class="text-xl font-semibold">Языки</h2>
-                    <button type="button" id="addLanguage" class="bg-primary text-white px-4 py-2 rounded">Добавить язык</button>
-                </div>
-                <div>
-                    <button id="generateBtn" type="submit" class="w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Сгенерировать с ИИ (0)</button>
+                <div class="form-step space-y-6 hidden">
+                    <div id="languageContainer" class="space-y-4">
+                        <h2 class="text-xl font-semibold">Языки</h2>
+                        <button type="button" id="addLanguage" class="bg-primary text-white px-4 py-2 rounded">Добавить язык</button>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Назад</button>
+                        <button id="generateBtn" type="submit" class="bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Создать резюме</button>
+                    </div>
                 </div>
             </form>
         </div>
