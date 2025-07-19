@@ -82,11 +82,23 @@ const steps = Array.from(document.querySelectorAll('.form-step'));
 let currentStep = 0;
 const nextButtons = document.querySelectorAll('.next-step');
 const prevButtons = document.querySelectorAll('.prev-step');
+const stepLinks = document.querySelectorAll('.step-link');
+
+function updateStepNav() {
+    stepLinks.forEach((link, idx) => {
+        const active = idx === currentStep;
+        link.classList.toggle('bg-primary', active);
+        link.classList.toggle('text-white', active);
+        link.classList.toggle('bg-gray-200', !active);
+        link.classList.toggle('text-gray-700', !active);
+    });
+}
 
 function showStep(i) {
     steps.forEach((step, idx) => {
         step.classList.toggle('hidden', idx !== i);
     });
+    updateStepNav();
 }
 
 nextButtons.forEach(btn => btn.addEventListener('click', () => {
@@ -99,6 +111,14 @@ nextButtons.forEach(btn => btn.addEventListener('click', () => {
 prevButtons.forEach(btn => btn.addEventListener('click', () => {
     if (currentStep > 0) {
         currentStep--;
+        showStep(currentStep);
+    }
+}));
+
+stepLinks.forEach(link => link.addEventListener('click', () => {
+    const step = parseInt(link.dataset.step, 10);
+    if (!isNaN(step)) {
+        currentStep = step;
         showStep(currentStep);
     }
 }));
