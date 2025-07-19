@@ -1,12 +1,16 @@
 import os
 from flask import Flask
 from flask_cors import CORS
+from dotenv import load_dotenv
 from ai.llm_io import LLM
 
 import sys
 
 # Adiciona o diretório 'core' ao sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'core')))
+
+# Load variables from .env if present
+load_dotenv()
 
 
 def create_app():

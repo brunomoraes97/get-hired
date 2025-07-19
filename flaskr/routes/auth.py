@@ -68,3 +68,8 @@ def logout():
     resp.delete_cookie('token')
     return resp
 
+
+@routes_auth.route('/logout', methods=['GET'])
+def logout_page():
+    return render_template('logout.html')
+
