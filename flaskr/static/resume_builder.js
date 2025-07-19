@@ -7,7 +7,7 @@ function createExperienceFields() {
         <input type="text" placeholder="Company" class="company w-full px-4 py-2 border border-gray-300 rounded-lg">
         <input type="text" placeholder="Location" class="location w-full px-4 py-2 border border-gray-300 rounded-lg">
         <textarea placeholder="Description or AI notes" class="description w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
-        <label class="inline-flex items-center"><input type="checkbox" class="use-ai mr-2"> Use AI</label>
+        <button type="button" class="ai-generate bg-primary text-white px-4 py-2 rounded" data-field="job experience description" data-target="description" data-remaining="3">AI (<span class="counter">3</span>)</button>
     `;
     return wrapper;
 }
@@ -25,7 +25,7 @@ function createEducationFields() {
         <input type="text" placeholder="Institution" class="institution w-full px-4 py-2 border border-gray-300 rounded-lg">
         <input type="text" placeholder="Field of Study" class="field w-full px-4 py-2 border border-gray-300 rounded-lg">
         <textarea placeholder="Description or AI notes" class="description w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
-        <label class="inline-flex items-center"><input type="checkbox" class="use-ai mr-2"> Use AI</label>
+        <button type="button" class="ai-generate bg-primary text-white px-4 py-2 rounded" data-field="educational experience description" data-target="description" data-remaining="3">AI (<span class="counter">3</span>)</button>
     `;
     return wrapper;
 }
@@ -48,6 +48,63 @@ document.getElementById('addLanguage').addEventListener('click', () => {
     document.getElementById('languageContainer').appendChild(createLanguageFields());
 });
 
+document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('ai-generate')) {
+        const btn = e.target;
+        let remaining = parseInt(btn.dataset.remaining, 10);
+        if (remaining <= 0) return;
+        const fieldName = btn.dataset.field;
+        let target;
+        if (btn.dataset.target === 'summary' || btn.dataset.target === 'skills') {
+            target = document.getElementById(btn.dataset.target);
+        } else {
+            target = btn.parentElement.querySelector('.' + btn.dataset.target);
+        }
+        const instructions = target.value;
+        const response = await fetch('/generate-field', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ field_name: fieldName, instructions })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            target.value = data.text;
+            remaining -= 1;
+            btn.dataset.remaining = remaining;
+            btn.querySelector('.counter').textContent = remaining;
+        } else {
+            alert('Error generating text');
+        }
+    }
+});
+
+const steps = Array.from(document.querySelectorAll('.form-step'));
+let currentStep = 0;
+const nextButtons = document.querySelectorAll('.next-step');
+const prevButtons = document.querySelectorAll('.prev-step');
+
+function showStep(i) {
+    steps.forEach((step, idx) => {
+        step.classList.toggle('hidden', idx !== i);
+    });
+}
+
+nextButtons.forEach(btn => btn.addEventListener('click', () => {
+    if (currentStep < steps.length - 1) {
+        currentStep++;
+        showStep(currentStep);
+    }
+}));
+
+prevButtons.forEach(btn => btn.addEventListener('click', () => {
+    if (currentStep > 0) {
+        currentStep--;
+        showStep(currentStep);
+    }
+}));
+
+showStep(currentStep);
+
 function gatherData() {
     const experiences = [];
     document.querySelectorAll('#experienceContainer .experience-item').forEach(item => {
@@ -56,8 +113,7 @@ function gatherData() {
             title: item.querySelector('.title').value,
             company: item.querySelector('.company').value,
             location: item.querySelector('.location').value,
-            description: item.querySelector('.description').value,
-            use_ai: item.querySelector('.use-ai').checked,
+            description: item.querySelector('.description').value
         });
     });
 
@@ -68,8 +124,7 @@ function gatherData() {
             degree: item.querySelector('.degree').value,
             institution: item.querySelector('.institution').value,
             field_of_study: item.querySelector('.field').value,
-            description: item.querySelector('.description').value,
-            use_ai: item.querySelector('.use-ai').checked,
+            description: item.querySelector('.description').value
         });
     });
 
@@ -85,13 +140,14 @@ function gatherData() {
         location: document.getElementById('location').value,
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
+        linkedin: document.getElementById('linkedin').value,
+        github: document.getElementById('github').value,
+        website: document.getElementById('website').value,
         summary: document.getElementById('summary').value,
-        use_ai_summary: document.getElementById('summary_ai').checked,
         skills: document.getElementById('skills').value,
-        use_ai_skills: document.getElementById('skills_ai').checked,
-        experiences: experiences,
-        education: education,
-        languages: languages
+        experiences,
+        education,
+        languages
     };
 }
 
@@ -100,7 +156,7 @@ document.getElementById('builderForm').addEventListener('submit', async (e) => {
     const data = gatherData();
     const response = await fetch('/create-resume', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     });
     if (response.ok) {
@@ -117,13 +173,3 @@ document.getElementById('builderForm').addEventListener('submit', async (e) => {
         alert('Error generating resume');
     }
 });
-
-let aiCount = 0;
-const generateBtn = document.getElementById('generateBtn');
-if (generateBtn) {
-    generateBtn.addEventListener('click', () => {
-        aiCount += 1;
-        generateBtn.textContent = generateBtn.textContent.replace(/\(.*\)/, `(${aiCount})`);
-    });
-}
-
