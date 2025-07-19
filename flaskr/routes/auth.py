@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app, make_response, render_template
+from flask import Blueprint, request, jsonify, current_app, make_response, render_template, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime, timedelta
@@ -72,4 +72,34 @@ def logout():
 @routes_auth.route('/logout', methods=['GET'])
 def logout_page():
     return render_template('logout.html')
+
+
+@routes_auth.route('/me', methods=['GET', 'POST'])
+def profile():
+    token = request.cookies.get('token')
+    if not token:
+        return redirect('/auth/login')
+    try:
+        data = jwt.decode(token, current_app.config['JWT_SECRET'], algorithms=['HS256'])
+        email = data['sub']
+    except jwt.PyJWTError:
+        return redirect('/auth/login')
+
+    supabase = get_supabase()
+    if request.method == 'GET':
+        if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
+            res = supabase.table('users').select('email,name').eq('email', email).execute()
+            user = res.data[0] if res.data else {}
+            return jsonify(user)
+        return render_template('profile.html')
+
+    data = request.get_json()
+    updates = {}
+    if data.get('name') is not None:
+        updates['name'] = data['name']
+    if data.get('password'):
+        updates['password'] = generate_password_hash(data['password'])
+    if updates:
+        supabase.table('users').update(updates).eq('email', email).execute()
+    return jsonify({'status': 'updated'})
 
