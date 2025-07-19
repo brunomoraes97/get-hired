@@ -65,3 +65,118 @@ def transform_json():
         as_attachment=True,
         download_name=f"cv_otimizado.pdf"
     )
+
+
+@routes.route('/resume-builder')
+def resume_builder():
+    """Display resume builder page."""
+    return render_template('resume_builder.html')
+
+
+@routes.route('/create-resume', methods=['POST'])
+def create_resume():
+    """Generate a resume PDF from form data."""
+    data = request.get_json()
+    if not data:
+        return jsonify({'erro': 'Invalid data'}), 400
+
+    cv_data = {
+        'pessoais': {
+            'nome': data.get('name', ''),
+            'contatos': [
+                {'tipo': 'localizacao', 'valor': data.get('location', '')},
+                {'tipo': 'email', 'valor': data.get('email', '')},
+                {'tipo': 'telefone', 'valor': data.get('phone', '')},
+            ]
+        },
+        'secoes': []
+    }
+
+    llm = LLM()
+
+    summary_text = data.get('summary', '')
+    if data.get('use_ai_summary') and summary_text:
+        summary_text = llm.generate_field('professional summary', summary_text)
+    if summary_text:
+        cv_data['secoes'].append({
+            'titulo': 'Summary',
+            'type': 'lista_simples',
+            'itens': [summary_text]
+        })
+
+    skills_raw = data.get('skills', '')
+    if data.get('use_ai_skills') and skills_raw:
+        skills_generated = llm.generate_field('skills list', skills_raw)
+        skills = [s.strip() for s in skills_generated.replace('\n', ',').split(',') if s.strip()]
+    else:
+        if isinstance(skills_raw, list):
+            skills = skills_raw
+        else:
+            skills = [s.strip() for s in skills_raw.split(',') if s.strip()]
+    if skills:
+        cv_data['secoes'].append({
+            'titulo': 'Skills',
+            'type': 'lista_simples',
+            'itens': skills
+        })
+
+    experiences = data.get('experiences', [])
+    if experiences:
+        entries = []
+        for exp in experiences:
+            desc = exp.get('description', '')
+            if exp.get('use_ai') and desc:
+                desc = llm.generate_field('job experience description', desc)
+            highlights = [d.strip() for d in desc.split('\n') if d.strip()] if desc else []
+            entries.append({
+                'data': exp.get('period', ''),
+                'titulo': exp.get('title', ''),
+                'subtitulo': exp.get('company', ''),
+                'local': exp.get('location', ''),
+                'destaques': highlights
+            })
+        cv_data['secoes'].append({
+            'titulo': 'Experience',
+            'type': 'entradas_com_destaques',
+            'entradas': entries
+        })
+
+    education = data.get('education', [])
+    if education:
+        entries = []
+        for ed in education:
+            desc = ed.get('description', '')
+            if ed.get('use_ai') and desc:
+                desc = llm.generate_field('educational experience description', desc)
+            highlights = [d.strip() for d in desc.split('\n') if d.strip()] if desc else []
+            entries.append({
+                'data': ed.get('period', ''),
+                'titulo': ed.get('degree', ''),
+                'subtitulo': ed.get('institution', ''),
+                'local': ed.get('field_of_study', ''),
+                'destaques': highlights
+            })
+        cv_data['secoes'].append({
+            'titulo': 'Education',
+            'type': 'entradas_com_destaques',
+            'entradas': entries
+        })
+
+    languages = data.get('languages', [])
+    if languages:
+        cv_data['secoes'].append({
+            'titulo': 'Languages',
+            'type': 'lista_simples',
+            'itens': languages
+        })
+
+    pdf_content = GeradorCV().download(cv_data)
+    if not pdf_content:
+        return jsonify({'erro': 'Erro ao gerar PDF'}), 500
+
+    return send_file(
+        BytesIO(pdf_content),
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name='resume.pdf'
+    )
