@@ -44,7 +44,6 @@ def transform_json():
     if not cv_text or not vaga_text:
         return jsonify({"erro": "As chaves 'cv' e 'job_description' são obrigatórias."}), 400
 
-    llm = LLM()
     print("LOG: transform_json - Chamando LLM.run()...")
     dados_brutos = llm.run(cv_text, vaga_text)
     print(f"LOG: transform_json - LLM.run() retornou dados brutos (tipo: {type(dados_brutos)}).")
@@ -104,7 +103,6 @@ def create_resume():
         'secoes': []
     }
 
-    llm = LLM()
 
     summary_text = data.get('summary', '')
     if summary_text:
