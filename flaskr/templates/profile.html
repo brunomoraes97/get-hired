@@ -4,7 +4,7 @@
     <base target="_self">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Hired! | Logged Out</title>
+    <title>Get Hired! | My Profile</title>
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
@@ -48,10 +48,15 @@
         </nav>
     </header>
 
-    <main class="container mx-auto px-6 py-12 flex-grow text-center">
+    <main class="container mx-auto px-6 py-12 flex-grow">
         <div class="max-w-md mx-auto bg-white p-8 rounded-xl shadow-md">
-            <h1 class="text-2xl font-bold mb-4">You have been logged out</h1>
-            <a href="/auth/login" class="text-primary hover:underline">Return to login</a>
+            <h1 class="text-2xl font-bold mb-6 text-center">My Profile</h1>
+            <form id="profileForm" class="space-y-4">
+                <input type="text" id="name" maxlength="100" placeholder="Name" class="w-full px-4 py-2 border rounded">
+                <input type="email" id="email" maxlength="100" placeholder="Email" class="w-full px-4 py-2 border rounded" readonly>
+                <input type="password" id="password" placeholder="New Password" class="w-full px-4 py-2 border rounded">
+                <button type="submit" class="w-full bg-primary text-white px-4 py-2 rounded">Save</button>
+            </form>
         </div>
     </main>
 
@@ -75,6 +80,36 @@
             </div>
         </div>
     </footer>
+
+    <script src="{{ url_for('static', filename='auth_nav.js') }}"></script>
+    <script>
+        async function loadData(){
+            const res = await fetch('/auth/me', {headers:{'Accept':'application/json'}});
+            if(res.ok){
+                const data = await res.json();
+                document.getElementById('name').value = data.name || '';
+                document.getElementById('email').value = data.email || '';
+            }
+        }
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('name').value,
+                password: document.getElementById('password').value
+            };
+            const res = await fetch('/auth/me', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if(res.ok){
+                alert('Profile updated');
+                document.getElementById('password').value = '';
+            } else {
+                alert('Update failed');
+            }
+        });
+        loadData();
+    </script>
 </body>
-<script src="{{ url_for('static', filename='auth_nav.js') }}"></script>
 </html>
