@@ -6,7 +6,8 @@ function createExperienceFields() {
         <input type="text" placeholder="Title" class="title">
         <input type="text" placeholder="Company" class="company">
         <input type="text" placeholder="Location" class="location">
-        <textarea placeholder="Description" class="description"></textarea>
+        <textarea placeholder="Description or AI notes" class="description"></textarea>
+        <label><input type="checkbox" class="use-ai"> Use AI</label>
     `;
     return wrapper;
 }
@@ -23,7 +24,8 @@ function createEducationFields() {
         <input type="text" placeholder="Degree" class="degree">
         <input type="text" placeholder="Institution" class="institution">
         <input type="text" placeholder="Field of Study" class="field">
-        <textarea placeholder="Description" class="description"></textarea>
+        <textarea placeholder="Description or AI notes" class="description"></textarea>
+        <label><input type="checkbox" class="use-ai"> Use AI</label>
     `;
     return wrapper;
 }
@@ -55,6 +57,7 @@ function gatherData() {
             company: item.querySelector('.company').value,
             location: item.querySelector('.location').value,
             description: item.querySelector('.description').value,
+            use_ai: item.querySelector('.use-ai').checked,
         });
     });
 
@@ -66,6 +69,7 @@ function gatherData() {
             institution: item.querySelector('.institution').value,
             field_of_study: item.querySelector('.field').value,
             description: item.querySelector('.description').value,
+            use_ai: item.querySelector('.use-ai').checked,
         });
     });
 
@@ -82,7 +86,9 @@ function gatherData() {
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
         summary: document.getElementById('summary').value,
-        skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
+        use_ai_summary: document.getElementById('summary_ai').checked,
+        skills: document.getElementById('skills').value,
+        use_ai_skills: document.getElementById('skills_ai').checked,
         experiences: experiences,
         education: education,
         languages: languages

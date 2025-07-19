@@ -1,4 +1,5 @@
 venv/
+gethired/
 
 *.pyc
 __pycache__/

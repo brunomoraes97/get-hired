@@ -92,14 +92,27 @@ def create_resume():
         'secoes': []
     }
 
-    if data.get('summary'):
+    llm = LLM()
+
+    summary_text = data.get('summary', '')
+    if data.get('use_ai_summary') and summary_text:
+        summary_text = llm.generate_field('professional summary', summary_text)
+    if summary_text:
         cv_data['secoes'].append({
             'titulo': 'Summary',
             'type': 'lista_simples',
-            'itens': [data['summary']]
+            'itens': [summary_text]
         })
 
-    skills = data.get('skills', [])
+    skills_raw = data.get('skills', '')
+    if data.get('use_ai_skills') and skills_raw:
+        skills_generated = llm.generate_field('skills list', skills_raw)
+        skills = [s.strip() for s in skills_generated.replace('\n', ',').split(',') if s.strip()]
+    else:
+        if isinstance(skills_raw, list):
+            skills = skills_raw
+        else:
+            skills = [s.strip() for s in skills_raw.split(',') if s.strip()]
     if skills:
         cv_data['secoes'].append({
             'titulo': 'Skills',
@@ -111,12 +124,16 @@ def create_resume():
     if experiences:
         entries = []
         for exp in experiences:
+            desc = exp.get('description', '')
+            if exp.get('use_ai') and desc:
+                desc = llm.generate_field('job experience description', desc)
+            highlights = [d.strip() for d in desc.split('\n') if d.strip()] if desc else []
             entries.append({
                 'data': exp.get('period', ''),
                 'titulo': exp.get('title', ''),
                 'subtitulo': exp.get('company', ''),
                 'local': exp.get('location', ''),
-                'destaques': [exp.get('description', '')] if exp.get('description') else []
+                'destaques': highlights
             })
         cv_data['secoes'].append({
             'titulo': 'Experience',
@@ -128,12 +145,16 @@ def create_resume():
     if education:
         entries = []
         for ed in education:
+            desc = ed.get('description', '')
+            if ed.get('use_ai') and desc:
+                desc = llm.generate_field('educational experience description', desc)
+            highlights = [d.strip() for d in desc.split('\n') if d.strip()] if desc else []
             entries.append({
                 'data': ed.get('period', ''),
                 'titulo': ed.get('degree', ''),
                 'subtitulo': ed.get('institution', ''),
                 'local': ed.get('field_of_study', ''),
-                'destaques': [ed.get('description', '')] if ed.get('description') else []
+                'destaques': highlights
             })
         cv_data['secoes'].append({
             'titulo': 'Education',
