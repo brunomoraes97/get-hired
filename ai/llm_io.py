@@ -37,6 +37,28 @@ class LLM:
         response = chat_session.send_message(question)
         return response.text
 
+    def generate_field(self, field_name: str, instructions: str) -> str:
+        """Generate resume text for a specific field using natural language instructions."""
+        genai.configure(api_key=self.api_key)
+        generation_config = {
+            "temperature": 1,
+            "top_p": 0.95,
+            "top_k": 40,
+            "max_output_tokens": 8192,
+        }
+        system_prompt = (
+            f"You are a professional resume writer. Generate the {field_name} "
+            f"using the user's notes. Return only the plain text or bullet list."
+        )
+        model = genai.GenerativeModel(
+            model_name=self.model,
+            system_instruction=system_prompt,
+            generation_config=generation_config,
+        )
+        chat_session = model.start_chat(history=[])
+        response = chat_session.send_message(instructions)
+        return response.text.strip()
+
     """def prompt(self, question: str):
         print(self.model)
         self.model=os.getenv("OLLAMA_MODEL")
