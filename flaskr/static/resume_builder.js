@@ -1,13 +1,13 @@
 function createExperienceFields() {
     const wrapper = document.createElement('div');
-    wrapper.className = 'experience-item';
+    wrapper.className = 'experience-item space-y-2';
     wrapper.innerHTML = `
-        <input type="text" placeholder="Period" class="period">
-        <input type="text" placeholder="Title" class="title">
-        <input type="text" placeholder="Company" class="company">
-        <input type="text" placeholder="Location" class="location">
-        <textarea placeholder="Description or AI notes" class="description"></textarea>
-        <label><input type="checkbox" class="use-ai"> Use AI</label>
+        <input type="text" placeholder="Period" class="period w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Title" class="title w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Company" class="company w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Location" class="location w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <textarea placeholder="Description or AI notes" class="description w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
+        <label class="inline-flex items-center"><input type="checkbox" class="use-ai mr-2"> Use AI</label>
     `;
     return wrapper;
 }
@@ -18,14 +18,14 @@ document.getElementById('addExperience').addEventListener('click', () => {
 
 function createEducationFields() {
     const wrapper = document.createElement('div');
-    wrapper.className = 'education-item';
+    wrapper.className = 'education-item space-y-2';
     wrapper.innerHTML = `
-        <input type="text" placeholder="Period" class="period">
-        <input type="text" placeholder="Degree" class="degree">
-        <input type="text" placeholder="Institution" class="institution">
-        <input type="text" placeholder="Field of Study" class="field">
-        <textarea placeholder="Description or AI notes" class="description"></textarea>
-        <label><input type="checkbox" class="use-ai"> Use AI</label>
+        <input type="text" placeholder="Period" class="period w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Degree" class="degree w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Institution" class="institution w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Field of Study" class="field w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <textarea placeholder="Description or AI notes" class="description w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
+        <label class="inline-flex items-center"><input type="checkbox" class="use-ai mr-2"> Use AI</label>
     `;
     return wrapper;
 }
@@ -36,10 +36,10 @@ document.getElementById('addEducation').addEventListener('click', () => {
 
 function createLanguageFields() {
     const wrapper = document.createElement('div');
-    wrapper.className = 'language-item';
+    wrapper.className = 'language-item space-y-2';
     wrapper.innerHTML = `
-        <input type="text" placeholder="Language" class="language">
-        <input type="text" placeholder="Level" class="level">
+        <input type="text" placeholder="Language" class="language w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Level" class="level w-full px-4 py-2 border border-gray-300 rounded-lg">
     `;
     return wrapper;
 }
@@ -117,3 +117,13 @@ document.getElementById('builderForm').addEventListener('submit', async (e) => {
         alert('Error generating resume');
     }
 });
+
+let aiCount = 0;
+const generateBtn = document.getElementById('generateBtn');
+if (generateBtn) {
+    generateBtn.addEventListener('click', () => {
+        aiCount += 1;
+        generateBtn.textContent = generateBtn.textContent.replace(/\(.*\)/, `(${aiCount})`);
+    });
+}
+

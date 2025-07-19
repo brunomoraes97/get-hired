@@ -68,9 +68,18 @@ def transform_json():
 
 
 @routes.route('/resume-builder')
-def resume_builder():
-    """Display resume builder page."""
-    return render_template('resume_builder.html')
+def resume_builder_redirect():
+    """Redirects to the English resume builder."""
+    return redirect(url_for('routes.resume_builder', lang_code='en'))
+
+
+@routes.route('/resume-builder/<lang_code>')
+def resume_builder(lang_code):
+    """Display resume builder page in the requested language."""
+    supported = ['en', 'pt', 'es', 'ru']
+    if lang_code not in supported:
+        return redirect(url_for('routes.resume_builder', lang_code='en'))
+    return render_template(f'resume_builder_{lang_code}.html')
 
 
 @routes.route('/create-resume', methods=['POST'])
