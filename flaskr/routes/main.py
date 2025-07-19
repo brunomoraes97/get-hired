@@ -1,27 +1,40 @@
 # app/routes.py
 
-from flask import Blueprint, request, send_file, jsonify, render_template
-# Supondo que seus módulos estejam em 'core' como no exemplo
+from flask import (
+    Blueprint,
+    request,
+    send_file,
+    jsonify,
+    render_template,
+    redirect,
+    url_for,
+    current_app,
+)
 from core.app.gerador_cv import GeradorCV
 from core.helpers.sanitizador import sanitizar_dados_para_latex
 from io import BytesIO
-import requests
-import os # Adicionado para criar o caminho do output
 import json
+import os
 import zipfile
+import jwt
 from ai.llm_io import LLM
-
-
-routes = Blueprint("routes", __name__)
-
-from flask import Blueprint, request, send_file, jsonify, render_template, redirect, url_for
 from flaskr.auth_utils import token_required
+from flaskr.routes.auth import get_supabase
+
 
 routes = Blueprint("routes", __name__)
 
 @routes.route("/")
 def index_redirect():
-    return redirect(url_for('routes.index', lang_code='en'))
+    return redirect(url_for('routes.home', lang_code='en'))
+
+
+@routes.route('/home/<lang_code>')
+def home(lang_code):
+    supported_languages = ['en', 'pt', 'es', 'ru']
+    if lang_code not in supported_languages:
+        return redirect(url_for('routes.home', lang_code='en'))
+    return render_template(f'home_{lang_code}.html')
 
 @routes.route('/<lang_code>')
 def index(lang_code):
@@ -123,6 +136,26 @@ def create_resume():
         },
         'secoes': []
     }
+
+    # Save base resume data for LaTeX generation
+    token = request.cookies.get('token')
+    email = None
+    if token:
+        try:
+            payload = jwt.decode(token, current_app.config['JWT_SECRET'], algorithms=['HS256'])
+            email = payload.get('sub')
+        except jwt.PyJWTError:
+            email = None
+
+    if email:
+        try:
+            supabase = get_supabase()
+            supabase.table('latex_data').insert({
+                'user_email': email,
+                'resume_json': cv_data
+            }).execute()
+        except Exception:
+            pass
 
 
     summary_text = data.get('summary', '')
