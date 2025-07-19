@@ -73,6 +73,19 @@ def resume_builder():
     return render_template('resume_builder.html')
 
 
+@routes.route('/generate-field', methods=['POST'])
+def generate_field_route():
+    """Generate text for a specific resume field using the LLM."""
+    data = request.get_json()
+    field = data.get('field')
+    notes = data.get('notes', '').strip()
+    if not field or not notes:
+        return jsonify({'erro': 'Invalid data'}), 400
+    llm = LLM()
+    text = llm.generate_field(field, notes)
+    return jsonify({'text': text})
+
+
 @routes.route('/create-resume', methods=['POST'])
 def create_resume():
     """Generate a resume PDF from form data."""
@@ -92,11 +105,7 @@ def create_resume():
         'secoes': []
     }
 
-    llm = LLM()
-
     summary_text = data.get('summary', '')
-    if data.get('use_ai_summary') and summary_text:
-        summary_text = llm.generate_field('professional summary', summary_text)
     if summary_text:
         cv_data['secoes'].append({
             'titulo': 'Summary',
@@ -104,15 +113,11 @@ def create_resume():
             'itens': [summary_text]
         })
 
-    skills_raw = data.get('skills', '')
-    if data.get('use_ai_skills') and skills_raw:
-        skills_generated = llm.generate_field('skills list', skills_raw)
-        skills = [s.strip() for s in skills_generated.replace('\n', ',').split(',') if s.strip()]
+    skills_raw = data.get('skills', [])
+    if isinstance(skills_raw, list):
+        skills = skills_raw
     else:
-        if isinstance(skills_raw, list):
-            skills = skills_raw
-        else:
-            skills = [s.strip() for s in skills_raw.split(',') if s.strip()]
+        skills = [s.strip() for s in skills_raw.split(',') if s.strip()]
     if skills:
         cv_data['secoes'].append({
             'titulo': 'Skills',
@@ -125,8 +130,6 @@ def create_resume():
         entries = []
         for exp in experiences:
             desc = exp.get('description', '')
-            if exp.get('use_ai') and desc:
-                desc = llm.generate_field('job experience description', desc)
             highlights = [d.strip() for d in desc.split('\n') if d.strip()] if desc else []
             entries.append({
                 'data': exp.get('period', ''),
@@ -146,8 +149,6 @@ def create_resume():
         entries = []
         for ed in education:
             desc = ed.get('description', '')
-            if ed.get('use_ai') and desc:
-                desc = llm.generate_field('educational experience description', desc)
             highlights = [d.strip() for d in desc.split('\n') if d.strip()] if desc else []
             entries.append({
                 'data': ed.get('period', ''),

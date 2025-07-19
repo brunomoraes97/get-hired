@@ -1,3 +1,33 @@
+function attachAiButton(button, fieldEl, fieldName) {
+    button.dataset.tries = 0;
+    button.addEventListener('click', async () => {
+        if (Number(button.dataset.tries) >= 3) {
+            return;
+        }
+        const notes = fieldEl.value.trim();
+        if (!notes) {
+            alert('Provide notes for AI generation first');
+            return;
+        }
+        const response = await fetch('/generate-field', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ field: fieldName, notes: notes })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            fieldEl.value = data.text;
+            button.dataset.tries = Number(button.dataset.tries) + 1;
+            if (Number(button.dataset.tries) >= 3) {
+                button.disabled = true;
+                button.textContent = 'Edit manually';
+            }
+        } else {
+            alert('Error generating text');
+        }
+    });
+}
+
 function createExperienceFields() {
     const wrapper = document.createElement('div');
     wrapper.className = 'experience-item';
@@ -6,9 +36,12 @@ function createExperienceFields() {
         <input type="text" placeholder="Title" class="title">
         <input type="text" placeholder="Company" class="company">
         <input type="text" placeholder="Location" class="location">
-        <textarea placeholder="Description or AI notes" class="description"></textarea>
-        <label><input type="checkbox" class="use-ai"> Use AI</label>
+        <textarea placeholder="Description" class="description"></textarea>
+        <button type="button" class="gen-ai">Generate with AI</button>
     `;
+    const desc = wrapper.querySelector('.description');
+    const btn = wrapper.querySelector('.gen-ai');
+    attachAiButton(btn, desc, 'job experience description');
     return wrapper;
 }
 
@@ -24,9 +57,12 @@ function createEducationFields() {
         <input type="text" placeholder="Degree" class="degree">
         <input type="text" placeholder="Institution" class="institution">
         <input type="text" placeholder="Field of Study" class="field">
-        <textarea placeholder="Description or AI notes" class="description"></textarea>
-        <label><input type="checkbox" class="use-ai"> Use AI</label>
+        <textarea placeholder="Description" class="description"></textarea>
+        <button type="button" class="gen-ai">Generate with AI</button>
     `;
+    const desc = wrapper.querySelector('.description');
+    const btn = wrapper.querySelector('.gen-ai');
+    attachAiButton(btn, desc, 'educational experience description');
     return wrapper;
 }
 
@@ -48,6 +84,9 @@ document.getElementById('addLanguage').addEventListener('click', () => {
     document.getElementById('languageContainer').appendChild(createLanguageFields());
 });
 
+attachAiButton(document.getElementById('summary_generate'), document.getElementById('summary'), 'professional summary');
+attachAiButton(document.getElementById('skills_generate'), document.getElementById('skills'), 'skills list');
+
 function gatherData() {
     const experiences = [];
     document.querySelectorAll('#experienceContainer .experience-item').forEach(item => {
@@ -57,7 +96,6 @@ function gatherData() {
             company: item.querySelector('.company').value,
             location: item.querySelector('.location').value,
             description: item.querySelector('.description').value,
-            use_ai: item.querySelector('.use-ai').checked,
         });
     });
 
@@ -69,7 +107,6 @@ function gatherData() {
             institution: item.querySelector('.institution').value,
             field_of_study: item.querySelector('.field').value,
             description: item.querySelector('.description').value,
-            use_ai: item.querySelector('.use-ai').checked,
         });
     });
 
@@ -86,9 +123,7 @@ function gatherData() {
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
         summary: document.getElementById('summary').value,
-        use_ai_summary: document.getElementById('summary_ai').checked,
-        skills: document.getElementById('skills').value,
-        use_ai_skills: document.getElementById('skills_ai').checked,
+        skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
         experiences: experiences,
         education: education,
         languages: languages
