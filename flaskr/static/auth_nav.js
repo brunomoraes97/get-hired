@@ -4,22 +4,25 @@ function getToken(){
 
 function updateNav(){
   const logged = !!getToken();
-  const login = document.getElementById('nav-account');
-  const profile = document.getElementById('nav-profile');
-  const logout = document.getElementById('nav-logout');
+  const login = document.getElementById('account-login');
+  const register = document.getElementById('account-register');
+  const profile = document.getElementById('account-profile');
+  const logout = document.getElementById('account-logout');
   if(logged){
     if(login) login.style.display = 'none';
-    if(profile) profile.style.display = 'inline';
-    if(logout) logout.style.display = 'inline';
+    if(register) register.style.display = 'none';
+    if(profile) profile.style.display = 'block';
+    if(logout) logout.style.display = 'block';
   } else {
-    if(login) login.style.display = 'inline';
+    if(login) login.style.display = 'block';
+    if(register) register.style.display = 'block';
     if(profile) profile.style.display = 'none';
     if(logout) logout.style.display = 'none';
   }
 }
 
 function setupLogout(){
-  const logout = document.getElementById('nav-logout');
+  const logout = document.getElementById('account-logout');
   if(logout){
     logout.addEventListener('click', async (e) => {
       e.preventDefault();
@@ -30,7 +33,24 @@ function setupLogout(){
   }
 }
 
+function setupDropdown(){
+  const btn = document.getElementById('nav-account-btn');
+  const menu = document.getElementById('account-menu');
+  if(btn && menu){
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      menu.classList.toggle('hidden');
+    });
+    document.addEventListener('click', (e) => {
+      if(!btn.contains(e.target) && !menu.contains(e.target)){
+        menu.classList.add('hidden');
+      }
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   updateNav();
   setupLogout();
+  setupDropdown();
 });
