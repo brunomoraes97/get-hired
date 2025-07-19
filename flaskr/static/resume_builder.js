@@ -2,11 +2,11 @@ function createExperienceFields() {
     const wrapper = document.createElement('div');
     wrapper.className = 'experience-item space-y-2';
     wrapper.innerHTML = `
-        <input type="text" placeholder="Period" class="period w-full px-4 py-2 border border-gray-300 rounded-lg">
-        <input type="text" placeholder="Title" class="title w-full px-4 py-2 border border-gray-300 rounded-lg">
-        <input type="text" placeholder="Company" class="company w-full px-4 py-2 border border-gray-300 rounded-lg">
-        <input type="text" placeholder="Location" class="location w-full px-4 py-2 border border-gray-300 rounded-lg">
-        <textarea placeholder="Description or AI notes" class="description w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
+        <input type="text" placeholder="Period" maxlength="50" class="period w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Title" maxlength="100" class="title w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Company" maxlength="100" class="company w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Location" maxlength="100" class="location w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <textarea placeholder="Description or AI notes" maxlength="500" class="description w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
         <button type="button" class="ai-generate bg-primary text-white px-4 py-2 rounded" data-field="job experience description" data-target="description" data-remaining="3">AI (<span class="counter">3</span>)</button>
     `;
     return wrapper;
@@ -20,11 +20,11 @@ function createEducationFields() {
     const wrapper = document.createElement('div');
     wrapper.className = 'education-item space-y-2';
     wrapper.innerHTML = `
-        <input type="text" placeholder="Period" class="period w-full px-4 py-2 border border-gray-300 rounded-lg">
-        <input type="text" placeholder="Degree" class="degree w-full px-4 py-2 border border-gray-300 rounded-lg">
-        <input type="text" placeholder="Institution" class="institution w-full px-4 py-2 border border-gray-300 rounded-lg">
-        <input type="text" placeholder="Field of Study" class="field w-full px-4 py-2 border border-gray-300 rounded-lg">
-        <textarea placeholder="Description or AI notes" class="description w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
+        <input type="text" placeholder="Period" maxlength="50" class="period w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Degree" maxlength="100" class="degree w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Institution" maxlength="100" class="institution w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Field of Study" maxlength="100" class="field w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <textarea placeholder="Description or AI notes" maxlength="500" class="description w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
         <button type="button" class="ai-generate bg-primary text-white px-4 py-2 rounded" data-field="educational experience description" data-target="description" data-remaining="3">AI (<span class="counter">3</span>)</button>
     `;
     return wrapper;
@@ -38,8 +38,8 @@ function createLanguageFields() {
     const wrapper = document.createElement('div');
     wrapper.className = 'language-item space-y-2';
     wrapper.innerHTML = `
-        <input type="text" placeholder="Language" class="language w-full px-4 py-2 border border-gray-300 rounded-lg">
-        <input type="text" placeholder="Level" class="level w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Language" maxlength="50" class="language w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" placeholder="Level" maxlength="50" class="level w-full px-4 py-2 border border-gray-300 rounded-lg">
     `;
     return wrapper;
 }
