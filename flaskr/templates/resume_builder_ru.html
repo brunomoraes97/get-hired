@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Hired! | Конструктор резюме</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b82f6",
+                        secondary: "#1e40af"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gray-50 flex flex-col">
+    <header class="bg-gray-800 shadow-sm">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold text-white">
+                    <span class="text-primary">Get</span> Hired!
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="https://github.com/brunomoraes97/get-hired" target="_blank" class="text-gray-300 hover:text-primary transition-colors flex items-center">
+                        <i class="fab fa-github mr-2"></i> Посмотреть на GitHub
+                    </a>
+                    <a href="/resume-builder/ru" class="text-gray-300 hover:text-primary">Генератор резюме</a>
+                    <a href="/ru" class="text-gray-300 hover:text-primary">Оптимизатор резюме</a>
+                    <div class="relative" id="account-dropdown">
+                        <button id="nav-account-btn" class="text-gray-300 hover:text-primary flex items-center">Аккаунт <i class="fas fa-caret-down ml-1"></i></button>
+                        <div id="account-menu" class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-1 hidden">
+                            <a href="/auth/login" id="account-login" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Войти</a>
+                            <a href="/auth/register" id="account-register" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Создать аккаунт</a>
+                            <a href="/auth/me" id="account-profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="display:none">My Data</a>
+                            <a href="#" id="account-logout" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="display:none">Logout</a>
+                        </div>
+                    </div>
+                    <select id="language-selector" class="bg-gray-700 text-white border border-gray-600 p-2 rounded" onchange="changeLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="pt">Português</option>
+                        <option value="es">Español</option>
+                        <option value="ru" selected>Русский</option>
+                    </select>
+                </div>
+                <button class="md:hidden text-gray-300">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 flex-grow">
+        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Создайте резюме</h1>
+            <p class="text-gray-600 mb-8">Заполните форму ниже и создайте профессиональное резюме.</p>
+
+            <form id="builderForm" class="space-y-6">
+                <div id="stepNavigation" class="flex justify-center space-x-2 mb-6">
+                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="0">1. Личные данные</button>
+                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="1">2. Навыки</button>
+                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="2">3. Профессиональный опыт</button>
+                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="3">4. Образование</button>
+                    <button type="button" class="step-link px-3 py-1 rounded bg-gray-200 text-gray-700" data-step="4">5. Языки</button>
+                </div>
+                <div class="form-step grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Имя</label>
+                        <input type="text" id="name" maxlength="100" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Местоположение</label>
+                        <input type="text" id="location" maxlength="100" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="email" maxlength="100" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
+                        <input type="text" id="phone" maxlength="30" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+                        <input type="text" id="linkedin" maxlength="100" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">GitHub</label>
+                        <input type="text" id="github" maxlength="100" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Сайт/Портфолио</label>
+                        <input type="text" id="website" maxlength="100" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Резюме</label>
+                        <textarea id="summary" maxlength="1000" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"></textarea>
+                        <button type="button" class="ai-generate bg-primary text-white px-4 py-2 rounded mt-2" data-field="professional summary" data-target="summary" data-remaining="3">Сгенерировать ИИ (<span class="counter">3</span>)</button>
+                    </div>
+                    <div class="flex justify-end md:col-span-2">
+                        <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Далее</button>
+                    </div>
+                </div>
+                <div class="form-step space-y-6 hidden">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Навыки (через запятую или заметки для ИИ)</label>
+                        <input type="text" id="skills" maxlength="500" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        <button type="button" class="ai-generate bg-primary text-white px-4 py-2 rounded mt-2" data-field="skills list" data-target="skills" data-remaining="3">Сгенерировать ИИ (<span class="counter">3</span>)</button>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Назад</button>
+                        <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Далее</button>
+                    </div>
+                </div>
+                <div class="form-step space-y-6 hidden">
+                    <div id="experienceContainer" class="space-y-4">
+                        <h2 class="text-xl font-semibold">Опыт работы</h2>
+                        <button type="button" id="addExperience" class="bg-primary text-white px-4 py-2 rounded">Добавить опыт</button>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Назад</button>
+                        <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Далее</button>
+                    </div>
+                </div>
+                <div class="form-step space-y-6 hidden">
+                    <div id="educationContainer" class="space-y-4">
+                        <h2 class="text-xl font-semibold">Образование</h2>
+                        <button type="button" id="addEducation" class="bg-primary text-white px-4 py-2 rounded">Добавить образование</button>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Назад</button>
+                        <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Далее</button>
+                    </div>
+                </div>
+                <div class="form-step space-y-6 hidden">
+                    <div id="languageContainer" class="space-y-4">
+                        <h2 class="text-xl font-semibold">Языки</h2>
+                        <button type="button" id="addLanguage" class="bg-primary text-white px-4 py-2 rounded">Добавить язык</button>
+                        <label class="flex items-center space-x-2 mt-2">
+                            <input type="checkbox" id="includeLanguages" checked>
+                            <span>Включить раздел языков в итоговое резюме</span>
+                        </label>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Назад</button>
+                        <button id="generateBtn" type="submit" class="bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Создать резюме</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-auto">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="text-2xl font-bold">
+                        <span class="text-primary">Get</span><span class="text-white"> Hired!</span>
+                    </div>
+                    <p class="text-gray-400 mt-2">Соединяем таланты с возможностями</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="https://www.linkedin.com/in/brunomoraes97/" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>© 2025 Get Hired!. Все права защищены. | Сделано с ❤️ Матеусом Бруно</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='resume_builder.js') }}"></script>
+    <script>
+        function changeLanguage(lang) {
+            window.location.href = '/resume-builder/' + lang;
+        }
+</script>
+    <script src="{{ url_for('static', filename='auth_nav.js') }}"></script>
+</body>
+</html>
