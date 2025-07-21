@@ -1,0 +1,1890 @@
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/ai/llm_io.py b/ai/llm_io.py
+deleted file mode 100644
+index 546ca8a598bae5ba9ec55f4e256c063b633d177a..0000000000000000000000000000000000000000
+--- a/ai/llm_io.py
++++ /dev/null
+@@ -1,154 +0,0 @@
+-from maritalk import count_tokens
+-from dotenv import load_dotenv
+-import openai
+-load_dotenv()
+-import os
+-from ai.system_prompt import SYSTEM_PROMPT, USER_MESSAGE
+-from ai.tests.fixtures.curriculo import CURRICULO
+-from ai.tests.fixtures.descricao import DESCRICAO
+-from ai.schemas import CV
+-import google.generativeai as genai
+-
+-class LLM:
+-    def __init__(self):
+-
+-        """self.api_key = os.getenv("OLLAMA_APIKEY")
+-        self.base_url = os.getenv("OLLAMA_URL")
+-        self.model=os.getenv("OLLAMA_MODEL")"""
+-
+-        self.api_key=os.getenv("GEMINI_APIKEY")
+-        self.model=os.getenv("GEMINI_MODEL")
+-
+-    def prompt(self, question: str):
+-        genai.configure(api_key=self.api_key)
+-        generation_config = {
+-            "temperature": 1,
+-            "top_p": 0.95,
+-            "top_k": 40,
+-            "max_output_tokens": 8192,
+-            "response_mime_type": "application/json",
+-        }
+-        model = genai.GenerativeModel(
+-            model_name=self.model,
+-            system_instruction=SYSTEM_PROMPT,
+-            generation_config=generation_config
+-        )
+-        chat_session = model.start_chat(history=[])
+-        response = chat_session.send_message(question)
+-        return response.text
+-
+-    def generate_field(self, field_name: str, instructions: str) -> str:
+-        """Generate resume text for a specific field using natural language instructions."""
+-        genai.configure(api_key=self.api_key)
+-        generation_config = {
+-            "temperature": 1,
+-            "top_p": 0.95,
+-            "top_k": 40,
+-            "max_output_tokens": 8192,
+-        }
+-        system_prompt = (
+-            f"You are a professional resume writer. Generate the {field_name} "
+-            f"using the user's notes. Return only the plain text or bullet list."
+-        )
+-        model = genai.GenerativeModel(
+-            model_name=self.model,
+-            system_instruction=system_prompt,
+-            generation_config=generation_config,
+-        )
+-        chat_session = model.start_chat(history=[])
+-        response = chat_session.send_message(instructions)
+-        return response.text.strip()
+-
+-    def generate_cover_letter(self, cv: str, job_description: str) -> str:
+-        """Generate a cover letter based on the resume and job description."""
+-        genai.configure(api_key=self.api_key)
+-        generation_config = {
+-            "temperature": 1,
+-            "top_p": 0.95,
+-            "top_k": 40,
+-            "max_output_tokens": 8192,
+-        }
+-        system_prompt = (
+-            "You are an expert career coach. Write a concise cover letter "
+-            "for the provided job description using information from the resume."
+-        )
+-        model = genai.GenerativeModel(
+-            model_name=self.model,
+-            system_instruction=system_prompt,
+-            generation_config=generation_config,
+-        )
+-        chat_session = model.start_chat(history=[])
+-        prompt = f"RESUME:\n{cv}\nJOB DESCRIPTION:\n{job_description}"
+-        response = chat_session.send_message(prompt)
+-        return response.text.strip()
+-
+-    """def prompt(self, question: str):
+-        print(self.model)
+-        self.model=os.getenv("OLLAMA_MODEL")
+-        client = openai.OpenAI(
+-            api_key=self.api_key,
+-            base_url=self.base_url
+-        )
+-
+-        response = client.chat.completions.parse(
+-            model="qwen3:4b",
+-            messages=[
+-                {
+-                    "role": "system",
+-                    "content": SYSTEM_PROMPT,
+-                },
+-                {
+-                    "role": "user",
+-                    "content": question
+-                }
+-            ],
+-            max_tokens=8000,
+-            temperature=0.3,
+-            response_format=CV
+-        )
+-        return response.choices[0].message.content"""
+-
+-
+-    """self.api_key = os.getenv("MARITACA_APIKEY")
+-       self.base_url = os.getenv("MARITACA_URL")
+-       self.model=os.getenv("MARITACA_MODEL")"""
+-
+-    def test(self):
+-        question = SYSTEM_PROMPT \
+-            .replace("==curriculo_aqui==", CURRICULO) \
+-            .replace("==descricao_aqui==", DESCRICAO)
+-      
+-        output = self.prompt(question)
+-        return output
+-    
+-    def run(self, cv, job_description):
+-        question = USER_MESSAGE \
+-            .replace("==curriculo_aqui==", cv) \
+-            .replace("==descricao_aqui==", job_description)
+-        
+-        print("--- PROMPT FINAL ENVIADO PARA A API ---")
+-        print(question)
+-        print("---------------------------------------")
+-        output = self.prompt(question)
+-        print("PASSOU AQUI 4")
+-        print(f"ANSWER É: {output}")
+-        print("PASSOU AQUI 5 -> gerou output. OUTPUT É ANSWER EM JSON")
+-        print(output)
+-        return output
+-
+-if __name__ == "__main__":
+-    
+-    question = SYSTEM_PROMPT \
+-                .replace("==curriculo_aqui==", CURRICULO) \
+-                .replace("==descricao_aqui==", DESCRICAO)
+-      
+-    llm = LLM()
+-    output = llm.prompt(question)
+-    print(output)
+-
+-    ########## MARITACA AI ##############
+-    #input_tokens = count_tokens(question, model="deepseek-chat")
+-    #output_tokens = count_tokens(answer, model="sabia-3")
+-    #total_tokens = f"O total de tokens usados foi: {int(input_tokens) + int(output_tokens)}. Entrada: {input_tokens}, Saída: {output_tokens}"
+-    #print(total_tokens)
+-    ########## MARITACA AI #############
+\ No newline at end of file
+diff --git a/flaskr/__init__.py b/backend/__init__.py
+similarity index 67%
+rename from flaskr/__init__.py
+rename to backend/__init__.py
+index 9f962eb7a9489ba9374735073cf07efce4dea5df..2ce6b48a0fd8b48febc1aef3aaed4acd393446e6 100644
+--- a/flaskr/__init__.py
++++ b/backend/__init__.py
+@@ -1,31 +1,25 @@
+ import os
+ from flask import Flask
+ from flask_cors import CORS
+ from dotenv import load_dotenv
+-from ai.llm_io import LLM
+-
+-import sys
+-
+-# Adiciona o diretório 'core' ao sys.path
+-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'core')))
+ 
+ # Load variables from .env if present
+ load_dotenv()
+ 
+ 
+ def create_app():
+     app = Flask(__name__)
+     CORS(app)
+ 
+     # Configurações de terceiros
+     app.config['SUPABASE_URL'] = os.environ.get('SUPABASE_URL', '')
+     app.config['SUPABASE_KEY'] = os.environ.get('SUPABASE_KEY', '')
+     app.config['JWT_SECRET'] = os.environ.get('JWT_SECRET', 'change-me')
+ 
+     # Importa e registra as rotas
+-    from flaskr.routes.main import routes
+-    from flaskr.routes.auth import routes_auth
++    from .routes.main import routes
++    from .routes.auth import routes_auth
+     app.register_blueprint(routes)
+     app.register_blueprint(routes_auth)
+ 
+     return app
+\ No newline at end of file
+diff --git a/flaskr/auth_utils.py b/backend/auth_utils.py
+similarity index 100%
+rename from flaskr/auth_utils.py
+rename to backend/auth_utils.py
+diff --git a/flaskr/create_fake_user.py b/backend/create_fake_user.py
+similarity index 100%
+rename from flaskr/create_fake_user.py
+rename to backend/create_fake_user.py
+diff --git a/flaskr/db.py b/backend/db.py
+similarity index 100%
+rename from flaskr/db.py
+rename to backend/db.py
+diff --git a/ai/__init__.py b/backend/routes/__init__.py
+similarity index 100%
+rename from ai/__init__.py
+rename to backend/routes/__init__.py
+diff --git a/flaskr/routes/auth.py b/backend/routes/auth.py
+similarity index 100%
+rename from flaskr/routes/auth.py
+rename to backend/routes/auth.py
+diff --git a/flaskr/routes/main.py b/backend/routes/main.py
+similarity index 97%
+rename from flaskr/routes/main.py
+rename to backend/routes/main.py
+index 0616c327a37d43754493844fdee2b0434c9dbd0d..fb43ed87f49c9b8f83d4ce439f88dee365d6b800 100644
+--- a/flaskr/routes/main.py
++++ b/backend/routes/main.py
+@@ -1,47 +1,47 @@
+ # app/routes.py
+ 
+ from flask import (
+     Blueprint,
+     request,
+     send_file,
+     jsonify,
+     render_template,
+     redirect,
+     url_for,
+     current_app,
+ )
+-from core.app.gerador_cv import GeradorCV
+-from core.helpers.sanitizador import sanitizar_dados_para_latex
++from services.resume.app.gerador_cv import GeradorCV
++from services.resume.helpers.sanitizador import sanitizar_dados_para_latex
+ from io import BytesIO
+ import json
+ import os
+ import zipfile
+ import jwt
+-from ai.llm_io import LLM
+-from flaskr.auth_utils import token_required
+-from flaskr.routes.auth import get_supabase
++from services.ai.llm_io import LLM
++from backend.auth_utils import token_required
++from backend.routes.auth import get_supabase
+ 
+ 
+ routes = Blueprint("routes", __name__)
+ 
+ @routes.route("/")
+ def index_redirect():
+     return redirect(url_for('routes.home', lang_code='en'))
+ 
+ 
+ @routes.route('/home/<lang_code>')
+ def home(lang_code):
+     supported_languages = ['en', 'pt', 'es', 'ru']
+     if lang_code not in supported_languages:
+         return redirect(url_for('routes.home', lang_code='en'))
+     return render_template(f'home_{lang_code}.html')
+ 
+ @routes.route('/<lang_code>')
+ def index(lang_code):
+     supported_languages = ['en', 'pt', 'es', 'ru']
+     if lang_code not in supported_languages:
+         return redirect(url_for('routes.index', lang_code='en')) # Default to English if unsupported
+     return render_template(f'index_{lang_code}.html')
+ 
+ @routes.route('/generate', methods=["POST"])
+ @token_required
+diff --git a/flaskr/schema.sql b/backend/schema.sql
+similarity index 100%
+rename from flaskr/schema.sql
+rename to backend/schema.sql
+diff --git a/flaskr/static/android-chrome-192x192.png b/backend/static/android-chrome-192x192.png
+similarity index 100%
+rename from flaskr/static/android-chrome-192x192.png
+rename to backend/static/android-chrome-192x192.png
+diff --git a/flaskr/static/android-chrome-512x512.png b/backend/static/android-chrome-512x512.png
+similarity index 100%
+rename from flaskr/static/android-chrome-512x512.png
+rename to backend/static/android-chrome-512x512.png
+diff --git a/flaskr/static/apple-touch-icon.png b/backend/static/apple-touch-icon.png
+similarity index 100%
+rename from flaskr/static/apple-touch-icon.png
+rename to backend/static/apple-touch-icon.png
+diff --git a/flaskr/static/auth_nav.js b/backend/static/auth_nav.js
+similarity index 100%
+rename from flaskr/static/auth_nav.js
+rename to backend/static/auth_nav.js
+diff --git a/flaskr/static/favicon-16x16.png b/backend/static/favicon-16x16.png
+similarity index 100%
+rename from flaskr/static/favicon-16x16.png
+rename to backend/static/favicon-16x16.png
+diff --git a/flaskr/static/favicon-32x32.png b/backend/static/favicon-32x32.png
+similarity index 100%
+rename from flaskr/static/favicon-32x32.png
+rename to backend/static/favicon-32x32.png
+diff --git a/flaskr/static/favicon.ico b/backend/static/favicon.ico
+similarity index 100%
+rename from flaskr/static/favicon.ico
+rename to backend/static/favicon.ico
+diff --git a/flaskr/static/resume_builder.css b/backend/static/resume_builder.css
+similarity index 100%
+rename from flaskr/static/resume_builder.css
+rename to backend/static/resume_builder.css
+diff --git a/flaskr/static/resume_builder.js b/backend/static/resume_builder.js
+similarity index 83%
+rename from flaskr/static/resume_builder.js
+rename to backend/static/resume_builder.js
+index b05d2562eff927279ad08f2dd6ec32b77f04e968..be10119c9c7bf088556479ab864d73b1c90a8752 100644
+--- a/flaskr/static/resume_builder.js
++++ b/backend/static/resume_builder.js
+@@ -153,47 +153,68 @@ function gatherData() {
+         const lang = item.querySelector('.language').value;
+         const level = item.querySelector('.level').value;
+         if (lang) languages.push(`${lang} (${level})`);
+     });
+     const includeLanguages = document.getElementById('includeLanguages');
+     if (includeLanguages && !includeLanguages.checked) {
+         languages.length = 0;
+     }
+ 
+     return {
+         name: document.getElementById('name').value,
+         location: document.getElementById('location').value,
+         email: document.getElementById('email').value,
+         phone: document.getElementById('phone').value,
+         linkedin: document.getElementById('linkedin').value,
+         github: document.getElementById('github').value,
+         website: document.getElementById('website').value,
+         summary: document.getElementById('summary').value,
+         skills: document.getElementById('skills').value,
+         experiences,
+         education,
+         languages
+     };
+ }
+ 
+-document.getElementById('builderForm').addEventListener('submit', async (e) => {
++const builderForm = document.getElementById('builderForm');
++const generateBtn = document.getElementById('generateBtn');
++const builderMessage = document.getElementById('builderMessage');
++const builderError = document.getElementById('builderError');
++const builderLoading = document.getElementById('builder-loading');
++
++builderForm.addEventListener('submit', async (e) => {
+     e.preventDefault();
++    builderMessage.style.display = 'none';
++    builderError.style.display = 'none';
++    builderLoading.style.display = 'block';
++    generateBtn.disabled = true;
++
+     const data = gatherData();
+-    const response = await fetch('/create-resume', {
+-        method: 'POST',
+-        headers: { 'Content-Type': 'application/json' },
+-        body: JSON.stringify(data)
+-    });
+-    if (response.ok) {
+-        const blob = await response.blob();
+-        const url = window.URL.createObjectURL(blob);
+-        const a = document.createElement('a');
+-        a.href = url;
+-        a.download = 'resume.pdf';
+-        document.body.appendChild(a);
+-        a.click();
+-        a.remove();
+-        window.URL.revokeObjectURL(url);
+-    } else {
+-        alert('Error generating resume');
++    try {
++        const response = await fetch('/create-resume', {
++            method: 'POST',
++            headers: { 'Content-Type': 'application/json' },
++            body: JSON.stringify(data)
++        });
++        if (response.ok) {
++            const blob = await response.blob();
++            const url = window.URL.createObjectURL(blob);
++            const a = document.createElement('a');
++            a.href = url;
++            a.download = 'resume.pdf';
++            document.body.appendChild(a);
++            a.click();
++            a.remove();
++            window.URL.revokeObjectURL(url);
++            builderMessage.textContent = 'Resume generated!';
++            builderMessage.style.display = 'block';
++        } else {
++            builderError.textContent = 'Error generating resume';
++            builderError.style.display = 'block';
++        }
++    } catch (err) {
++        builderError.textContent = 'Network error';
++        builderError.style.display = 'block';
+     }
++    builderLoading.style.display = 'none';
++    generateBtn.disabled = false;
+ });
+diff --git a/flaskr/static/site.webmanifest b/backend/static/site.webmanifest
+similarity index 100%
+rename from flaskr/static/site.webmanifest
+rename to backend/static/site.webmanifest
+diff --git a/flaskr/templates/home_en.html b/backend/templates/home_en.html
+similarity index 100%
+rename from flaskr/templates/home_en.html
+rename to backend/templates/home_en.html
+diff --git a/flaskr/templates/home_es.html b/backend/templates/home_es.html
+similarity index 100%
+rename from flaskr/templates/home_es.html
+rename to backend/templates/home_es.html
+diff --git a/flaskr/templates/home_pt.html b/backend/templates/home_pt.html
+similarity index 100%
+rename from flaskr/templates/home_pt.html
+rename to backend/templates/home_pt.html
+diff --git a/flaskr/templates/home_ru.html b/backend/templates/home_ru.html
+similarity index 100%
+rename from flaskr/templates/home_ru.html
+rename to backend/templates/home_ru.html
+diff --git a/flaskr/templates/index.html b/backend/templates/index.html
+similarity index 100%
+rename from flaskr/templates/index.html
+rename to backend/templates/index.html
+diff --git a/flaskr/templates/index_en.html b/backend/templates/index_en.html
+similarity index 93%
+rename from flaskr/templates/index_en.html
+rename to backend/templates/index_en.html
+index 2452ef4760d9bad06ce6aac1aa610d1180c7fa96..127cfaaa08069fe3a175129dca1265365cdf3957 100644
+--- a/flaskr/templates/index_en.html
++++ b/backend/templates/index_en.html
+@@ -112,133 +112,143 @@
+                     <textarea
+                         id="jobDescription"
+                         rows="10"
+                         maxlength="8000"
+                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                         placeholder="Paste the job description here..."
+                         required
+                     ></textarea>
+                 </div>
+                 <div class="flex items-center space-x-2">
+                     <input type="checkbox" id="generateCoverLetter">
+                     <label for="generateCoverLetter" class="text-sm">Generate cover letter</label>
+                 </div>
+ 
+                 <div class="pt-4">
+                     <button
+                         type="submit"
+                         class="w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                     >
+                         <span class="text-lg">Generate Optimized CV</span>
+                         <i class="fas fa-arrow-right ml-2"></i>
+                     </button>
+                 </div>
+             </form>
+             
++            <div id="loading" class="message-box" style="display:none">
++                <i class="fas fa-spinner fa-spin mr-2"></i>Generating...
++            </div>
+             <div id="message" class="message-box message-success"></div>
+             <div id="error" class="message-box message-error"></div>
+         </div>
+     </main>
+ 
+     <footer class="bg-gray-800 text-white py-8 mt-auto">
+         <div class="container mx-auto px-6">
+             <div class="flex flex-col md:flex-row justify-between items-center">
+                 <div class="mb-4 md:mb-0">
+                     <div class="text-2xl font-bold">
+                         <span class="text-primary">Get</span><span class="text-white"> Hired!</span>
+                     </div>
+                     <p class="text-gray-400 mt-2">Connecting talent with opportunity</p>
+                 </div>
+                 <div class="flex space-x-6">
+                     <a href="https://www.linkedin.com/in/brunomoraes97/" class="text-gray-400 hover:text-white transition-colors">
+                         <i class="fab fa-linkedin-in text-xl"></i>
+                     </a>
+                 </div>
+             </div>
+             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                 <p>© 2025 Get Hired!. All rights reserved. | Made with ❤️ by Matheus Bruno</p>
+             </div>
+         </div>
+     </footer>
+     
+     <script>
+         function changeLanguage(lang) {
+             window.location.href = '/' + lang;
+         }
+ 
+-        document.getElementById('cvForm').addEventListener('submit', async function(e) {
++        const form = document.getElementById('cvForm');
++        const submitBtn = form.querySelector('button[type="submit"]');
++        const loadingDiv = document.getElementById('loading');
++        form.addEventListener('submit', async function(e) {
+             e.preventDefault();
+-            
++
+             const cvText = document.getElementById('cvText').value;
+             const jobDescription = document.getElementById('jobDescription').value;
+             const messageDiv = document.getElementById('message');
+             const errorDiv = document.getElementById('error');
+ 
+             // Clear previous messages and errors
+             messageDiv.textContent = '';
+             messageDiv.style.display = 'none';
+             errorDiv.textContent = '';
+             errorDiv.style.display = 'none';
+ 
+             if (!cvText || !jobDescription) {
+                 errorDiv.textContent = 'Please provide both CV text and Job Description text.';
+                 errorDiv.style.display = 'block';
+                 return;
+             }
+ 
+-            messageDiv.textContent = 'Generating CV... Please wait.';
+-            messageDiv.style.display = 'block';
++            loadingDiv.style.display = 'block';
++            submitBtn.disabled = true;
+ 
+             try {
+                 // Use the relative path /generate since Flask is serving this page
+                 const includeCover = document.getElementById('generateCoverLetter').checked;
+                 const response = await fetch('/generate', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify({
+                         cv: cvText,
+                         job_description: jobDescription,
+                         cover_letter: includeCover
+                     })
+                 });
+ 
+                 if (response.ok) {
+                     const blob = await response.blob();
+                     const url = window.URL.createObjectURL(blob);
+                     const a = document.createElement('a');
+                     a.href = url;
+                     const contentDisposition = response.headers.get('Content-Disposition');
+                     let filename = 'optimized_cv.pdf';
+                     if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+                         filename = contentDisposition.split('filename=')[1].replace(/"/g, '');
+                     }
+                     if (response.headers.get('Content-Type').includes('zip')) {
+                         filename = 'documents.zip';
+                     }
+                     a.download = filename;
+                     document.body.appendChild(a);
+                     a.click();
+                     a.remove();
+                     window.URL.revokeObjectURL(url);
++                    loadingDiv.style.display = 'none';
+                     messageDiv.textContent = 'Optimized CV generated and downloaded successfully!';
+                     messageDiv.style.display = 'block';
+                 } else {
+                     const errorData = await response.json();
+                     errorDiv.textContent = `Error: ${errorData.erro || 'Unknown error'}`;
+                     if (errorData.log) {
+                         errorDiv.textContent += `\nLog: ${errorData.log}`;
+                     }
+                     errorDiv.style.display = 'block';
+-                    messageDiv.style.display = 'none'; // Hide message if error occurs
++                    loadingDiv.style.display = 'none';
++                    messageDiv.style.display = 'none';
+                 }
+             } catch (error) {
+                 errorDiv.textContent = `Network error or server not reachable: ${error.message}`;
+                 errorDiv.style.display = 'block';
+-                messageDiv.style.display = 'none'; // Hide message if error occurs
++                loadingDiv.style.display = 'none';
++                messageDiv.style.display = 'none';
+             }
++            submitBtn.disabled = false;
+         });
+ </script>
+     <script src="{{ url_for('static', filename='auth_nav.js') }}"></script>
+ </body>
+ </html>
+\ No newline at end of file
+diff --git a/flaskr/templates/index_es.html b/backend/templates/index_es.html
+similarity index 93%
+rename from flaskr/templates/index_es.html
+rename to backend/templates/index_es.html
+index 08f61ca1ecc35988c096e1d490e6509b5cd81940..901acf285dc5b21b2b6b3c5d87ccad676eb3b3ba 100644
+--- a/flaskr/templates/index_es.html
++++ b/backend/templates/index_es.html
+@@ -112,133 +112,143 @@
+                     <textarea
+                         id="jobDescription"
+                         rows="10"
+                         maxlength="8000"
+                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                         placeholder="Pega la descripción del puesto aquí..."
+                         required
+                     ></textarea>
+                 </div>
+                 <div class="flex items-center space-x-2">
+                     <input type="checkbox" id="generateCoverLetter">
+                     <label for="generateCoverLetter" class="text-sm">Generar carta de presentación</label>
+                 </div>
+ 
+                 <div class="pt-4">
+                     <button
+                         type="submit"
+                         class="w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                     >
+                         <span class="text-lg">Generar CV Optimizado</span>
+                         <i class="fas fa-arrow-right ml-2"></i>
+                     </button>
+                 </div>
+             </form>
+             
++            <div id="loading" class="message-box" style="display:none">
++                <i class="fas fa-spinner fa-spin mr-2"></i>Generando...
++            </div>
+             <div id="message" class="message-box message-success"></div>
+             <div id="error" class="message-box message-error"></div>
+         </div>
+     </main>
+ 
+     <footer class="bg-gray-800 text-white py-8 mt-auto">
+         <div class="container mx-auto px-6">
+             <div class="flex flex-col md:flex-row justify-between items-center">
+                 <div class="mb-4 md:mb-0">
+                     <div class="text-2xl font-bold">
+                         <span class="text-primary">Get</span><span class="text-white"> Hired!</span>
+                     </div>
+                     <p class="text-gray-400 mt-2">Conectando talentos con oportunidades</p>
+                 </div>
+                 <div class="flex space-x-6">
+                     <a href="https://www.linkedin.com/in/brunomoraes97/" class="text-gray-400 hover:text-white transition-colors">
+                         <i class="fab fa-linkedin-in text-xl"></i>
+                     </a>
+                 </div>
+             </div>
+             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                 <p>© 2025 Get Hired!. Todos los derechos reservados. | Hecho con ❤️ por Matheus Bruno</p>
+             </div>
+         </div>
+     </footer>
+     
+     <script>
+         function changeLanguage(lang) {
+             window.location.href = '/' + lang;
+         }
+ 
+-        document.getElementById('cvForm').addEventListener('submit', async function(e) {
++        const form = document.getElementById('cvForm');
++        const submitBtn = form.querySelector('button[type="submit"]');
++        const loadingDiv = document.getElementById('loading');
++        form.addEventListener('submit', async function(e) {
+             e.preventDefault();
+             
+             const cvText = document.getElementById('cvText').value;
+             const jobDescription = document.getElementById('jobDescription').value;
+             const messageDiv = document.getElementById('message');
+             const errorDiv = document.getElementById('error');
+ 
+             // Clear previous messages and errors
+             messageDiv.textContent = '';
+             messageDiv.style.display = 'none';
+             errorDiv.textContent = '';
+             errorDiv.style.display = 'none';
+ 
+             if (!cvText || !jobDescription) {
+                 errorDiv.textContent = 'Por favor, proporciona el texto del CV y de la Descripción del Puesto.';
+                 errorDiv.style.display = 'block';
+                 return;
+             }
+ 
+-            messageDiv.textContent = 'Generando CV... Por favor, espera.';
+-            messageDiv.style.display = 'block';
++            loadingDiv.style.display = 'block';
++            submitBtn.disabled = true;
+ 
+             try {
+                 // Use the relative path /generate since Flask is serving this page
+                 const includeCover = document.getElementById('generateCoverLetter').checked;
+                 const response = await fetch('/generate', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify({
+                         cv: cvText,
+                         job_description: jobDescription,
+                         cover_letter: includeCover
+                     })
+                 });
+ 
+                 if (response.ok) {
+                     const blob = await response.blob();
+                     const url = window.URL.createObjectURL(blob);
+                     const a = document.createElement('a');
+                     a.href = url;
+                     const contentDisposition = response.headers.get('Content-Disposition');
+                     let filename = 'cv_optimizado.pdf';
+                     if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+                         filename = contentDisposition.split('filename=')[1].replace(/"/g, '');
+                     }
+                     if (response.headers.get('Content-Type').includes('zip')) {
+                         filename = 'documentos.zip';
+                     }
+                     a.download = filename;
+                     document.body.appendChild(a);
+                     a.click();
+                     a.remove();
+                     window.URL.revokeObjectURL(url);
++                    loadingDiv.style.display = 'none';
+                     messageDiv.textContent = '¡CV optimizado generado y descargado con éxito!';
+                     messageDiv.style.display = 'block';
+                 } else {
+                     const errorData = await response.json();
+                     errorDiv.textContent = `Error: ${errorData.erro || 'Error desconocido'}`;
+                     if (errorData.log) {
+                         errorDiv.textContent += `\nLog: ${errorData.log}`;
+                     }
+                     errorDiv.style.display = 'block';
+-                    messageDiv.style.display = 'none'; // Hide message if error occurs
++                    loadingDiv.style.display = 'none';
++                    messageDiv.style.display = 'none';
+                 }
+             } catch (error) {
+                 errorDiv.textContent = `Error de red o servidor inaccesible: ${error.message}`;
+                 errorDiv.style.display = 'block';
+-                messageDiv.style.display = 'none'; // Hide message if error occurs
++                loadingDiv.style.display = 'none';
++                messageDiv.style.display = 'none';
+             }
++            submitBtn.disabled = false;
+         });
+ </script>
+     <script src="{{ url_for('static', filename='auth_nav.js') }}"></script>
+ </body>
+ </html>
+\ No newline at end of file
+diff --git a/flaskr/templates/index_pt.html b/backend/templates/index_pt.html
+similarity index 93%
+rename from flaskr/templates/index_pt.html
+rename to backend/templates/index_pt.html
+index aa24e6f6b70e0e6d7e7724ff218c1a44d77233d9..307f332e5fcc28708b3103fcc284c94fe4f447b7 100644
+--- a/flaskr/templates/index_pt.html
++++ b/backend/templates/index_pt.html
+@@ -112,133 +112,143 @@
+                     <textarea
+                         id="jobDescription"
+                         rows="10"
+                         maxlength="8000"
+                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                         placeholder="Cole a descrição da vaga aqui..."
+                         required
+                     ></textarea>
+                 </div>
+                 <div class="flex items-center space-x-2">
+                     <input type="checkbox" id="generateCoverLetter">
+                     <label for="generateCoverLetter" class="text-sm">Gerar cover letter</label>
+                 </div>
+ 
+                 <div class="pt-4">
+                     <button
+                         type="submit"
+                         class="w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                     >
+                         <span class="text-lg">Gerar CV Otimizado</span>
+                         <i class="fas fa-arrow-right ml-2"></i>
+                     </button>
+                 </div>
+             </form>
+             
++            <div id="loading" class="message-box" style="display:none">
++                <i class="fas fa-spinner fa-spin mr-2"></i>Gerando...
++            </div>
+             <div id="message" class="message-box message-success"></div>
+             <div id="error" class="message-box message-error"></div>
+         </div>
+     </main>
+ 
+     <footer class="bg-gray-800 text-white py-8 mt-auto">
+         <div class="container mx-auto px-6">
+             <div class="flex flex-col md:flex-row justify-between items-center">
+                 <div class="mb-4 md:mb-0">
+                     <div class="text-2xl font-bold">
+                         <span class="text-primary">Get</span><span class="text-white"> Hired!</span>
+                     </div>
+                     <p class="text-gray-400 mt-2">Conectando talentos com oportunidades</p>
+                 </div>
+                 <div class="flex space-x-6">
+                     <a href="https://www.linkedin.com/in/brunomoraes97/" class="text-gray-400 hover:text-white transition-colors">
+                         <i class="fab fa-linkedin-in text-xl"></i>
+                     </a>
+                 </div>
+             </div>
+             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                 <p>© 2025 Get Hired!. Todos os direitos reservados. | Feito com ❤️ por Matheus Bruno</p>
+             </div>
+         </div>
+     </footer>
+     
+     <script>
+         function changeLanguage(lang) {
+             window.location.href = '/' + lang;
+         }
+ 
+-        document.getElementById('cvForm').addEventListener('submit', async function(e) {
++        const form = document.getElementById('cvForm');
++        const submitBtn = form.querySelector('button[type="submit"]');
++        const loadingDiv = document.getElementById('loading');
++        form.addEventListener('submit', async function(e) {
+             e.preventDefault();
+             
+             const cvText = document.getElementById('cvText').value;
+             const jobDescription = document.getElementById('jobDescription').value;
+             const messageDiv = document.getElementById('message');
+             const errorDiv = document.getElementById('error');
+ 
+             // Clear previous messages and errors
+             messageDiv.textContent = '';
+             messageDiv.style.display = 'none';
+             errorDiv.textContent = '';
+             errorDiv.style.display = 'none';
+ 
+             if (!cvText || !jobDescription) {
+                 errorDiv.textContent = 'Por favor, forneça o texto do CV e da Descrição da Vaga.';
+                 errorDiv.style.display = 'block';
+                 return;
+             }
+ 
+-            messageDiv.textContent = 'Gerando CV... Por favor, aguarde.';
+-            messageDiv.style.display = 'block';
++            loadingDiv.style.display = 'block';
++            submitBtn.disabled = true;
+ 
+             try {
+                 // Use the relative path /generate since Flask is serving this page
+                 const includeCover = document.getElementById('generateCoverLetter').checked;
+                 const response = await fetch('/generate', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify({
+                         cv: cvText,
+                         job_description: jobDescription,
+                         cover_letter: includeCover
+                     })
+                 });
+ 
+                 if (response.ok) {
+                     const blob = await response.blob();
+                     const url = window.URL.createObjectURL(blob);
+                     const a = document.createElement('a');
+                     a.href = url;
+                     const contentDisposition = response.headers.get('Content-Disposition');
+                     let filename = 'cv_otimizado.pdf';
+                     if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+                         filename = contentDisposition.split('filename=')[1].replace(/"/g, '');
+                     }
+                     if (response.headers.get('Content-Type').includes('zip')) {
+                         filename = 'documentos.zip';
+                     }
+                     a.download = filename;
+                     document.body.appendChild(a);
+                     a.click();
+                     a.remove();
+                     window.URL.revokeObjectURL(url);
++                    loadingDiv.style.display = 'none';
+                     messageDiv.textContent = 'CV otimizado gerado e baixado com sucesso!';
+                     messageDiv.style.display = 'block';
+                 } else {
+                     const errorData = await response.json();
+                     errorDiv.textContent = `Erro: ${errorData.erro || 'Erro desconhecido'}`;
+                     if (errorData.log) {
+                         errorDiv.textContent += `\nLog: ${errorData.log}`;
+                     }
+                     errorDiv.style.display = 'block';
+-                    messageDiv.style.display = 'none'; // Hide message if error occurs
++                    loadingDiv.style.display = 'none';
++                    messageDiv.style.display = 'none';
+                 }
+             } catch (error) {
+                 errorDiv.textContent = `Erro de rede ou servidor inacessível: ${error.message}`;
+                 errorDiv.style.display = 'block';
+-                messageDiv.style.display = 'none'; // Hide message if error occurs
++                loadingDiv.style.display = 'none';
++                messageDiv.style.display = 'none';
+             }
++            submitBtn.disabled = false;
+         });
+ </script>
+     <script src="{{ url_for('static', filename='auth_nav.js') }}"></script>
+ </body>
+ </html>
+\ No newline at end of file
+diff --git a/flaskr/templates/index_ru.html b/backend/templates/index_ru.html
+similarity index 93%
+rename from flaskr/templates/index_ru.html
+rename to backend/templates/index_ru.html
+index 62a8f815154394788dd7e585847a503654dddb44..19c4726a34c3dc48a42a0052363a86b93423dc03 100644
+--- a/flaskr/templates/index_ru.html
++++ b/backend/templates/index_ru.html
+@@ -112,133 +112,143 @@
+                     <textarea
+                         id="jobDescription"
+                         rows="10"
+                         maxlength="8000"
+                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                         placeholder="Вставьте описание вакансии здесь..."
+                         required
+                     ></textarea>
+                 </div>
+                 <div class="flex items-center space-x-2">
+                     <input type="checkbox" id="generateCoverLetter">
+                     <label for="generateCoverLetter" class="text-sm">Создать сопроводительное письмо</label>
+                 </div>
+ 
+                 <div class="pt-4">
+                     <button
+                         type="submit"
+                         class="w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                     >
+                         <span class="text-lg">Сгенерировать оптимизированное резюме</span>
+                         <i class="fas fa-arrow-right ml-2"></i>
+                     </button>
+                 </div>
+             </form>
+             
++            <div id="loading" class="message-box" style="display:none">
++                <i class="fas fa-spinner fa-spin mr-2"></i>Генерация...
++            </div>
+             <div id="message" class="message-box message-success"></div>
+             <div id="error" class="message-box message-error"></div>
+         </div>
+     </main>
+ 
+     <footer class="bg-gray-800 text-white py-8 mt-auto">
+         <div class="container mx-auto px-6">
+             <div class="flex flex-col md:flex-row justify-between items-center">
+                 <div class="mb-4 md:mb-0">
+                     <div class="text-2xl font-bold">
+                         <span class="text-primary">Get</span><span class="text-white"> Hired!</span>
+                     </div>
+                     <p class="text-gray-400 mt-2">Соединяем таланты с возможностями</p>
+                 </div>
+                 <div class="flex space-x-6">
+                     <a href="https://www.linkedin.com/in/brunomoraes97/" class="text-gray-400 hover:text-white transition-colors">
+                         <i class="fab fa-linkedin-in text-xl"></i>
+                     </a>
+                 </div>
+             </div>
+             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                 <p>© 2025 Get Hired!. Все права защищены. | Сделано с ❤️ Матеусом Бруно</p>
+             </div>
+         </div>
+     </footer>
+     
+     <script>
+         function changeLanguage(lang) {
+             window.location.href = '/' + lang;
+         }
+ 
+-        document.getElementById('cvForm').addEventListener('submit', async function(e) {
++        const form = document.getElementById('cvForm');
++        const submitBtn = form.querySelector('button[type="submit"]');
++        const loadingDiv = document.getElementById('loading');
++        form.addEventListener('submit', async function(e) {
+             e.preventDefault();
+             
+             const cvText = document.getElementById('cvText').value;
+             const jobDescription = document.getElementById('jobDescription').value;
+             const messageDiv = document.getElementById('message');
+             const errorDiv = document.getElementById('error');
+ 
+             // Clear previous messages and errors
+             messageDiv.textContent = '';
+             messageDiv.style.display = 'none';
+             errorDiv.textContent = '';
+             errorDiv.style.display = 'none';
+ 
+             if (!cvText || !jobDescription) {
+                 errorDiv.textContent = 'Пожалуйста, предоставьте текст резюме и описание вакансии.';
+                 errorDiv.style.display = 'block';
+                 return;
+             }
+ 
+-            messageDiv.textContent = 'Генерация резюме... Пожалуйста, подождите.';
+-            messageDiv.style.display = 'block';
++            loadingDiv.style.display = 'block';
++            submitBtn.disabled = true;
+ 
+             try {
+                 // Use the relative path /generate since Flask is serving this page
+                 const includeCover = document.getElementById('generateCoverLetter').checked;
+                 const response = await fetch('/generate', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify({
+                         cv: cvText,
+                         job_description: jobDescription,
+                         cover_letter: includeCover
+                     })
+                 });
+ 
+                 if (response.ok) {
+                     const blob = await response.blob();
+                     const url = window.URL.createObjectURL(blob);
+                     const a = document.createElement('a');
+                     a.href = url;
+                     const contentDisposition = response.headers.get('Content-Disposition');
+                     let filename = 'optimized_cv.pdf';
+                     if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+                         filename = contentDisposition.split('filename=')[1].replace(/"/g, '');
+                     }
+                     if (response.headers.get('Content-Type').includes('zip')) {
+                         filename = 'documents.zip';
+                     }
+                     a.download = filename;
+                     document.body.appendChild(a);
+                     a.click();
+                     a.remove();
+                     window.URL.revokeObjectURL(url);
++                    loadingDiv.style.display = 'none';
+                     messageDiv.textContent = 'Оптимизированное резюме успешно сгенерировано и загружено!';
+                     messageDiv.style.display = 'block';
+                 } else {
+                     const errorData = await response.json();
+                     errorDiv.textContent = `Ошибка: ${errorData.erro || 'Неизвестная ошибка'}`;
+                     if (errorData.log) {
+                         errorDiv.textContent += `\nLog: ${errorData.log}`;
+                     }
+                     errorDiv.style.display = 'block';
+-                    messageDiv.style.display = 'none'; // Hide message if error occurs
++                    loadingDiv.style.display = 'none';
++                    messageDiv.style.display = 'none';
+                 }
+             } catch (error) {
+                 errorDiv.textContent = `Ошибка сети или недоступность сервера: ${error.message}`;
+                 errorDiv.style.display = 'block';
+-                messageDiv.style.display = 'none'; // Hide message if error occurs
++                loadingDiv.style.display = 'none';
++                messageDiv.style.display = 'none';
+             }
++            submitBtn.disabled = false;
+         });
+ </script>
+     <script src="{{ url_for('static', filename='auth_nav.js') }}"></script>
+ </body>
+ </html>
+\ No newline at end of file
+diff --git a/flaskr/templates/login.html b/backend/templates/login.html
+similarity index 100%
+rename from flaskr/templates/login.html
+rename to backend/templates/login.html
+diff --git a/flaskr/templates/logout.html b/backend/templates/logout.html
+similarity index 100%
+rename from flaskr/templates/logout.html
+rename to backend/templates/logout.html
+diff --git a/flaskr/templates/profile.html b/backend/templates/profile.html
+similarity index 100%
+rename from flaskr/templates/profile.html
+rename to backend/templates/profile.html
+diff --git a/flaskr/templates/register.html b/backend/templates/register.html
+similarity index 100%
+rename from flaskr/templates/register.html
+rename to backend/templates/register.html
+diff --git a/flaskr/templates/resume_builder_en.html b/backend/templates/resume_builder_en.html
+similarity index 97%
+rename from flaskr/templates/resume_builder_en.html
+rename to backend/templates/resume_builder_en.html
+index 5a616eddf99a1e08a59463acf541b46161b2adb7..2475dde6e3ec049514c640d7124146d197f85da8 100644
+--- a/flaskr/templates/resume_builder_en.html
++++ b/backend/templates/resume_builder_en.html
+@@ -135,50 +135,55 @@
+                 <div class="form-step space-y-6 hidden">
+                     <div id="educationContainer" class="space-y-4">
+                         <h2 class="text-xl font-semibold">Education</h2>
+                         <button type="button" id="addEducation" class="bg-primary text-white px-4 py-2 rounded">Add education</button>
+                     </div>
+                     <div class="flex justify-between">
+                         <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Back</button>
+                         <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Next</button>
+                     </div>
+                 </div>
+                 <div class="form-step space-y-6 hidden">
+                     <div id="languageContainer" class="space-y-4">
+                         <h2 class="text-xl font-semibold">Languages</h2>
+                         <button type="button" id="addLanguage" class="bg-primary text-white px-4 py-2 rounded">Add language</button>
+                         <label class="flex items-center space-x-2 mt-2">
+                             <input type="checkbox" id="includeLanguages" checked>
+                             <span>Include languages section in final resume</span>
+                         </label>
+                     </div>
+                     <div class="flex justify-between">
+                         <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Back</button>
+                         <button id="generateBtn" type="submit" class="bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Generate Resume</button>
+                     </div>
+                 </div>
+             </form>
++            <div id="builder-loading" class="message-box" style="display:none">
++                <i class="fas fa-spinner fa-spin mr-2"></i>Generating...
++            </div>
++            <div id="builderMessage" class="message-box message-success" style="display:none"></div>
++            <div id="builderError" class="message-box message-error" style="display:none"></div>
+         </div>
+     </main>
+ 
+     <footer class="bg-gray-800 text-white py-8 mt-auto">
+         <div class="container mx-auto px-6">
+             <div class="flex flex-col md:flex-row justify-between items-center">
+                 <div class="mb-4 md:mb-0">
+                     <div class="text-2xl font-bold">
+                         <span class="text-primary">Get</span><span class="text-white"> Hired!</span>
+                     </div>
+                     <p class="text-gray-400 mt-2">Connecting talent with opportunity</p>
+                 </div>
+                 <div class="flex space-x-6">
+                     <a href="https://www.linkedin.com/in/brunomoraes97/" class="text-gray-400 hover:text-white transition-colors">
+                         <i class="fab fa-linkedin-in text-xl"></i>
+                     </a>
+                 </div>
+             </div>
+             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                 <p>© 2025 Get Hired!. All rights reserved. | Made with ❤️ by Matheus Bruno</p>
+             </div>
+         </div>
+     </footer>
+ 
+     <script src="{{ url_for('static', filename='resume_builder.js') }}"></script>
+diff --git a/flaskr/templates/resume_builder_es.html b/backend/templates/resume_builder_es.html
+similarity index 97%
+rename from flaskr/templates/resume_builder_es.html
+rename to backend/templates/resume_builder_es.html
+index 91dd6dad1ac0accd27da3ad92ce667e920b221ba..1c97cc0686b8409e6154b8a12168c4d50bf40b64 100644
+--- a/flaskr/templates/resume_builder_es.html
++++ b/backend/templates/resume_builder_es.html
+@@ -135,50 +135,55 @@
+                 <div class="form-step space-y-6 hidden">
+                     <div id="educationContainer" class="space-y-4">
+                         <h2 class="text-xl font-semibold">Educación</h2>
+                         <button type="button" id="addEducation" class="bg-primary text-white px-4 py-2 rounded">Agregar educación</button>
+                     </div>
+                     <div class="flex justify-between">
+                         <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Atrás</button>
+                         <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Siguiente</button>
+                     </div>
+                 </div>
+                 <div class="form-step space-y-6 hidden">
+                     <div id="languageContainer" class="space-y-4">
+                         <h2 class="text-xl font-semibold">Idiomas</h2>
+                         <button type="button" id="addLanguage" class="bg-primary text-white px-4 py-2 rounded">Agregar idioma</button>
+                         <label class="flex items-center space-x-2 mt-2">
+                             <input type="checkbox" id="includeLanguages" checked>
+                             <span>Incluir sección de idiomas en el CV final</span>
+                         </label>
+                     </div>
+                     <div class="flex justify-between">
+                         <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Atrás</button>
+                         <button id="generateBtn" type="submit" class="bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Generar CV</button>
+                     </div>
+                 </div>
+             </form>
++            <div id="builder-loading" class="message-box" style="display:none">
++                <i class="fas fa-spinner fa-spin mr-2"></i>Generando...
++            </div>
++            <div id="builderMessage" class="message-box message-success" style="display:none"></div>
++            <div id="builderError" class="message-box message-error" style="display:none"></div>
+         </div>
+     </main>
+ 
+     <footer class="bg-gray-800 text-white py-8 mt-auto">
+         <div class="container mx-auto px-6">
+             <div class="flex flex-col md:flex-row justify-between items-center">
+                 <div class="mb-4 md:mb-0">
+                     <div class="text-2xl font-bold">
+                         <span class="text-primary">Get</span><span class="text-white"> Hired!</span>
+                     </div>
+                     <p class="text-gray-400 mt-2">Conectando talentos con oportunidades</p>
+                 </div>
+                 <div class="flex space-x-6">
+                     <a href="https://www.linkedin.com/in/brunomoraes97/" class="text-gray-400 hover:text-white transition-colors">
+                         <i class="fab fa-linkedin-in text-xl"></i>
+                     </a>
+                 </div>
+             </div>
+             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                 <p>© 2025 Get Hired!. Todos los derechos reservados. | Hecho con ❤️ por Matheus Bruno</p>
+             </div>
+         </div>
+     </footer>
+ 
+     <script src="{{ url_for('static', filename='resume_builder.js') }}"></script>
+diff --git a/flaskr/templates/resume_builder_pt.html b/backend/templates/resume_builder_pt.html
+similarity index 97%
+rename from flaskr/templates/resume_builder_pt.html
+rename to backend/templates/resume_builder_pt.html
+index 6d4a2614120d9d473e7f5058ec4bad16b2ff0b67..266e9774b2eb05b62a55e53d4590b0893f941582 100644
+--- a/flaskr/templates/resume_builder_pt.html
++++ b/backend/templates/resume_builder_pt.html
+@@ -135,50 +135,55 @@
+                 <div class="form-step space-y-6 hidden">
+                     <div id="educationContainer" class="space-y-4">
+                         <h2 class="text-xl font-semibold">Educação</h2>
+                         <button type="button" id="addEducation" class="bg-primary text-white px-4 py-2 rounded">Adicionar educação</button>
+                     </div>
+                     <div class="flex justify-between">
+                         <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Voltar</button>
+                         <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Próximo</button>
+                     </div>
+                 </div>
+                 <div class="form-step space-y-6 hidden">
+                     <div id="languageContainer" class="space-y-4">
+                         <h2 class="text-xl font-semibold">Idiomas</h2>
+                         <button type="button" id="addLanguage" class="bg-primary text-white px-4 py-2 rounded">Adicionar idioma</button>
+                         <label class="flex items-center space-x-2 mt-2">
+                             <input type="checkbox" id="includeLanguages" checked>
+                             <span>Incluir seção de idiomas no currículo</span>
+                         </label>
+                     </div>
+                     <div class="flex justify-between">
+                         <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Voltar</button>
+                         <button id="generateBtn" type="submit" class="bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Gerar Currículo</button>
+                     </div>
+                 </div>
+             </form>
++            <div id="builder-loading" class="message-box" style="display:none">
++                <i class="fas fa-spinner fa-spin mr-2"></i>Gerando...
++            </div>
++            <div id="builderMessage" class="message-box message-success" style="display:none"></div>
++            <div id="builderError" class="message-box message-error" style="display:none"></div>
+         </div>
+     </main>
+ 
+     <footer class="bg-gray-800 text-white py-8 mt-auto">
+         <div class="container mx-auto px-6">
+             <div class="flex flex-col md:flex-row justify-between items-center">
+                 <div class="mb-4 md:mb-0">
+                     <div class="text-2xl font-bold">
+                         <span class="text-primary">Get</span><span class="text-white"> Hired!</span>
+                     </div>
+                     <p class="text-gray-400 mt-2">Conectando talentos a oportunidades</p>
+                 </div>
+                 <div class="flex space-x-6">
+                     <a href="https://www.linkedin.com/in/brunomoraes97/" class="text-gray-400 hover:text-white transition-colors">
+                         <i class="fab fa-linkedin-in text-xl"></i>
+                     </a>
+                 </div>
+             </div>
+             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                 <p>© 2025 Get Hired!. Todos os direitos reservados. | Feito com ❤️ por Matheus Bruno</p>
+             </div>
+         </div>
+     </footer>
+ 
+     <script src="{{ url_for('static', filename='resume_builder.js') }}"></script>
+diff --git a/flaskr/templates/resume_builder_ru.html b/backend/templates/resume_builder_ru.html
+similarity index 97%
+rename from flaskr/templates/resume_builder_ru.html
+rename to backend/templates/resume_builder_ru.html
+index de734c0a4cd49a65af888b445bbdaac7e9ac0692..eca853b2e42fe8d2345a411ebe3747cbf4d4d546 100644
+--- a/flaskr/templates/resume_builder_ru.html
++++ b/backend/templates/resume_builder_ru.html
+@@ -135,50 +135,55 @@
+                 <div class="form-step space-y-6 hidden">
+                     <div id="educationContainer" class="space-y-4">
+                         <h2 class="text-xl font-semibold">Образование</h2>
+                         <button type="button" id="addEducation" class="bg-primary text-white px-4 py-2 rounded">Добавить образование</button>
+                     </div>
+                     <div class="flex justify-between">
+                         <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Назад</button>
+                         <button type="button" class="next-step bg-primary text-white px-4 py-2 rounded">Далее</button>
+                     </div>
+                 </div>
+                 <div class="form-step space-y-6 hidden">
+                     <div id="languageContainer" class="space-y-4">
+                         <h2 class="text-xl font-semibold">Языки</h2>
+                         <button type="button" id="addLanguage" class="bg-primary text-white px-4 py-2 rounded">Добавить язык</button>
+                         <label class="flex items-center space-x-2 mt-2">
+                             <input type="checkbox" id="includeLanguages" checked>
+                             <span>Включить раздел языков в итоговое резюме</span>
+                         </label>
+                     </div>
+                     <div class="flex justify-between">
+                         <button type="button" class="prev-step bg-gray-500 text-white px-4 py-2 rounded">Назад</button>
+                         <button id="generateBtn" type="submit" class="bg-gradient-to-r from-primary to-secondary text-white font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Создать резюме</button>
+                     </div>
+                 </div>
+             </form>
++            <div id="builder-loading" class="message-box" style="display:none">
++                <i class="fas fa-spinner fa-spin mr-2"></i>Создание...
++            </div>
++            <div id="builderMessage" class="message-box message-success" style="display:none"></div>
++            <div id="builderError" class="message-box message-error" style="display:none"></div>
+         </div>
+     </main>
+ 
+     <footer class="bg-gray-800 text-white py-8 mt-auto">
+         <div class="container mx-auto px-6">
+             <div class="flex flex-col md:flex-row justify-between items-center">
+                 <div class="mb-4 md:mb-0">
+                     <div class="text-2xl font-bold">
+                         <span class="text-primary">Get</span><span class="text-white"> Hired!</span>
+                     </div>
+                     <p class="text-gray-400 mt-2">Соединяем таланты с возможностями</p>
+                 </div>
+                 <div class="flex space-x-6">
+                     <a href="https://www.linkedin.com/in/brunomoraes97/" class="text-gray-400 hover:text-white transition-colors">
+                         <i class="fab fa-linkedin-in text-xl"></i>
+                     </a>
+                 </div>
+             </div>
+             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                 <p>© 2025 Get Hired!. Все права защищены. | Сделано с ❤️ Матеусом Бруно</p>
+             </div>
+         </div>
+     </footer>
+ 
+     <script src="{{ url_for('static', filename='resume_builder.js') }}"></script>
+diff --git a/ai/tests/__init__.py b/services/ai/__init__.py
+similarity index 100%
+rename from ai/tests/__init__.py
+rename to services/ai/__init__.py
+diff --git a/services/ai/llm_io.py b/services/ai/llm_io.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..59dd25f3c5cf2a2c79fe35eb970eb1e6c7b06aed
+--- /dev/null
++++ b/services/ai/llm_io.py
+@@ -0,0 +1,57 @@
++from dotenv import load_dotenv
++import os
++import google.generativeai as genai
++
++from services.ai.system_prompt import SYSTEM_PROMPT, USER_MESSAGE
++from services.ai.schemas import CV
++
++load_dotenv()
++
++
++class LLM:
++    def __init__(self) -> None:
++        self.api_key = os.getenv("GEMINI_APIKEY")
++        self.model = os.getenv("GEMINI_MODEL")
++
++    def _configure(self, system_prompt: str):
++        genai.configure(api_key=self.api_key)
++        config = {
++            "temperature": 1,
++            "top_p": 0.95,
++            "top_k": 40,
++            "max_output_tokens": 8192,
++            "response_mime_type": "application/json",
++        }
++        return genai.GenerativeModel(
++            model_name=self.model,
++            system_instruction=system_prompt,
++            generation_config=config,
++        )
++
++    def prompt(self, question: str) -> str:
++        model = self._configure(SYSTEM_PROMPT)
++        return model.start_chat(history=[]).send_message(question).text
++
++    def generate_field(self, field_name: str, instructions: str) -> str:
++        system_prompt = (
++            f"You are a professional resume writer. Generate the {field_name} "
++            "using the user's notes. Return only the plain text or bullet list."
++        )
++        model = self._configure(system_prompt)
++        return model.start_chat(history=[]).send_message(instructions).text.strip()
++
++    def generate_cover_letter(self, cv: str, job_description: str) -> str:
++        system_prompt = (
++            "You are an expert career coach. Write a concise cover letter "
++            "for the provided job description using information from the resume."
++        )
++        model = self._configure(system_prompt)
++        prompt = f"RESUME:\n{cv}\nJOB DESCRIPTION:\n{job_description}"
++        return model.start_chat(history=[]).send_message(prompt).text.strip()
++
++    def run(self, cv: str, job_description: str) -> str:
++        question = (
++            USER_MESSAGE.replace("==curriculo_aqui==", cv)
++            .replace("==descricao_aqui==", job_description)
++        )
++        return self.prompt(question)
+diff --git a/ai/schemas.py b/services/ai/schemas.py
+similarity index 100%
+rename from ai/schemas.py
+rename to services/ai/schemas.py
+diff --git a/ai/system_prompt.py b/services/ai/system_prompt.py
+similarity index 100%
+rename from ai/system_prompt.py
+rename to services/ai/system_prompt.py
+diff --git a/core/app/__init__.py b/services/resume/__init__.py
+similarity index 100%
+rename from core/app/__init__.py
+rename to services/resume/__init__.py
+diff --git a/core/helpers/__init__.py b/services/resume/app/__init__.py
+similarity index 100%
+rename from core/helpers/__init__.py
+rename to services/resume/app/__init__.py
+diff --git a/core/app/cv_matheus_bruno_de_moraes.tex b/services/resume/app/cv_matheus_bruno_de_moraes.tex
+similarity index 100%
+rename from core/app/cv_matheus_bruno_de_moraes.tex
+rename to services/resume/app/cv_matheus_bruno_de_moraes.tex
+diff --git a/core/app/gerador_cv.py b/services/resume/app/gerador_cv.py
+similarity index 69%
+rename from core/app/gerador_cv.py
+rename to services/resume/app/gerador_cv.py
+index f31d4140a1fc1c3d6e0987c42fb87e0d2ec572a5..ca8f90f3fde413c075d14f048c0ab9a01190ab26 100644
+--- a/core/app/gerador_cv.py
++++ b/services/resume/app/gerador_cv.py
+@@ -1,66 +1,60 @@
+ # app/gerador_cv.py
+ 
+ # --- Bloco de Configuração de Caminhos e Importações ---
+ import os
+-import sys
+ 
+ # Pega o caminho absoluto do script atual (gerador_cv.py)
+ script_path = os.path.abspath(__file__)
+-# Pega o diretório do script (a pasta 'app')
+ script_dir = os.path.dirname(script_path)
+-# Sobe um nível para encontrar a raiz do projeto (a pasta 'resume')
+-project_root = os.path.dirname(script_dir)
+-# Adiciona a raiz do projeto ao path do Python para encontrar 'helpers'
+-sys.path.append(project_root)
++project_root = os.path.dirname(os.path.dirname(script_path))
+ # ---------------------------------------------
+ 
+ import json
+ import requests
+-from helpers.sanitizador import sanitizar_dados_para_latex
++from services.resume.helpers.sanitizador import sanitizar_dados_para_latex
+ 
+ # Variável global para ser usada pelas funções
+ dados_brutos = {}
+ 
+ class GeradorCV:
+     """
+     Gera um currículo em LaTeX de forma programática, lendo os dados de um arquivo JSON.
+     """
+ 
+     def __init__(self):
+         self.secoes = []
+ 
+     def _gerar_preambulo(self):
+         """Lê o preâmbulo de um arquivo externo usando um caminho robusto."""
+         preambulo_path = os.path.join(script_dir, 'preambulo_template.tex')
+         try:
+             with open(preambulo_path, 'r', encoding='utf-8') as f:
+                 template_content = f.read()
+             preambulo_formatado = template_content.replace("%%NOME_DA_PESSOA%%", self.nome)
+             return preambulo_formatado
+         except FileNotFoundError:
+-            print(f"❌ ERRO FATAL: Arquivo de template '{preambulo_path}' não encontrado.")
+             return None
+ 
+     def _gerar_cabecalho(self):
+         """Gera o cabeçalho em duas linhas de forma simples e robusta, sem macros complexas."""
+         
+         # Separa os contatos em duas listas para as duas linhas
+         contatos_principais = []
+         links_sociais = []
+ 
+         for contato in self.contatos:
+             tipo = contato.get('tipo', 'texto')
+             if tipo in ["linkedin", "github", "site"]:
+                 links_sociais.append(contato)
+             else:
+                 contatos_principais.append(contato)
+         
+         def formatar_lista(lista):
+             items_latex = []
+             for contato in lista:
+                 tipo = contato.get('tipo', 'texto')
+                 valor = contato.get('valor', '')
+                 item_formatado = ""
+                 # A lógica de formatação de cada item continua a mesma
+                 if tipo == "localizacao": item_formatado = fr"\mbox{{{valor}}}"
+                 elif tipo == "email": item_formatado = fr"\mbox{{\href{{mailto:{valor}}}{{{valor}}}}}"
+@@ -82,253 +76,198 @@ class GeradorCV:
+             
+             # --- A MUDANÇA PRINCIPAL ESTÁ AQUI ---
+             # Usa um separador simples e robusto com espaçamento padrão do LaTeX
+             separador = r" \enskip|\enskip " 
+             return separador.join(items_latex)
+ 
+         contatos_principais_str = formatar_lista(contatos_principais)
+         links_sociais_str = formatar_lista(links_sociais)
+         
+         # Retorna um bloco LaTeX muito mais simples, sem \newcommand ou \sbox
+         return fr"""
+ \begin{{header}}
+     {{\fontsize{{25pt}}{{25pt}}\selectfont {self.nome}}}
+ 
+     \vspace{{0pt}}
+ 
+     \normalsize
+     {contatos_principais_str} \\
+     {links_sociais_str}
+ \end{{header}}
+ 
+ \vspace{{5pt - 0.1cm}}
+ """
+ 
+     def adicionar_secao_lista_simples(self, titulo, itens):
+-        print(f"LOG: GeradorCV.adicionar_secao_lista_simples - Adicionando seção '{titulo}' com {len(itens)} itens.")
+         """Adiciona uma seção de lista simples."""
+         if not isinstance(itens, list): 
+-            print(f"LOG: GeradorCV.adicionar_secao_lista_simples - Itens não é uma lista para '{titulo}'.")
+             return
+         conteudo = ""
+         for i, item in enumerate(itens):
+             conteudo += fr"\begin{{onecolentry}}{{{item}}}\end{{onecolentry}}"
+             if i < len(itens) - 1:
+                 conteudo += "\n\\vspace{0.2cm}\n"
+         self.secoes.append((titulo, conteudo))
+-        print(f"LOG: GeradorCV.adicionar_secao_lista_simples - Seção '{titulo}' adicionada.")
+ 
+     def adicionar_secao_lista_categorizada(self, titulo, categorias):
+-        print(f"LOG: GeradorCV.adicionar_secao_lista_categorizada - Adicionando seção '{titulo}' com {len(categorias)} categorias.")
+         """Adiciona uma seção de categorias, formatando cada uma como um item separado."""
+         conteudo = ""
+         for i, categoria in enumerate(categorias):
+             if isinstance(categoria, dict) and 'nome' in categoria and 'itens' in categoria:
+                 nome_categoria = categoria['nome'] # O sanitizador já tratou o '&'
+                 itens_str = ", ".join(categoria['itens'])
+                 linha_formatada = fr"\textbf{{{nome_categoria}:}} {itens_str}"
+                 
+                 conteudo += fr"\begin{{onecolentry}}{{{linha_formatada}}}\end{{onecolentry}}"
+                 if i < len(categorias) - 1:
+                     conteudo += "\n\\vspace{0.1cm}\n"
+         self.secoes.append((titulo, conteudo))
+-        print(f"LOG: GeradorCV.adicionar_secao_lista_categorizada - Seção '{titulo}' adicionada.")
+ 
+     def adicionar_secao_entradas_com_destaques(self, titulo, entradas):
+-        print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Adicionando seção '{titulo}' com {len(entradas)} entradas.")
+         """Adiciona uma seção de entradas com destaques (layout da coluna esquerda aprimorado)."""
+         if not isinstance(entradas, list): 
+-            print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Entradas não é uma lista para '{titulo}'.")
+             return
+         conteudo = ""
+         for i, entrada in enumerate(entradas):
+-            print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Processando entrada {i+1}.")
+             if not isinstance(entrada, dict): 
+-                print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Entrada {i+1} não é um dicionário. Pulando.")
+                 continue
+ 
+             # Constrói a coluna da esquerda com quebra de linha para clareza
+             titulo_principal = entrada.get("titulo", "")
+             subtitulo_e_local = []
+             if entrada.get("subtitulo"):
+                 subtitulo_e_local.append(entrada.get("subtitulo"))
+             if entrada.get("local"):
+                 subtitulo_e_local.append(entrada.get("local"))
+             
+             coluna_esquerda = fr'\textbf{{{titulo_principal}}}'
+             if subtitulo_e_local:
+                 coluna_esquerda += fr' \\ {", ".join(subtitulo_e_local)}'
+ 
+             coluna_direita = fr'{entrada.get("data", "")}'
+             conteudo_entrada = fr"""
+ \begin{{onecolentry}}
+     \setcolumnwidth{{\fill, 4.5cm}}
+     \begin{{paracol}}{{2}}
+         {coluna_esquerda}
+         \switchcolumn
+         \raggedleft {coluna_direita}
+     \end{{paracol}}
+ \end{{onecolentry}}"""
+             if entrada.get("destaques"):
+                 destaques_latex = '\n'.join([fr'                \item {d}' for d in entrada["destaques"]])
+                 conteudo_entrada += fr"""
+ \vspace{{0.10cm}}
+ \begin{{onecolentry}}
+     \begin{{highlights}}
+ {destaques_latex}
+     \end{{highlights}}
+ \end{{onecolentry}}
+ """
+             conteudo += conteudo_entrada
+             if i < len(entradas) - 1:
+                 conteudo += "\n\\vspace{0.2cm}\n"
+         self.secoes.append((titulo, conteudo))
+-        print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Seção '{titulo}' adicionada.")
+ 
+     def gerar_latex(self):
+-        print("LOG: GeradorCV.gerar_latex - Iniciando geração de LaTeX.")
+         """Monta e retorna a string completa do documento LaTeX."""
+         preambulo = self._gerar_preambulo()
+         if preambulo is None:
+-            print("LOG: GeradorCV.gerar_latex - ERRO: Preâmbulo não gerado.")
+             return None
+         
+         cabecalho = self._gerar_cabecalho()
+         partes = [preambulo, r"\begin{document}", cabecalho]
+-        
+-        print(f"LOG: GeradorCV.gerar_latex - Processando {len(self.secoes)} seções.")
+         for titulo, conteudo in self.secoes:
+-            print(f"LOG: GeradorCV.gerar_latex - Adicionando seção LaTeX: {titulo}.")
+             partes.append(fr"\section{{{titulo}}}")
+             partes.append(conteudo)
+ 
+         partes.append(r"\end{document}")
+         latex_final = "\n".join(partes)
+-        print(f"LOG: GeradorCV.gerar_latex - LaTeX final gerado (tamanho: {len(latex_final)}).")
+         return latex_final
+ 
+     def salvar_tex(self, nome_arquivo="cv_gerado.tex"):
+-        print(f"LOG: GeradorCV.salvar_tex - Tentando salvar {nome_arquivo}.")
+         codigo_latex = self.gerar_latex()
+         if codigo_latex is None:
+-            print("LOG: GeradorCV.salvar_tex - Falha ao gerar código LaTeX. Arquivo .tex não será salvo.")
+             return
+         try:
+             with open(nome_arquivo, 'w', encoding='utf-8') as f:
+                 f.write(codigo_latex)
+-            print(f"LOG: GeradorCV.salvar_tex - Arquivo '{nome_arquivo}' salvo com sucesso!")
+         except Exception as e:
+-            print(f"LOG: GeradorCV.salvar_tex - ERRO ao salvar '{nome_arquivo}': {e}")
+ 
+     def gerar_pdf(self, nome_arquivo_saida="cv_gerado.pdf"):
+-        print(f"LOG: GeradorCV.gerar_pdf - Iniciando geração de PDF para '{nome_arquivo_saida}'...")
+         codigo_latex = self.gerar_latex()
+         if codigo_latex is None:
+-            print("LOG: GeradorCV.gerar_pdf - Falha ao gerar código LaTeX. Geração de PDF cancelada.")
+             return None
+         files_payload = {'filecontents[]': (None, codigo_latex),'filename[]': (None, 'document.tex'),'engine': (None, 'pdflatex'),'return': (None, 'pdf')}
+         try:
+-            print("LOG: GeradorCV.gerar_pdf - Conectando à API de compilação LaTeX...")
+             response = requests.post("https://texlive.net/cgi-bin/latexcgi", files=files_payload, timeout=90)
+             response.raise_for_status()
+-            print(f"LOG: GeradorCV.gerar_pdf - Resposta da API recebida (Status: {response.status_code}, Content-Type: {response.headers.get('Content-Type')}).")
+             if 'application/pdf' in response.headers.get('Content-Type', ''):
+-                print(f"LOG: GeradorCV.gerar_pdf - PDF gerado com sucesso pela API.")
+                 return response.content
+             else:
+-                print("LOG: GeradorCV.gerar_pdf - Erro na compilação LaTeX. Log da API:")
+-                print(response.content.decode('utf-8', errors='ignore'))
+                 return None
+         except requests.exceptions.RequestException as e:
+-            print(f"LOG: GeradorCV.gerar_pdf - ERRO de conexão ou API: {e}")
+             return None
+ 
+     def download(self, dados=None):
+         """Função principal que orquestra a geração do CV."""
+-        print("LOG: GeradorCV.download - Iniciando...")
+         if dados is None:
+-            # Testes locais
+-            print("LOG: GeradorCV.download - Dados não fornecidos, usando arquivo local.")
+-            path = os.path.join(project_root, 'input', 'dados_cv.json')
+-            try:
+-                with open(path, 'r', encoding='utf-8') as f:
+-                    dados_brutos = json.load(f)
+-            except (FileNotFoundError, json.JSONDecodeError) as e:
+-                print(f"LOG: GeradorCV.download - ERRO ao carregar dados locais: {e}")
+-                return None
++            return None
+         else:
+             dados_brutos = dados
+ 
+         # Garante que os dados brutos sejam um dicionário, não uma string JSON.
+         if isinstance(dados_brutos, str):
+-            print("LOG: GeradorCV.download - Dados brutos são uma string. Decodificando JSON...")
+             try:
+                 dados_brutos = json.loads(dados_brutos)
+             except json.JSONDecodeError as e:
+-                print(f"LOG: GeradorCV.download - ERRO FATAL: Falha ao decodificar o JSON. {e}")
+                 return None
+ 
+-        print(f"LOG: GeradorCV.download - Dados brutos processados (tipo: {type(dados_brutos)}).")
+-
+         # 1. Sanitiza uma cópia dos dados para o conteúdo do LaTeX.
+-        print("LOG: GeradorCV.download - Sanitizando dados para o LaTeX...")
+         chaves_a_ignorar = {'tipo', 'itens'}
+         dados_sanitizados = sanitizar_dados_para_latex(dados_brutos, chaves_para_ignorar=chaves_a_ignorar)
+-        print(f"LOG: GeradorCV.download - Dados sanitizados com sucesso.")
+         
+         # 2. Configura informações pessoais a partir dos dados sanitizados.
+         # Esta parte já é segura e lida com a ausência da chave 'pessoais'.
+         dados_pessoais_sanitizados = dados_sanitizados.get('pessoais', {})
+         self.nome = dados_pessoais_sanitizados.get('nome', 'Nome não encontrado')
+         self.contatos = dados_pessoais_sanitizados.get('contatos', [])
+-        print(f"LOG: GeradorCV.download - Nome: {self.nome}, Contatos: {len(self.contatos)}.")
+ 
+         # [REMOVIDO] - Bloco de código duplicado foi retirado daqui.
+         
+         # 3. Processa as seções do currículo.
+-        print("LOG: GeradorCV.download - Processando seções do currículo...")
+         
+         # [CORRIGIDO] - Processa 'secoes' como uma LISTA, que é o formato correto.
+         # Itera sobre cada dicionário de seção na lista 'secoes'.
+         secoes_brutas = dados_brutos.get('secoes', [])
+         secoes_sanitizadas = dados_sanitizados.get('secoes', [])
+ 
+         for i, secao_bruta in enumerate(secoes_brutas):
+             tipo_secao = secao_bruta.get('type')
+             
+             # Garante que a seção correspondente exista nos dados sanitizados
+             if i >= len(secoes_sanitizadas):
+-                print(f"LOG: GeradorCV.download - Aviso: Seção de índice {i} não encontrada nos dados sanitizados. Pulando.")
+                 continue
+                 
+             secao_sanitizada = secoes_sanitizadas[i]
+             titulo_sanitizado = secao_sanitizada.get('titulo', f'Seção {i+1}')
+ 
+-            print(f"LOG: GeradorCV.download - Processando seção: '{titulo_sanitizado}' (tipo: '{tipo_secao}').")
+-
+             if tipo_secao == 'lista_simples':
+                 self.adicionar_secao_lista_simples(titulo_sanitizado, secao_bruta.get('itens', []))
+             elif tipo_secao == 'lista_categorizada':
+                 self.adicionar_secao_lista_categorizada(titulo_sanitizado, secao_sanitizada.get('categorias', []))
+             elif tipo_secao == 'entradas_com_destaques':
+                 self.adicionar_secao_entradas_com_destaques(titulo_sanitizado, secao_sanitizada.get('entradas', []))
+             else:
+-                print(f"LOG: GeradorCV.download - Aviso: Seção '{titulo_sanitizado}' com tipo '{tipo_secao}' não reconhecida. Pulando.")
+ 
+         # 4. Geração dos arquivos.
+         output_dir = os.path.join(project_root, 'output')
+         os.makedirs(output_dir, exist_ok=True)
+         nome_base_arquivo = f"cv_{self.nome.lower().replace(' ', '_')}"
+         caminho_final = os.path.join(output_dir, nome_base_arquivo)
+-        
+-        print(f"LOG: GeradorCV.download - Salvando .tex em {caminho_final}.tex")
+         self.salvar_tex(f"{caminho_final}.tex")
+-        
+-        print(f"LOG: GeradorCV.download - Gerando PDF...")
+         pdf = self.gerar_pdf() # gerar_pdf já usa o latex gerado, não precisa de argumento
+-        
+-        print("LOG: GeradorCV.download - Finalizado.")
+         return pdf
+ 
+ 
+ if __name__ == "__main__":
+     GeradorCV().main()
+\ No newline at end of file
+diff --git a/core/app/preambulo_template.tex b/services/resume/app/preambulo_template.tex
+similarity index 100%
+rename from core/app/preambulo_template.tex
+rename to services/resume/app/preambulo_template.tex
+diff --git a/core/input/__init__.py b/services/resume/helpers/__init__.py
+similarity index 100%
+rename from core/input/__init__.py
+rename to services/resume/helpers/__init__.py
+diff --git a/core/helpers/sanitizador.py b/services/resume/helpers/sanitizador.py
+similarity index 100%
+rename from core/helpers/sanitizador.py
+rename to services/resume/helpers/sanitizador.py
+diff --git a/flaskr/routes/__init__.py b/to-be-reviewed/input/__init__.py
+similarity index 100%
+rename from flaskr/routes/__init__.py
+rename to to-be-reviewed/input/__init__.py
+diff --git a/core/input/dados.yaml b/to-be-reviewed/input/dados.yaml
+similarity index 100%
+rename from core/input/dados.yaml
+rename to to-be-reviewed/input/dados.yaml
+diff --git a/core/input/dados_cv.json b/to-be-reviewed/input/dados_cv.json
+similarity index 100%
+rename from core/input/dados_cv.json
+rename to to-be-reviewed/input/dados_cv.json
+diff --git a/core/input/dados_cv.yaml b/to-be-reviewed/input/dados_cv.yaml
+similarity index 100%
+rename from core/input/dados_cv.yaml
+rename to to-be-reviewed/input/dados_cv.yaml
+diff --git a/core/input/dados_cv2.json b/to-be-reviewed/input/dados_cv2.json
+similarity index 100%
+rename from core/input/dados_cv2.json
+rename to to-be-reviewed/input/dados_cv2.json
+diff --git a/core/input/dados_cv3.yaml b/to-be-reviewed/input/dados_cv3.yaml
+similarity index 100%
+rename from core/input/dados_cv3.yaml
+rename to to-be-reviewed/input/dados_cv3.yaml
+diff --git a/core/output/cv_clara_sousa_gomes.pdf b/to-be-reviewed/output/cv_clara_sousa_gomes.pdf
+similarity index 100%
+rename from core/output/cv_clara_sousa_gomes.pdf
+rename to to-be-reviewed/output/cv_clara_sousa_gomes.pdf
+diff --git a/core/output/cv_clara_sousa_gomes.tex b/to-be-reviewed/output/cv_clara_sousa_gomes.tex
+similarity index 100%
+rename from core/output/cv_clara_sousa_gomes.tex
+rename to to-be-reviewed/output/cv_clara_sousa_gomes.tex
+diff --git a/core/output/cv_clara_souza_gomes.pdf b/to-be-reviewed/output/cv_clara_souza_gomes.pdf
+similarity index 100%
+rename from core/output/cv_clara_souza_gomes.pdf
+rename to to-be-reviewed/output/cv_clara_souza_gomes.pdf
+diff --git a/core/output/cv_clara_souza_gomes.tex b/to-be-reviewed/output/cv_clara_souza_gomes.tex
+similarity index 100%
+rename from core/output/cv_clara_souza_gomes.tex
+rename to to-be-reviewed/output/cv_clara_souza_gomes.tex
+diff --git "a/core/output/cv_jo\303\243o_da_silva.pdf" "b/to-be-reviewed/output/cv_jo\303\243o_da_silva.pdf"
+similarity index 100%
+rename from "core/output/cv_jo\303\243o_da_silva.pdf"
+rename to "to-be-reviewed/output/cv_jo\303\243o_da_silva.pdf"
+diff --git "a/core/output/cv_jo\303\243o_da_silva.tex" "b/to-be-reviewed/output/cv_jo\303\243o_da_silva.tex"
+similarity index 100%
+rename from "core/output/cv_jo\303\243o_da_silva.tex"
+rename to "to-be-reviewed/output/cv_jo\303\243o_da_silva.tex"
+diff --git "a/core/output/cv_jo\303\243o_gomes.tex" "b/to-be-reviewed/output/cv_jo\303\243o_gomes.tex"
+similarity index 100%
+rename from "core/output/cv_jo\303\243o_gomes.tex"
+rename to "to-be-reviewed/output/cv_jo\303\243o_gomes.tex"
+diff --git "a/core/output/cv_jo\303\243o_silva.pdf" "b/to-be-reviewed/output/cv_jo\303\243o_silva.pdf"
+similarity index 100%
+rename from "core/output/cv_jo\303\243o_silva.pdf"
+rename to "to-be-reviewed/output/cv_jo\303\243o_silva.pdf"
+diff --git "a/core/output/cv_jo\303\243o_silva.tex" "b/to-be-reviewed/output/cv_jo\303\243o_silva.tex"
+similarity index 100%
+rename from "core/output/cv_jo\303\243o_silva.tex"
+rename to "to-be-reviewed/output/cv_jo\303\243o_silva.tex"
+diff --git a/core/output/cv_leonardo_schmidt.pdf b/to-be-reviewed/output/cv_leonardo_schmidt.pdf
+similarity index 100%
+rename from core/output/cv_leonardo_schmidt.pdf
+rename to to-be-reviewed/output/cv_leonardo_schmidt.pdf
+diff --git a/core/output/cv_leonardo_schmidt.tex b/to-be-reviewed/output/cv_leonardo_schmidt.tex
+similarity index 100%
+rename from core/output/cv_leonardo_schmidt.tex
+rename to to-be-reviewed/output/cv_leonardo_schmidt.tex
+diff --git "a/core/output/cv_maria_das_gra\303\247as_silva.pdf" "b/to-be-reviewed/output/cv_maria_das_gra\303\247as_silva.pdf"
+similarity index 100%
+rename from "core/output/cv_maria_das_gra\303\247as_silva.pdf"
+rename to "to-be-reviewed/output/cv_maria_das_gra\303\247as_silva.pdf"
+diff --git "a/core/output/cv_maria_das_gra\303\247as_silva.tex" "b/to-be-reviewed/output/cv_maria_das_gra\303\247as_silva.tex"
+similarity index 100%
+rename from "core/output/cv_maria_das_gra\303\247as_silva.tex"
+rename to "to-be-reviewed/output/cv_maria_das_gra\303\247as_silva.tex"
+diff --git a/core/output/cv_maria_silva.pdf b/to-be-reviewed/output/cv_maria_silva.pdf
+similarity index 100%
+rename from core/output/cv_maria_silva.pdf
+rename to to-be-reviewed/output/cv_maria_silva.pdf
+diff --git a/core/output/cv_maria_silva.tex b/to-be-reviewed/output/cv_maria_silva.tex
+similarity index 100%
+rename from core/output/cv_maria_silva.tex
+rename to to-be-reviewed/output/cv_maria_silva.tex
+diff --git a/core/output/cv_matheus_bruno_de_moraes.pdf b/to-be-reviewed/output/cv_matheus_bruno_de_moraes.pdf
+similarity index 100%
+rename from core/output/cv_matheus_bruno_de_moraes.pdf
+rename to to-be-reviewed/output/cv_matheus_bruno_de_moraes.pdf
+diff --git a/core/output/cv_matheus_bruno_de_moraes.tex b/to-be-reviewed/output/cv_matheus_bruno_de_moraes.tex
+similarity index 100%
+rename from core/output/cv_matheus_bruno_de_moraes.tex
+rename to to-be-reviewed/output/cv_matheus_bruno_de_moraes.tex
+diff --git a/core/output/cv_paulo_juniorrr.tex b/to-be-reviewed/output/cv_paulo_juniorrr.tex
+similarity index 100%
+rename from core/output/cv_paulo_juniorrr.tex
+rename to to-be-reviewed/output/cv_paulo_juniorrr.tex
+diff --git a/to-be-reviewed/tests/__init__.py b/to-be-reviewed/tests/__init__.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/ai/tests/fixtures/curriculo.py b/to-be-reviewed/tests/fixtures/curriculo.py
+similarity index 100%
+rename from ai/tests/fixtures/curriculo.py
+rename to to-be-reviewed/tests/fixtures/curriculo.py
+diff --git a/ai/tests/fixtures/descricao.py b/to-be-reviewed/tests/fixtures/descricao.py
+similarity index 100%
+rename from ai/tests/fixtures/descricao.py
+rename to to-be-reviewed/tests/fixtures/descricao.py
+diff --git a/core/helpers/validate_yaml.py b/to-be-reviewed/validate_yaml.py
+similarity index 100%
+rename from core/helpers/validate_yaml.py
+rename to to-be-reviewed/validate_yaml.py
+diff --git a/wsgi.py b/wsgi.py
+index 23152c6dfd76cd8e6656b1c006daf03c624cc1b5..aba8748f40070e664a09d325395594071b2eefbb 100644
+--- a/wsgi.py
++++ b/wsgi.py
+@@ -1,3 +1,3 @@
+-from flaskr import create_app
++from backend import create_app
+ 
+ app = create_app()
+\ No newline at end of file
+ 
+EOF
+)
