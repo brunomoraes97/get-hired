@@ -8,6 +8,7 @@ from ai.tests.fixtures.curriculo import CURRICULO
 from ai.tests.fixtures.descricao import DESCRICAO
 from ai.schemas import CV
 import google.generativeai as genai
+from core.app.preambulo_template import preamble
 
 class LLM:
     def __init__(self):
@@ -19,7 +20,7 @@ class LLM:
         self.api_key=os.getenv("GEMINI_APIKEY")
         self.model=os.getenv("GEMINI_MODEL")
 
-    def prompt(self, question: str):
+    def prompt(self, cv: str, job_description: str):
         genai.configure(api_key=self.api_key)
         generation_config = {
             "temperature": 1,
@@ -33,8 +34,16 @@ class LLM:
             system_instruction=SYSTEM_PROMPT,
             generation_config=generation_config
         )
-        chat_session = model.start_chat(history=[])
-        response = chat_session.send_message(question)
+        response = model.generate_content(
+            [
+                f"System prompt: {SYSTEM_PROMPT}",
+                f"Preamble template: {preamble}",
+                f"CV:\n{cv}",
+                f"Job Description:\n{job_description}",
+                f"Language:\nSame language as the job description",
+            ],
+            generation_config=generation_config
+        )
         return response.text
 
     def generate_field(self, field_name: str, instructions: str) -> str:
@@ -71,6 +80,8 @@ class LLM:
         system_prompt = (
             "You are an expert career coach. Write a concise cover letter "
             "for the provided job description using information from the resume."
+            "Do not use empty placeholders such as [Your Name] and [Date]"
+            "Populate placeholders according to the information from the resume"
         )
         model = genai.GenerativeModel(
             model_name=self.model,
@@ -129,7 +140,7 @@ class LLM:
         print("--- PROMPT FINAL ENVIADO PARA A API ---")
         print(question)
         print("---------------------------------------")
-        output = self.prompt(question)
+        output = self.prompt(cv, job_description)
         print("PASSOU AQUI 4")
         print(f"ANSWER É: {output}")
         print("PASSOU AQUI 5 -> gerou output. OUTPUT É ANSWER EM JSON")

@@ -219,6 +219,30 @@ class GeradorCV:
         except Exception as e:
             print(f"LOG: GeradorCV.salvar_tex - ERRO ao salvar '{nome_arquivo}': {e}")
 
+    def generate_from_tex(self, tex_code: str):
+
+        files_payload = {
+            'filecontents[]': (None, tex_code),
+            'filename[]': (None, 'document.tex'),
+            'engine': (None, 'pdflatex'),
+            'return': (None, 'pdf')
+            }
+        
+        try:
+            response = requests.post(
+                "https://texlive.net/cgi-bin/latexcgi",
+                files=files_payload,
+                timeout=90)
+            response.raise_for_status()
+
+            if 'application/pdf' in response.headers.get('Content-Type', ''):
+                return response.content
+            return None
+        
+        except requests.exceptions.RequestException as e:
+            print(f"LOG: GeradorCV.gerar_pdf - ERRO de conexão ou API: {e}")
+            return None
+
     def gerar_pdf(self, nome_arquivo_saida="cv_gerado.pdf"):
         print(f"LOG: GeradorCV.gerar_pdf - Iniciando geração de PDF para '{nome_arquivo_saida}'...")
         codigo_latex = self.gerar_latex()

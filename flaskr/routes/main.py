@@ -63,15 +63,20 @@ def transform_json():
         return jsonify({"erro": "As chaves 'cv' e 'job_description' são obrigatórias."}), 400
 
     print("LOG: transform_json - Chamando LLM.run()...")
-    dados_brutos = llm.run(cv_text, vaga_text)
-    print(f"LOG: transform_json - LLM.run() retornou dados brutos (tipo: {type(dados_brutos)}).")
+    tex_code = llm.run(cv_text, vaga_text)
+    print(f"LOG: transform_json - LLM.run() retornou dados brutos (tipo: {type(tex_code)}).")
+
+
+    ##### AQUI!!!!!
+
+    pdf_file = GeradorCV().generate_from_tex(tex_code)
 
     # A função download() em GeradorCV já lida com a sanitização e a geração do PDF
-    print("LOG: transform_json - Chamando GeradorCV().download()...")
+    """print("LOG: transform_json - Chamando GeradorCV().download()...")
     pdf_content = GeradorCV().download(dados_brutos)
-    print(f"LOG: transform_json - GeradorCV().download() retornou PDF (tamanho: {len(pdf_content) if pdf_content else 0}).")
+    print(f"LOG: transform_json - GeradorCV().download() retornou PDF (tamanho: {len(pdf_content) if pdf_content else 0}).")"""
 
-    if not pdf_content:
+    if not pdf_file:
         print("LOG: transform_json - Erro: PDF não gerado.")
         return jsonify({"erro": "Erro ao gerar PDF"}), 500
 
@@ -80,7 +85,7 @@ def transform_json():
         cover_letter_text = llm.generate_cover_letter(cv_text, vaga_text)
         buffer = BytesIO()
         with zipfile.ZipFile(buffer, 'w') as zf:
-            zf.writestr('cv_otimizado.pdf', pdf_content)
+            zf.writestr('cv_otimizado.pdf', pdf_file)
             zf.writestr('cover_letter.txt', cover_letter_text)
         buffer.seek(0)
         return send_file(
@@ -92,7 +97,7 @@ def transform_json():
 
     print("LOG: transform_json - Enviando PDF como resposta.")
     return send_file(
-        BytesIO(pdf_content),
+        BytesIO(pdf_file),
         mimetype="application/pdf",
         as_attachment=True,
         download_name="cv_otimizado.pdf"
