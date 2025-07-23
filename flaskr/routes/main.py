@@ -15,11 +15,13 @@ from core.helpers.sanitizador import sanitizar_dados_para_latex
 from io import BytesIO
 import json
 import os
+import re
 import zipfile
 import jwt
 from ai.llm_io import LLM
 from flaskr.auth_utils import token_required
 from flaskr.routes.auth import get_supabase
+import logging
 
 
 routes = Blueprint("routes", __name__)
@@ -46,10 +48,16 @@ def index(lang_code):
 @routes.route('/generate', methods=["POST"])
 @token_required
 def transform_json():
-    print("LOG: transform_json - Iniciando requisição.")
+
+    logger = logging.getLogger(__name__)
+    logging.basicConfig(filename='logs',level=logging.INFO)
+    logger.info('Started')
+
+
     dados_entrada = request.get_json()
+
     if not dados_entrada:
-        print("LOG: transform_json - Erro: JSON ausente ou malformado.")
+        logging.log(0,"LOG: transform_json - Erro: JSON ausente ou malformado.")
         return jsonify({"erro": "Corpo da requisição JSON ausente ou malformado."}), 400
 
     cv_text = dados_entrada.get("cv", "").replace("&", "and")
@@ -67,16 +75,37 @@ def transform_json():
     print(f"LOG: transform_json - LLM.run() retornou dados brutos (tipo: {type(tex_code)}).")
 
 
-    ##### AQUI!!!!!
+        #### LIMPEZA
+    def limpeza(tex_code):
+        # LOG: transform_json - LLM.run() retornou dados brutos (tipo: ...).
+        print("LOG: transform_json - Limpando LaTeX...")
 
-    pdf_file = GeradorCV().generate_from_tex(tex_code)
+        # Corrige escape duplicado de barras
+        tex_code = tex_code.strip().strip('"').strip("'")
+        if tex_code.startswith('\\\\documentclass') or '\\\\' in tex_code:
+            tex_code = re.sub(r'\\\\', r'\\', tex_code)
+
+        # Confirma se é LaTeX válido
+        if not (tex_code.lstrip().startswith(r'\documentclass') and tex_code.strip().endswith(r'\end{document}')):
+            print("LOG: transform_json - Erro: LaTeX inválido detectado.")
+            return jsonify({"erro": "O código LaTeX retornado não é válido."}), 500
+
+        return tex_code
+    ##### AQUI!!!!!
+    tex_code_limpo = limpeza(tex_code)
+    pdf_file = GeradorCV().generate_from_tex(tex_code_limpo)
 
     # A função download() em GeradorCV já lida com a sanitização e a geração do PDF
     """print("LOG: transform_json - Chamando GeradorCV().download()...")
     pdf_content = GeradorCV().download(dados_brutos)
     print(f"LOG: transform_json - GeradorCV().download() retornou PDF (tamanho: {len(pdf_content) if pdf_content else 0}).")"""
+    counter = 0
+    while 'error_messages' in pdf_file and counter < 3:
+        counter += 1
+        new_tex_code = LLM().reprompt(pdf_file)
+        pdf_file = GeradorCV().generate_from_tex(limpeza(new_tex_code))
 
-    if not pdf_file:
+    if 'error_messages' in pdf_file and counter >= 3:
         print("LOG: transform_json - Erro: PDF não gerado.")
         return jsonify({"erro": "Erro ao gerar PDF"}), 500
 

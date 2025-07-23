@@ -1,0 +1,180 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=2 cm,
+    bottom=2 cm,
+    left=2 cm,
+    right=2 cm,
+    footskip=1.0 cm
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={ Matheus Bruno de Moraes },
+    pdfauthor={ Matheus Bruno de Moraes },
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+% Some settings:
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.15cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{
+    -1pt
+}{
+    0.3 cm
+}{
+    0.2 cm
+}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0 cm + 10pt
+    ]
+}{\end{itemize}}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0 cm + 0.00001 cm
+    }{
+        0 cm + 0.00001 cm
+    }
+}{\end{adjustwidth}}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{\par\kern\topsep}
+
+\begin{document}
+
+\begin{header}
+\textbf{MATHEUS BRUNO DE MORAES} \\
+Support Engineer | DevOps | Technical Implementation \\
++55 (41) 9 9575-7856 | mbrunomoraes97@gmail.com | \href{https://github.com/brunomoraes97}{https://github.com/brunomoraes97} | \href{https://www.linkedin.com/in/brunomoraes97/}{https://www.linkedin.com/in/brunomoraes97/} \\
+Brazilian, 28 years old
+\end{header}
+
+\section*{SUMMARY}
+Experienced Support and DevOps Engineer with a proven track record in managing the entire customer lifecycle, from triage to complex resolution. Expertise in Linux systems administration, scripting (Bash, Python), Git, and CI/CD.  Proven ability to translate complex business needs into technical solutions and drive initiatives from concept to completion.  Strong collaboration skills fostering alignment across functions for optimized customer experiences.
+
+\section*{SKILLS}
+\begin{itemize}
+\item Linux Systems Administration:  Proficient in Linux server administration, performance troubleshooting, diagnostic tools, and Docker.
+\item DevOps and CI/CD: Expertise in implementing CI/CD pipelines (GitHub Actions), managing staging and production environments, Git, GitHub, Openshift and Kubernetes.
+\item Programming Languages:  Proficient in Bash, Python, Java, C, Javascript, Ruby.
+\item Automation and Scripting: Experienced in automating processes with Selenium, Playwright, Puppeteer, and API integrations.
+\item Technical Support and Customer Experience:  Excellent communication skills, focused on customer resolution (API, S2S, platform) and knowledge base building.
+\item Content Creation:  Proficient in creating technical documentation, tutorials, and support content.
+\item Databases:  Experienced with MySQL (queries, data processing).
+\item Security and Compliance:  Understanding of information security and compliance concepts (OffSec).
+\item Tools:  Proficient in Git, GitHub, Postman, Zendesk, Jira, Zapier, N8N, and CRMs.
+\end{itemize}
+
+\section*{PROFESSIONAL EXPERIENCE}
+
+\subsection*{Technical Onboarding Manager at IREV}
+\textit{Limassol, Cyprus (Remote, full-time) | 2024-Current}
+\begin{itemize}
+\item Spearheaded client onboarding, managing technical setups, timelines, and stakeholder alignment.
+\item Conducted scoping calls to assess customer infrastructure and plan accurate implementations.
+\item Troubleshooted API, S2S, and platform integrations, collaborating with product and engineering teams.
+\item Standardized documentation and streamlined onboarding processes, improving support content.
+\end{itemize}
+
+\subsection*{L2 Technical Support Engineer and Automation Specialist at Multilogin}
+\textit{Tallinn, Estonia (Remote) | 2023-2024}
+\begin{itemize}
+\item Resolved complex technical issues through analytical problem-solving and automation.
+\item Developed automation scripts (Selenium, Playwright, Puppeteer) to enhance customer support.
+\item Processed data and performed queries in MySQL.
+\item Created technical documentation and demonstration videos for user empowerment.
+\end{itemize}
+
+
+\subsection*{Software Engineer at SaasPro}
+\textit{Curitiba, Brazil (In-person) | 2022-2023}
+\begin{itemize}
+\item Managed professional services outside of product scope.
+\item Developed and maintained platform integrations for process optimization.
+\item Implemented chatbot and AI-based solutions for customer engagement.
+\item Worked with web frameworks (Flask, FastAPI, Django).
+\item Provided technical guidance during sales calls and development strategy.
+\end{itemize}
+
+\subsection*{Technical Support Engineer at SaasPro}
+\textit{Curitiba, Brazil (In-person) | 2019-2023}
+\begin{itemize}
+\item Provided technical support via email, chat, and calls, ensuring customer satisfaction.
+\item Guided clients on email compliance best practices.
+\item Integrated various tools via API (Python, Zapier, Make).
+\item Collaborated with teams to address customer needs and feedback.
+\end{itemize}
+
+
+\section*{EDUCATION}
+\subsection*{Bachelor’s in Information and Communication Technologies (ICT)}
+\textit{Universidade Federal de Santa Catarina (UFSC), Brazil | Currently Enrolled}
+\begin{itemize}
+\item Teaching assistant for Algorithms and Programming (Python focus).
+\item Member of the Artificial Intelligence League (LIA).
+\item Focused on Object-Oriented Programming (OOP), Java, and Python.
+\item Participated in the OffSec extension group, specializing in information security.
+\end{itemize}
+
+\subsection*{Bachelor’s in Psychology}
+\textit{Universidade Federal do Paraná (UFPR), Brazil | Graduated in 2023}
+\begin{itemize}
+\item Founded and led the Neuropsychology Academic League, developing research skills.
+\item Participated in cognitive rehabilitation community outreach projects.
+\end{itemize}
+
+\section*{LANGUAGES}
+\begin{itemize}
+\item English: Fluent
+\item Portuguese: Native
+\item Spanish: Intermediate
+\end{itemize}
+
+\end{document}

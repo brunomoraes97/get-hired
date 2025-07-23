@@ -1,4 +1,4 @@
-preamble = fr"""\documentclass[10pt, letterpaper]{{article}}
+preamble = r"""\documentclass[10pt, letterpaper]{article}
 
 % Packages:
 \usepackage[
@@ -8,84 +8,75 @@ preamble = fr"""\documentclass[10pt, letterpaper]{{article}}
     left=2 cm,
     right=2 cm,
     footskip=1.0 cm
-]{{geometry}}
-\usepackage{{titlesec}}
-\usepackage{{tabularx}}
-\usepackage{{array}}
-\usepackage[dvipsnames]{{xcolor}}
-\definecolor{{primaryColor}}{{RGB}}{{0, 0, 0}}
-\usepackage{{enumitem}}
-\usepackage{{fontawesome5}}
-\usepackage{{amsmath}}
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
 \usepackage[
-    pdftitle={{ name-here }},
-    pdfauthor={{ name-here }},
+    pdftitle={CV of %%NAME%%},
+    pdfauthor={%%NAME%%},
     colorlinks=true,
     urlcolor=primaryColor
-]{{hyperref}}
-\usepackage[pscoord]{{eso-pic}}
-\usepackage{{calc}}
-\usepackage{{bookmark}}
-\usepackage{{lastpage}}
-\usepackage{{changepage}}
-\usepackage{{paracol}}
-\usepackage{{ifthen}}
-\usepackage{{needspace}}
-\usepackage{{iftex}}
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
 
-% Ensure that generate pdf is machine readable/ATS parsable:
 \ifPDFTeX
-    \input{{glyphtounicode}}
+    \input{glyphtounicode}
     \pdfgentounicode=1
-    \usepackage[T1]{{fontenc}}
-    \usepackage[utf8]{{inputenc}}
-    \usepackage{{lmodern}}
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
 \fi
 
-\usepackage{{charter}}
+\usepackage{charter}
 
-% Some settings:
 \raggedright
-\AtBeginEnvironment{{adjustwidth}}{{\partopsep0pt}}
-\pagestyle{{empty}}
-\setcounter{{secnumdepth}}{{0}}
-\setlength{{\parindent}}{{0pt}}
-\setlength{{\topskip}}{{0pt}}
-\setlength{{\columnsep}}{{0.15cm}}
-\pagenumbering{{gobble}}
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.15cm}
+\pagenumbering{gobble}
 
-\titleformat{{\section}}{{\needspace{{4\baselineskip}}\bfseries\large}}{{}}{{0pt}}{{}}[\vspace{{1pt}}\titlerule]
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+\titlespacing{\section}{-1pt}{0.3 cm}{0.2 cm}
 
-\titlespacing{{\section}}{{
-    -1pt
-}}{{
-    0.3 cm
-}}{{
-    0.2 cm
-}}
-
-\renewcommand\labelitemi{{$\vcenter{{\hbox{{\small$\bullet$}}}}$}}
-\newenvironment{{highlights}}{{
-    \begin{{itemize}}[
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
         topsep=0.10 cm,
         parsep=0.10 cm,
         partopsep=0pt,
         itemsep=0pt,
         leftmargin=0 cm + 10pt
     ]
-}}{{\end{{itemize}}}}
+}{\end{itemize}}
 
-\newenvironment{{onecolentry}}{{
-    \begin{{adjustwidth}}{{
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
         0 cm + 0.00001 cm
-    }}{{
+    }{
         0 cm + 0.00001 cm
-    }}
-}}{{\end{{adjustwidth}}}}
+    }
+}{\end{adjustwidth}}
 
-\newenvironment{{header}}{{
-    \setlength{{\topsep}}{{0pt}}\par\kern\topsep\centering\linespread{{1.5}}
-}}{{\par\kern\topsep}}
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{\par\kern\topsep}
 
 \let\hrefWithoutArrow\href
 """

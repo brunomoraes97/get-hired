@@ -19,6 +19,7 @@ class LLM:
 
         self.api_key=os.getenv("GEMINI_APIKEY")
         self.model=os.getenv("GEMINI_MODEL")
+        self.counter = 0
 
     def prompt(self, cv: str, job_description: str):
         genai.configure(api_key=self.api_key)
@@ -36,12 +37,37 @@ class LLM:
         )
         response = model.generate_content(
             [
-                f"System prompt: {SYSTEM_PROMPT}",
-                f"Preamble template: {preamble}",
-                f"CV:\n{cv}",
-                f"Job Description:\n{job_description}",
-                f"Language:\nSame language as the job description",
+                #f"Preamble is FIXED and will be prepended. Do NOT output it.",
+                f"# Resume:\n{cv}",
+                f"# Job Description:\n{job_description}",
+                #"Language: same as the job description",
+                #"Return JSON only, no backticks."
+
+                #f"Preamble template: {preamble}",
+                #f"CV:\n{cv}",
+                #f"Job Description:\n{job_description}",
+                #f"Language:\nSame language as the job description",
             ],
+            generation_config=generation_config
+        )
+        return response.text
+    
+    def reprompt(self, logs: str):
+
+        genai.configure(api_key=self.api_key)
+        generation_config = {
+            "temperature": 1,
+            "top_p": 0.95,
+            "top_k": 40,
+            "max_output_tokens": 8192,
+            "response_mime_type": "application/json",
+        }
+        model = genai.GenerativeModel(
+            model_name=self.model,
+            generation_config=generation_config
+        )
+        response = model.generate_content(
+            [logs],
             generation_config=generation_config
         )
         return response.text

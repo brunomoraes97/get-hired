@@ -1,9 +1,6 @@
-# app/gerador_cv.py
-
-# --- Bloco de Configuração de Caminhos e Importações ---
 import os
 import sys
-
+# --------------------------------------------- #
 # Pega o caminho absoluto do script atual (gerador_cv.py)
 script_path = os.path.abspath(__file__)
 # Pega o diretório do script (a pasta 'app')
@@ -12,11 +9,12 @@ script_dir = os.path.dirname(script_path)
 project_root = os.path.dirname(script_dir)
 # Adiciona a raiz do projeto ao path do Python para encontrar 'helpers'
 sys.path.append(project_root)
-# ---------------------------------------------
+# --------------------------------------------- #
 
 import json
 import requests
 from helpers.sanitizador import sanitizar_dados_para_latex
+from ai.llm_io import LLM
 
 # Variável global para ser usada pelas funções
 dados_brutos = {}
@@ -27,200 +25,9 @@ class GeradorCV:
     """
 
     def __init__(self):
-        self.secoes = []
+        pass
 
-    def _gerar_preambulo(self):
-        """Lê o preâmbulo de um arquivo externo usando um caminho robusto."""
-        preambulo_path = os.path.join(script_dir, 'preambulo_template.tex')
-        try:
-            with open(preambulo_path, 'r', encoding='utf-8') as f:
-                template_content = f.read()
-            preambulo_formatado = template_content.replace("%%NOME_DA_PESSOA%%", self.nome)
-            return preambulo_formatado
-        except FileNotFoundError:
-            print(f"❌ ERRO FATAL: Arquivo de template '{preambulo_path}' não encontrado.")
-            return None
-
-    def _gerar_cabecalho(self):
-        """Gera o cabeçalho em duas linhas de forma simples e robusta, sem macros complexas."""
-        
-        # Separa os contatos em duas listas para as duas linhas
-        contatos_principais = []
-        links_sociais = []
-
-        for contato in self.contatos:
-            tipo = contato.get('tipo', 'texto')
-            if tipo in ["linkedin", "github", "site"]:
-                links_sociais.append(contato)
-            else:
-                contatos_principais.append(contato)
-        
-        def formatar_lista(lista):
-            items_latex = []
-            for contato in lista:
-                tipo = contato.get('tipo', 'texto')
-                valor = contato.get('valor', '')
-                item_formatado = ""
-                # A lógica de formatação de cada item continua a mesma
-                if tipo == "localizacao": item_formatado = fr"\mbox{{{valor}}}"
-                elif tipo == "email": item_formatado = fr"\mbox{{\href{{mailto:{valor}}}{{{valor}}}}}"
-                elif tipo == "telefone": item_formatado = fr"\mbox{{\href{{tel:{valor.replace(' ', '').replace('-', '')}}}{{{valor}}}}}"
-                elif tipo == "site":
-                    url = valor if valor.startswith("http") else "https://" + valor
-                    texto_display = valor.replace("https://", "").replace("http://", "")
-                    item_formatado = fr"\mbox{{\href{{{url}}}{{{texto_display}}}}}"
-                elif tipo == "linkedin":
-                    url = f"{valor}"
-                    texto_display = f"{valor}"
-                    item_formatado = fr"\mbox{{\href{{{url}}}{{{"LinkedIn"}}}}}"
-                elif tipo == "github":
-                    url = f"{valor}"
-                    texto_display = f"{valor}"
-                    item_formatado = fr"\mbox{{\href{{{url}}}{{{"Github"}}}}}"
-                else: item_formatado = fr"\mbox{{{valor}}}"
-                items_latex.append(item_formatado)
-            
-            # --- A MUDANÇA PRINCIPAL ESTÁ AQUI ---
-            # Usa um separador simples e robusto com espaçamento padrão do LaTeX
-            separador = r" \enskip|\enskip " 
-            return separador.join(items_latex)
-
-        contatos_principais_str = formatar_lista(contatos_principais)
-        links_sociais_str = formatar_lista(links_sociais)
-        
-        # Retorna um bloco LaTeX muito mais simples, sem \newcommand ou \sbox
-        return fr"""
-\begin{{header}}
-    {{\fontsize{{25pt}}{{25pt}}\selectfont {self.nome}}}
-
-    \vspace{{0pt}}
-
-    \normalsize
-    {contatos_principais_str} \\
-    {links_sociais_str}
-\end{{header}}
-
-\vspace{{5pt - 0.1cm}}
-"""
-
-    def adicionar_secao_lista_simples(self, titulo, itens):
-        print(f"LOG: GeradorCV.adicionar_secao_lista_simples - Adicionando seção '{titulo}' com {len(itens)} itens.")
-        """Adiciona uma seção de lista simples."""
-        if not isinstance(itens, list): 
-            print(f"LOG: GeradorCV.adicionar_secao_lista_simples - Itens não é uma lista para '{titulo}'.")
-            return
-        conteudo = ""
-        for i, item in enumerate(itens):
-            conteudo += fr"\begin{{onecolentry}}{{{item}}}\end{{onecolentry}}"
-            if i < len(itens) - 1:
-                conteudo += "\n\\vspace{0.2cm}\n"
-        self.secoes.append((titulo, conteudo))
-        print(f"LOG: GeradorCV.adicionar_secao_lista_simples - Seção '{titulo}' adicionada.")
-
-    def adicionar_secao_lista_categorizada(self, titulo, categorias):
-        print(f"LOG: GeradorCV.adicionar_secao_lista_categorizada - Adicionando seção '{titulo}' com {len(categorias)} categorias.")
-        """Adiciona uma seção de categorias, formatando cada uma como um item separado."""
-        conteudo = ""
-        for i, categoria in enumerate(categorias):
-            if isinstance(categoria, dict) and 'nome' in categoria and 'itens' in categoria:
-                nome_categoria = categoria['nome'] # O sanitizador já tratou o '&'
-                itens_str = ", ".join(categoria['itens'])
-                linha_formatada = fr"\textbf{{{nome_categoria}:}} {itens_str}"
-                
-                conteudo += fr"\begin{{onecolentry}}{{{linha_formatada}}}\end{{onecolentry}}"
-                if i < len(categorias) - 1:
-                    conteudo += "\n\\vspace{0.1cm}\n"
-        self.secoes.append((titulo, conteudo))
-        print(f"LOG: GeradorCV.adicionar_secao_lista_categorizada - Seção '{titulo}' adicionada.")
-
-    def adicionar_secao_entradas_com_destaques(self, titulo, entradas):
-        print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Adicionando seção '{titulo}' com {len(entradas)} entradas.")
-        """Adiciona uma seção de entradas com destaques (layout da coluna esquerda aprimorado)."""
-        if not isinstance(entradas, list): 
-            print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Entradas não é uma lista para '{titulo}'.")
-            return
-        conteudo = ""
-        for i, entrada in enumerate(entradas):
-            print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Processando entrada {i+1}.")
-            if not isinstance(entrada, dict): 
-                print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Entrada {i+1} não é um dicionário. Pulando.")
-                continue
-
-            # Constrói a coluna da esquerda com quebra de linha para clareza
-            titulo_principal = entrada.get("titulo", "")
-            subtitulo_e_local = []
-            if entrada.get("subtitulo"):
-                subtitulo_e_local.append(entrada.get("subtitulo"))
-            if entrada.get("local"):
-                subtitulo_e_local.append(entrada.get("local"))
-            
-            coluna_esquerda = fr'\textbf{{{titulo_principal}}}'
-            if subtitulo_e_local:
-                coluna_esquerda += fr' \\ {", ".join(subtitulo_e_local)}'
-
-            coluna_direita = fr'{entrada.get("data", "")}'
-            conteudo_entrada = fr"""
-\begin{{onecolentry}}
-    \setcolumnwidth{{\fill, 4.5cm}}
-    \begin{{paracol}}{{2}}
-        {coluna_esquerda}
-        \switchcolumn
-        \raggedleft {coluna_direita}
-    \end{{paracol}}
-\end{{onecolentry}}"""
-            if entrada.get("destaques"):
-                destaques_latex = '\n'.join([fr'                \item {d}' for d in entrada["destaques"]])
-                conteudo_entrada += fr"""
-\vspace{{0.10cm}}
-\begin{{onecolentry}}
-    \begin{{highlights}}
-{destaques_latex}
-    \end{{highlights}}
-\end{{onecolentry}}
-"""
-            conteudo += conteudo_entrada
-            if i < len(entradas) - 1:
-                conteudo += "\n\\vspace{0.2cm}\n"
-        self.secoes.append((titulo, conteudo))
-        print(f"LOG: GeradorCV.adicionar_secao_entradas_com_destaques - Seção '{titulo}' adicionada.")
-
-    def gerar_latex(self):
-        print("LOG: GeradorCV.gerar_latex - Iniciando geração de LaTeX.")
-        """Monta e retorna a string completa do documento LaTeX."""
-        preambulo = self._gerar_preambulo()
-        if preambulo is None:
-            print("LOG: GeradorCV.gerar_latex - ERRO: Preâmbulo não gerado.")
-            return None
-        
-        cabecalho = self._gerar_cabecalho()
-        partes = [preambulo, r"\begin{document}", cabecalho]
-        
-        print(f"LOG: GeradorCV.gerar_latex - Processando {len(self.secoes)} seções.")
-        for titulo, conteudo in self.secoes:
-            print(f"LOG: GeradorCV.gerar_latex - Adicionando seção LaTeX: {titulo}.")
-            partes.append(fr"\section{{{titulo}}}")
-            partes.append(conteudo)
-
-        partes.append(r"\end{document}")
-        latex_final = "\n".join(partes)
-        print(f"LOG: GeradorCV.gerar_latex - LaTeX final gerado (tamanho: {len(latex_final)}).")
-        return latex_final
-
-    def salvar_tex(self, nome_arquivo="cv_gerado.tex"):
-        print(f"LOG: GeradorCV.salvar_tex - Tentando salvar {nome_arquivo}.")
-        codigo_latex = self.gerar_latex()
-        if codigo_latex is None:
-            print("LOG: GeradorCV.salvar_tex - Falha ao gerar código LaTeX. Arquivo .tex não será salvo.")
-            return
-        try:
-            with open(nome_arquivo, 'w', encoding='utf-8') as f:
-                f.write(codigo_latex)
-            print(f"LOG: GeradorCV.salvar_tex - Arquivo '{nome_arquivo}' salvo com sucesso!")
-        except Exception as e:
-            print(f"LOG: GeradorCV.salvar_tex - ERRO ao salvar '{nome_arquivo}': {e}")
-
-    def generate_from_tex(self, tex_code: str):
-
+    def compile_tex(self, tex_code):
         files_payload = {
             'filecontents[]': (None, tex_code),
             'filename[]': (None, 'document.tex'),
@@ -228,20 +35,28 @@ class GeradorCV:
             'return': (None, 'pdf')
             }
         
-        try:
-            response = requests.post(
-                "https://texlive.net/cgi-bin/latexcgi",
-                files=files_payload,
-                timeout=90)
-            response.raise_for_status()
+        response = requests.post(
+            "https://texlive.net/cgi-bin/latexcgi",
+            files=files_payload,
+            timeout=90)
+        response.raise_for_status()
 
-            if 'application/pdf' in response.headers.get('Content-Type', ''):
-                return response.content
-            return None
-        
-        except requests.exceptions.RequestException as e:
-            print(f"LOG: GeradorCV.gerar_pdf - ERRO de conexão ou API: {e}")
-            return None
+        if 'application/pdf' in response.headers.get('Content-Type', ''):
+            return response.content
+        elif 'application/pdf' not in response.headers.get('Content-Type', ''):
+
+            errors = {}
+            errors["payload"] = files_payload
+            errors["error_messages"] = response.text
+            errors["instruction"] = "fix errors and return the complete and fixed tex code: only tex code and nothing else"
+            logs = json.dumps(errors)
+
+            return logs
+
+    def generate_from_tex(self, tex_code: str):
+
+        compilation_result = self.compile_tex(tex_code)
+        return compilation_result
 
     def gerar_pdf(self, nome_arquivo_saida="cv_gerado.pdf"):
         print(f"LOG: GeradorCV.gerar_pdf - Iniciando geração de PDF para '{nome_arquivo_saida}'...")
